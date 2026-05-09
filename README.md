@@ -14,7 +14,8 @@ Permettre aux PME de déclarer leurs usages d'intelligence artificielle, d'éval
 | Frontend | Blade + Tailwind CSS + Vite |
 | Base de données | MySQL 8 (Docker) |
 | Authentification | Laravel Breeze |
-| Tests | Pest (à venir) |
+| Tests | Pest 4 |
+| Autorisation | Policies Laravel (auto-discovery) |
 
 ## 📋 Prérequis
 
@@ -101,7 +102,7 @@ docker stop ai-assistant-mysql
 ai-assistant/
 ├── app/
 │   ├── Http/
-│   │   ├── Controllers/     # Contrôleurs (Auth, Profile, etc.)
+│   │   ├── Controllers/     # AiUsage, Dashboard, Organization, Profile, Auth
 │   │   └── Requests/        # Form Requests (validation)
 │   ├── Models/              # Modèles Eloquent
 │   │   ├── User.php
@@ -109,6 +110,8 @@ ai-assistant/
 │   │   ├── AiUsage.php
 │   │   ├── Response.php
 │   │   └── Assessment.php
+│   ├── Policies/            # Policies (autorisation par organisation)
+│   │   └── AiUsagePolicy.php
 │   └── View/                # Composants Blade
 ├── database/
 │   ├── factories/           # Factories pour les tests/seeders
@@ -159,7 +162,7 @@ ai-assistant/
 
 ## 📊 Avancement du projet
 
-### ✅ Semaines 1-2 : Setup initial (EN COURS)
+### ✅ Semaines 1-2 : Setup initial (TERMINÉ)
 
 - [x] Initialisation projet Laravel 11
 - [x] Installation Laravel Breeze (Blade + Tailwind)
@@ -170,11 +173,17 @@ ai-assistant/
 - [x] Page d'accueil avec navbar/footer
 - [x] Authentification fonctionnelle
 
-### 🔄 Semaine 3 : Formulaire de déclaration
+### ✅ Semaine 3 : Formulaire de déclaration (TERMINÉ)
 
-- [ ] Formulaire de déclaration d'usages IA
-- [ ] Formulaire d'édition/suppression d'usages
-- [ ] Dashboard utilisateur
+- [x] Routes dashboard / profile / organization / usages
+- [x] Onboarding Organization depuis le dashboard (1 user = 1 PME)
+- [x] CRUD complet des usages IA (Route::resource)
+- [x] Form Requests dédiés (StoreOrganization, StoreAiUsage, UpdateAiUsage)
+- [x] AiUsagePolicy (isolation stricte entre organisations)
+- [x] Vues Blade (index, create, edit, show + partial _form)
+- [x] Pest 4 + tests Feature (Dashboard, Organization, AiUsage)
+- [x] Tests sécurité IDOR cross-organisation (4 cas : show/edit/update/delete)
+- [x] Migration : `siret` et `user_id` uniques en BDD
 
 ### 📅 Semaine 4 : Questionnaire dynamique
 
@@ -221,12 +230,30 @@ php artisan cache:clear
 php artisan config:clear
 php artisan view:clear
 
-# Lancer les tests
+# Lancer les tests (Pest)
+./vendor/bin/pest
+# ou via Laravel
 php artisan test
+
+# Lancer un seul fichier de test
+./vendor/bin/pest tests/Feature/AiUsageTest.php
 
 # Formatter le code
 ./vendor/bin/pint
 ```
+
+## 🔐 Sécurité
+
+L'application traite des données sensibles de PME (déclarations d'usages IA, SIRET).
+Quelques garde-fous structurels :
+
+- **Isolation tenant stricte** : `AiUsagePolicy` empêche tout accès croisé entre organisations.
+  Les tests `tests/Feature/AiUsageTest.php` couvrent les 4 vecteurs IDOR (show, edit, update, delete).
+- **Pas de mass assignment des FK** : `organization_id` (AiUsage) et `user_id` (Organization)
+  sont volontairement hors de `$fillable`. Les FK sont injectées via les relations Eloquent.
+- **Contraintes BDD** : `user_id` unique sur `organizations` (1 user = 1 PME), `siret` unique.
+- **CSRF** : protection native Laravel sur tous les formulaires Blade.
+- **Validation** : enums stricts via Form Requests (jamais de validation inline).
 
 ## 📝 Conventions de code
 

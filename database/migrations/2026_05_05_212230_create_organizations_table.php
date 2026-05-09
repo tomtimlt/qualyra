@@ -13,9 +13,13 @@ return new class extends Migration
     {
         Schema::create('organizations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            // 1 user = 1 PME : contrainte BDD pour bloquer un éventuel
+            // second INSERT même si la couche applicative est contournée.
+            $table->foreignId('user_id')->unique()->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->string('siret')->nullable();
+            // Le SIRET identifie légalement une PME : doit être unique
+            // si renseigné. nullable() autorise les enregistrements sans SIRET.
+            $table->string('siret')->nullable()->unique();
             $table->enum('size', ['1-19', '20-49', '50-149', '150+']);
             $table->string('sector')->nullable();
             $table->timestamps();

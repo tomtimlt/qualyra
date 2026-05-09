@@ -13,8 +13,13 @@ class AiUsage extends Model
 {
     use HasFactory;
 
+    /**
+     * organization_id volontairement absent : la FK est injectée par
+     * Eloquent via la relation hasMany ($organization->aiUsages()->create(...)).
+     * Garder cette colonne hors de $fillable empêche tout mass assignment
+     * d'un usage dans une autre organisation (isolation tenant stricte).
+     */
     protected $fillable = [
-        'organization_id',
         'name',
         'description',
         'type',

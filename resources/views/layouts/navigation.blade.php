@@ -13,8 +13,15 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                        Tableau de bord
                     </x-nav-link>
+                    @auth
+                        @if (Auth::user()->organization)
+                            <x-nav-link :href="route('usages.index')" :active="request()->routeIs('usages.*')">
+                                Mes usages IA
+                            </x-nav-link>
+                        @endif
+                    @endauth
                 </div>
             </div>
 
@@ -68,8 +75,15 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+                Tableau de bord
             </x-responsive-nav-link>
+            @auth
+                @if (Auth::user()->organization)
+                    <x-responsive-nav-link :href="route('usages.index')" :active="request()->routeIs('usages.*')">
+                        Mes usages IA
+                    </x-responsive-nav-link>
+                @endif
+            @endauth
         </div>
 
         <!-- Responsive Settings Options -->

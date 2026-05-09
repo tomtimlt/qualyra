@@ -23,7 +23,7 @@ class OrganizationFactory extends Factory
         return [
             'user_id' => User::factory(),
             'name' => fake()->company(),
-            'siret' => fake()->optional(0.7)->numerify('###############'),
+            'siret' => fake()->optional(0.7)->numerify('##############'),
             'size' => fake()->randomElement(['1-19', '20-49', '50-149', '150+']),
             'sector' => fake()->optional()->word(),
         ];

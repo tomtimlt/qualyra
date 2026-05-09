@@ -12,8 +12,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Organization extends Model
 {
     use HasFactory;
+
+    /**
+     * user_id volontairement absent : la FK est injectée par Eloquent
+     * via la relation hasOne ($user->organization()->create(...)).
+     * Empêche un POST malicieux de rattacher l'organisation à un autre
+     * compte utilisateur (mass assignment / takeover).
+     */
     protected $fillable = [
-        'user_id',
         'name',
         'siret',
         'size',
