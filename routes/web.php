@@ -3,9 +3,13 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\AiUsageController;
+use App\Http\Controllers\AssessmentController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\QuestionnaireController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -30,6 +34,25 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('usages', AiUsageController::class)->parameters([
         'usages' => 'aiUsage',
     ]);
+
+    // Questionnaire AI Act rattaché à un usage IA (1 questionnaire par usage)
+    Route::get('/usages/{aiUsage}/questionnaire', [QuestionnaireController::class, 'show'])
+        ->name('usages.questionnaire.show');
+    Route::post('/usages/{aiUsage}/questionnaire', [QuestionnaireController::class, 'store'])
+        ->name('usages.questionnaire.store');
+
+    // Évaluation AI Act (calcul du niveau de risque)
+    Route::post('/usages/{aiUsage}/assessment', [AssessmentController::class, 'store'])
+        ->name('usages.assessment.store');
+
+    // Rapports de conformité (génération PDF + paiement Stripe)
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/{report}', [ReportController::class, 'show'])->name('reports.show');
+    Route::get('/reports/{report}/download', [ReportController::class, 'download'])->name('reports.download');
+
+    Route::post('/checkout', [CheckoutController::class, 'create'])->name('checkout.create');
+    Route::get('/checkout/{report}/success', [CheckoutController::class, 'success'])->name('checkout.success');
+    Route::get('/checkout/{report}/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
 });
 
 require __DIR__.'/auth.php';

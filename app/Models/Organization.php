@@ -39,4 +39,9 @@ class Organization extends Model
     {
         return $this->hasMany(AiUsage::class);
     }
+
+    public function reports(): HasMany
+    {
+        return $this->hasMany(Report::class);
+    }
 }

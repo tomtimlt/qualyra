@@ -45,6 +45,11 @@
                                     </a>
                                     <p class="text-xs text-gray-500 mt-1">
                                         Type : {{ $usage->type }} · Domaine : {{ $usage->domain }}
+                                        @if ($usage->responses()->exists())
+                                            · <span class="text-green-700">Questionnaire renseigné</span>
+                                        @else
+                                            · <span class="text-amber-700">Questionnaire à compléter</span>
+                                        @endif
                                     </p>
                                 </div>
                                 <div class="flex items-center gap-3">

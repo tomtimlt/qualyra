@@ -16,6 +16,8 @@ Permettre aux PME de déclarer leurs usages d'intelligence artificielle, d'éval
 | Authentification | Laravel Breeze |
 | Tests | Pest 4 |
 | Autorisation | Policies Laravel (auto-discovery) |
+| PDF | barryvdh/laravel-dompdf |
+| Paiement | Stripe Checkout (stripe/stripe-php) |
 
 ## 📋 Prérequis
 
@@ -102,17 +104,25 @@ docker stop ai-assistant-mysql
 ai-assistant/
 ├── app/
 │   ├── Http/
-│   │   ├── Controllers/     # AiUsage, Dashboard, Organization, Profile, Auth
+│   │   ├── Controllers/     # AiUsage, Assessment, Checkout, Dashboard,
+│   │   │                    # Organization, Profile, Questionnaire, Report
 │   │   └── Requests/        # Form Requests (validation)
 │   ├── Models/              # Modèles Eloquent
 │   │   ├── User.php
 │   │   ├── Organization.php
 │   │   ├── AiUsage.php
 │   │   ├── Response.php
-│   │   └── Assessment.php
+│   │   ├── Assessment.php
+│   │   └── Report.php
 │   ├── Policies/            # Policies (autorisation par organisation)
 │   │   └── AiUsagePolicy.php
+│   ├── Services/            # Logique métier
+│   │   ├── AiActClassifier.php       # Classification AI Act (4 niveaux)
+│   │   └── ReportSnapshotBuilder.php # Snapshot figé pour les rapports PDF
 │   └── View/                # Composants Blade
+├── config/
+│   ├── ai_act_rules.php     # Matrice des règles AI Act
+│   └── questionnaire.php    # Questions par type d'IA
 ├── database/
 │   ├── factories/           # Factories pour les tests/seeders
 │   ├── migrations/          # Migrations de la base de données
@@ -124,11 +134,13 @@ ai-assistant/
 │       ├── auth/            # Pages d'authentification
 │       ├── components/      # Composants réutilisables
 │       ├── layouts/         # Layouts (app, guest, public)
+│       ├── questionnaire/   # Formulaire AI Act dynamique
+│       ├── reports/         # Rapports HTML + template PDF (dompdf)
 │       └── home.blade.php   # Page d'accueil
 ├── routes/
 │   ├── web.php              # Routes web
 │   └── auth.php             # Routes d'authentification
-└── tests/                   # Tests (Pest)
+└── tests/                   # Tests Pest 4 (82 tests, 221 assertions)
 ```
 
 ### Modèle de données
@@ -185,23 +197,32 @@ ai-assistant/
 - [x] Tests sécurité IDOR cross-organisation (4 cas : show/edit/update/delete)
 - [x] Migration : `siret` et `user_id` uniques en BDD
 
-### 📅 Semaine 4 : Questionnaire dynamique
+### ✅ Semaine 4 : Questionnaire dynamique (TERMINÉ)
 
-- [ ] Questions dynamiques selon le type d'IA
-- [ ] Sauvegarde des réponses
-- [ ] Navigation entre les questions
+- [x] Questions dynamiques selon le type d'IA (config/questionnaire.php — communes + spécifiques par type)
+- [x] Sauvegarde des réponses (upsert via contrainte unique `ai_usage_id, variable_key`)
+- [x] Navigation entre les questions (formulaire unique multi-sections, pré-rempli si déjà répondu)
+- [x] FormRequest dynamique (StoreQuestionnaireRequest) avec `Rule::in` sur les options
+- [x] Tests Pest (10) : affichage par type, persistence, upsert, validation, isolation tenant cross-org
 
-### 📅 Semaine 5 : Moteur de classification
+### ✅ Semaine 5 : Moteur de classification (TERMINÉ)
 
-- [ ] Encodage de la matrice AI Act
-- [ ] Algorithme de classification (4 niveaux de risque)
-- [ ] Détection des règles applicables
+- [x] Encodage de la matrice AI Act dans `config/ai_act_rules.php` (Article 5, Annexe III, Article 50, fallback)
+- [x] Service `App\Services\AiActClassifier` — algorithme à 4 niveaux : INACCEPTABLE / HAUT_RISQUE / RISQUE_LIMITE / RISQUE_MINIMAL
+- [x] Évaluation séquentielle (priorité au plus sévère) + alertes RGPD complémentaires (Article 9, Article 22)
+- [x] `AssessmentController` — POST `/usages/{aiUsage}/assessment` calcule + persiste l'évaluation
+- [x] UI : badge coloré + raison + article + alertes sur la fiche usage
+- [x] Tests Pest (14) : couverture des 4 niveaux + priorité INACCEPTABLE > HAUT_RISQUE + alertes + isolation tenant
 
-### 📅 Semaine 6 : Génération PDF + Paiement
+### ✅ Semaine 6 : Génération PDF + Paiement (TERMINÉ)
 
-- [ ] Génération du rapport PDF
-- [ ] Intégration Stripe Checkout
-- [ ] Historique des rapports
+- [x] Génération du rapport PDF (`barryvdh/laravel-dompdf`) — synthèse + détail par usage avec niveau, raison, alertes
+- [x] Snapshot figé sur `Report::snapshot` (JSON) → préservé même si l'usage est modifié/supprimé après
+- [x] Intégration Stripe Checkout (`stripe/stripe-php`) — session de paiement one-shot, prix configurable via `STRIPE_REPORT_PRICE`
+- [x] Mode dev (sans `STRIPE_SECRET` configuré) : paiement court-circuité pour faciliter les tests bout-en-bout
+- [x] Historique des rapports (`/reports`) avec statut payé/en attente
+- [x] Téléchargement PDF verrouillé tant que `paid_at` est nul (HTTP 402)
+- [x] Tests Pest (9) : checkout en mode dev, capture snapshot, gating PDF, isolation tenant cross-org
 
 ### 📅 Semaine 7-8 : Finalisation
 
@@ -262,6 +283,20 @@ Quelques garde-fous structurels :
 - **Tables** : Pluriel (ex: `ai_usages`)
 - **Type hints** : Strict (`declare(strict_types=1)`)
 - **Validation** : Form Requests (pas de validation inline)
+
+## 💳 Configuration Stripe (paiement des rapports)
+
+L'intégration Stripe Checkout est branchée mais inactive par défaut.
+Tant que `STRIPE_SECRET` est vide dans `.env`, le paiement est court-circuité :
+le rapport est généré et marqué `paid_at = now()` sans appel à Stripe.
+
+Pour activer le paiement réel :
+
+```env
+STRIPE_SECRET=sk_test_...    # clé secrète Stripe (test ou live)
+STRIPE_CURRENCY=eur
+STRIPE_REPORT_PRICE=4900     # en centimes (49 €)
+```
 
 ## 📄 Licence
 

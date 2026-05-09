@@ -5,16 +5,14 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Assessment extends Model
 {
     use HasFactory;
-    use HasFactory;
+
     protected $fillable = [
-        'ai_usage_id',
         'niveau',
         'regle_id',
         'article',

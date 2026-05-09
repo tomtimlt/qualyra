@@ -9,18 +9,25 @@ use App\Http\Requests\UpdateAiUsageRequest;
 use App\Models\AiUsage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\View\View;
 
-class AiUsageController extends Controller
+class AiUsageController extends Controller implements HasMiddleware
 {
     /**
-     * authorizeResource câble automatiquement les méthodes du contrôleur
-     * sur AiUsagePolicy (viewAny, view, create, update, delete).
-     * Toute action non autorisée renvoie un 403.
+     * Câble chaque action du contrôleur sur AiUsagePolicy.
+     * Équivalent de l'ancien authorizeResource() (Laravel <= 10).
      */
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->authorizeResource(AiUsage::class, 'aiUsage');
+        return [
+            new Middleware('can:viewAny,'.AiUsage::class, only: ['index']),
+            new Middleware('can:view,aiUsage', only: ['show']),
+            new Middleware('can:create,'.AiUsage::class, only: ['create', 'store']),
+            new Middleware('can:update,aiUsage', only: ['edit', 'update']),
+            new Middleware('can:delete,aiUsage', only: ['destroy']),
+        ];
     }
 
     /**

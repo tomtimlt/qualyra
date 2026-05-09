@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'stripe' => [
+        // Sans clé (dev) : le paiement est court-circuité (paid_at = now()).
+        // Avec clé (prod/staging) : Stripe Checkout est appelé.
+        'secret' => env('STRIPE_SECRET'),
+        'currency' => env('STRIPE_CURRENCY', 'eur'),
+        'report_price' => env('STRIPE_REPORT_PRICE', 4900), // en centimes (49 €)
+    ],
+
 ];

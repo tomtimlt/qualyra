@@ -15,7 +15,7 @@ it('affiche le formulaire de création pour un utilisateur sans organisation', f
     $this->actingAs($user)
         ->get('/organization/create')
         ->assertOk()
-        ->assertSee('Nom de l\'organisation', false);
+        ->assertSee('Nom de l&#039;organisation', false);
 });
 
 it('redirige vers le dashboard si l\'utilisateur a déjà une organisation', function () {

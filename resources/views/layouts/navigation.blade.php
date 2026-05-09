@@ -20,6 +20,9 @@
                             <x-nav-link :href="route('usages.index')" :active="request()->routeIs('usages.*')">
                                 Mes usages IA
                             </x-nav-link>
+                            <x-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.*')">
+                                Rapports
+                            </x-nav-link>
                         @endif
                     @endauth
                 </div>
@@ -81,6 +84,9 @@
                 @if (Auth::user()->organization)
                     <x-responsive-nav-link :href="route('usages.index')" :active="request()->routeIs('usages.*')">
                         Mes usages IA
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.*')">
+                        Rapports
                     </x-responsive-nav-link>
                 @endif
             @endauth
