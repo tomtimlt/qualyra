@@ -31,6 +31,38 @@ return [
             'type' => 'textarea',
             'required' => true,
         ],
+        // Variable matrice DEC — nature de la décision produite par l'IA.
+        // Valeurs internes alignées strictement sur la matrice v1.1.
+        [
+            'key' => 'dec',
+            'label' => 'Comment qualifieriez-vous la nature des décisions ou sorties produites par cette IA ?',
+            'type' => 'radio',
+            'options' => [
+                'INFORMATIF' => 'Purement informatif (l\'humain décide entièrement)',
+                'AIDE_DEC' => 'Aide à la décision (l\'humain décide après lecture)',
+                'SEMI_AUTO' => 'Semi-automatique (l\'IA propose, l\'humain valide)',
+                'FULL_AUTO' => 'Entièrement automatique (l\'IA décide sans validation)',
+            ],
+            'required' => true,
+        ],
+        // Variable matrice PUB — multi-valeur. Stockage : CSV dans variable_value
+        // (ex: "EMPLOYES,CLIENTS"). Choix CSV plutôt que JSON pour rester
+        // compatible avec la colonne string + contrainte unique (ai_usage_id, key)
+        // sans migration. L'UI utilise des cases à cocher (type 'checkbox').
+        [
+            'key' => 'pub',
+            'label' => 'Quel(s) public(s) est/sont concerné(s) par les sorties de cette IA ?',
+            'help' => 'Plusieurs choix possibles.',
+            'type' => 'checkbox',
+            'options' => [
+                'AUCUN' => 'Aucun public externe à l\'équipe',
+                'EMPLOYES' => 'Salariés / collaborateurs internes',
+                'CLIENTS' => 'Clients de l\'entreprise',
+                'GRAND_PUBLIC' => 'Grand public',
+                'VULNERABLES' => 'Personnes vulnérables (mineurs, précaires, handicap…)',
+            ],
+            'required' => true,
+        ],
         [
             'key' => 'data_personal',
             'label' => 'L\'IA traite-t-elle des données personnelles ?',
@@ -54,9 +86,22 @@ return [
             ],
             'required' => true,
         ],
+        // Variable matrice DIFF — diffusion de la sortie.
+        [
+            'key' => 'diff',
+            'label' => 'Comment les sorties de cette IA sont-elles diffusées ?',
+            'type' => 'radio',
+            'options' => [
+                'INTERNE' => 'Usage interne uniquement',
+                'TIERS' => 'Diffusion à des tiers identifiés (clients, partenaires)',
+                'PUBLIC' => 'Diffusion publique (site, réseaux sociaux, presse)',
+            ],
+            'required' => true,
+        ],
         [
             'key' => 'human_oversight',
             'label' => 'Une supervision humaine est-elle prévue avant toute décision ?',
+            'help' => 'Variable matrice CTRL : SYSTEMATIQUE / ECHANTILLON / AUCUN.',
             'type' => 'radio',
             'options' => [
                 'always' => 'Oui, systématiquement',

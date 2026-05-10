@@ -40,17 +40,27 @@ class QuestionnaireController extends Controller implements HasMiddleware
     public function store(StoreQuestionnaireRequest $request, AiUsage $aiUsage): RedirectResponse
     {
         $answers = $request->validated()['answers'];
-        $allowedKeys = collect($this->questionsFor($aiUsage))->pluck('key')->all();
+        $questions = $this->questionsFor($aiUsage);
+        $allowedKeys = collect($questions)->pluck('key')->all();
 
         // Filet supplémentaire : on ne persiste que les clés déclarées dans la
         // config pour ce type. Empêche toute injection de variable_key inattendue
         // via du payload non couvert par les règles (ex: future évolution de la config).
         $filtered = array_intersect_key($answers, array_flip($allowedKeys));
 
+        // Index des types de questions pour savoir quoi sérialiser :
+        // les checkbox arrivent en array et sont stockés en CSV scalaire
+        // (compatible colonne string + contrainte unique (ai_usage_id, key)).
+        $typesByKey = collect($questions)->pluck('type', 'key')->all();
+
         foreach ($filtered as $key => $value) {
+            $serialized = ($typesByKey[$key] ?? null) === 'checkbox' && is_array($value)
+                ? implode(',', array_values(array_filter($value, 'is_string')))
+                : (string) $value;
+
             $aiUsage->responses()->updateOrCreate(
                 ['variable_key' => $key],
-                ['variable_value' => (string) $value],
+                ['variable_value' => $serialized],
             );
         }
 

@@ -24,7 +24,19 @@
                     @php
                         $key = $question['key'];
                         $name = "answers[{$key}]";
-                        $current = old("answers.{$key}", $answers[$key] ?? null);
+                        // Pour les checkbox (multi-valeur), la valeur est stockée en CSV
+                        // côté BDD ; on l'éclate pour reconstruire le tableau attendu
+                        // par les inputs et par old() en cas de re-rendu après erreur.
+                        if (($question['type'] ?? null) === 'checkbox') {
+                            $stored = $answers[$key] ?? '';
+                            $defaults = $stored === '' ? [] : array_filter(explode(',', $stored));
+                            $current = old("answers.{$key}", $defaults);
+                            if (! is_array($current)) {
+                                $current = [];
+                            }
+                        } else {
+                            $current = old("answers.{$key}", $answers[$key] ?? null);
+                        }
                     @endphp
 
                     <div>
@@ -61,6 +73,20 @@
                                                @checked($current === $value)
                                                @if ($question['required'] ?? false) required @endif
                                                class="text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                                        {{ $label }}
+                                    </label>
+                                @endforeach
+                            </div>
+
+                        @elseif ($question['type'] === 'checkbox')
+                            <div class="mt-2 space-y-2">
+                                @foreach ($question['options'] as $value => $label)
+                                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                                        <input type="checkbox"
+                                               name="answers[{{ $key }}][]"
+                                               value="{{ $value }}"
+                                               @checked(in_array($value, $current, true))
+                                               class="text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
                                         {{ $label }}
                                     </label>
                                 @endforeach

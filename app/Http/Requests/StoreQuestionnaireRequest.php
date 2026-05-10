@@ -42,6 +42,19 @@ class StoreQuestionnaireRequest extends FormRequest
 
         foreach ($questions as $question) {
             $field = "answers.{$question['key']}";
+
+            // Type 'checkbox' (multi-valeur, ex: PUB) : on attend un tableau de
+            // valeurs déclarées dans options. Le contrôleur sérialisera en CSV.
+            if ($question['type'] === 'checkbox') {
+                $required = $question['required'] ?? false;
+                $rules[$field] = $required
+                    ? ['required', 'array', 'min:1']
+                    : ['nullable', 'array'];
+                $rules[$field.'.*'] = ['string', Rule::in(array_keys($question['options'] ?? []))];
+
+                continue;
+            }
+
             $fieldRules = $question['required'] ?? false
                 ? ['required', 'string']
                 : ['nullable', 'string'];
