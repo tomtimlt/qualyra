@@ -77,6 +77,8 @@ class StoreQuestionnaireRequest extends FormRequest
     }
 
     /**
+     * Mêmes sources que QuestionnaireController : common + types[type] + domains[domain].
+     *
      * @return array<int, array<string, mixed>>
      */
     public function questionsFor(AiUsage $aiUsage): array
@@ -85,7 +87,8 @@ class StoreQuestionnaireRequest extends FormRequest
 
         return [
             ...($config['common'] ?? []),
-            ...($config[$aiUsage->type] ?? []),
+            ...($config['types'][$aiUsage->type] ?? []),
+            ...($config['domains'][$aiUsage->domain] ?? []),
         ];
     }
 }

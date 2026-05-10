@@ -70,6 +70,11 @@ class QuestionnaireController extends Controller implements HasMiddleware
     }
 
     /**
+     * Construit la liste des questions à poser pour cet usage IA en fusionnant :
+     *   - les questions communes (TYPE/DOM/DEC/PUB/DIFF/DATA/CTRL...)
+     *   - les questions spécifiques au type (LLM_GEN, IA_GEN, IA_BIO...)
+     *   - les questions spécifiques au domaine (RH, EDUCATION, SANTE...)
+     *
      * @return array<int, array<string, mixed>>
      */
     private function questionsFor(AiUsage $aiUsage): array
@@ -78,7 +83,8 @@ class QuestionnaireController extends Controller implements HasMiddleware
 
         return [
             ...($config['common'] ?? []),
-            ...($config[$aiUsage->type] ?? []),
+            ...($config['types'][$aiUsage->type] ?? []),
+            ...($config['domains'][$aiUsage->domain] ?? []),
         ];
     }
 }

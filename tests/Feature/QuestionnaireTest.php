@@ -6,11 +6,20 @@ use App\Models\AiUsage;
 use App\Models\Organization;
 use App\Models\User;
 
-function userWithUsage(string $type = 'LLM_GEN'): array
+/**
+ * Helper de test : fixe un domaine neutre (PROD_INT) pour éviter que la
+ * factory tire au sort un domaine avec section conditionnelle (RH, EDUCATION,
+ * SANTE, MARKETING) qui ajouterait des champs requis non couverts par les
+ * payloads de test.
+ */
+function userWithUsage(string $type = 'LLM_GEN', string $domain = 'PROD_INT'): array
 {
     $user = User::factory()->create();
     $organization = Organization::factory()->for($user)->create();
-    $aiUsage = AiUsage::factory()->for($organization)->create(['type' => $type]);
+    $aiUsage = AiUsage::factory()->for($organization)->create([
+        'type' => $type,
+        'domain' => $domain,
+    ]);
 
     return [$user, $aiUsage];
 }
@@ -74,6 +83,7 @@ it('persiste les réponses du questionnaire', function () {
             'llm_provider' => 'anthropic',
             'llm_data_input' => 'CV au format PDF',
             'llm_output_published' => 'no',
+            'interaction_directe' => 'NON',
         ],
     ];
 
@@ -108,6 +118,7 @@ it('met à jour une réponse existante (upsert) sans dupliquer en BDD', function
         'llm_provider' => 'openai',
         'llm_data_input' => 'Données A',
         'llm_output_published' => 'no',
+        'interaction_directe' => 'NON',
     ];
 
     $this->actingAs($user)->post("/usages/{$aiUsage->id}/questionnaire", ['answers' => $base]);
@@ -139,6 +150,7 @@ it('rejette une réponse hors de la liste d\'options', function () {
             'llm_provider' => 'openai',
             'llm_data_input' => 'X',
             'llm_output_published' => 'no',
+            'interaction_directe' => 'NON',
         ],
     ])->assertSessionHasErrors('answers.data_personal');
 });
@@ -171,6 +183,7 @@ it('ignore les clés inconnues même si la validation laisse passer', function (
             'llm_provider' => 'openai',
             'llm_data_input' => 'X',
             'llm_output_published' => 'no',
+            'interaction_directe' => 'NON',
             'evil_injected_key' => 'boom',
         ],
     ]);
