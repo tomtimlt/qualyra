@@ -8,15 +8,36 @@ use App\Models\Organization;
 
 class ReportSnapshotBuilder
 {
+    public function __construct(private ReportContentBuilder $contentBuilder) {}
+
     /**
      * Construit un snapshot figé de l'état de conformité d'une organisation
-     * (organisation + tous ses usages + dernier assessment + réponses).
-     * Le snapshot est persisté tel quel sur Report::snapshot pour rester
-     * lisible même si les usages sous-jacents évoluent ou sont supprimés.
+     * (organisation + tous ses usages + dernier assessment + réponses) et
+     * y attache le **contenu rédactionnel résolu** au moment de la
+     * génération. Le snapshot est persisté tel quel sur Report::snapshot
+     * et lu sans recalcul par les vues — garantie de stabilité juridique
+     * même si la veille (matrice, templates, alertes) évolue après émission.
      *
      * @return array<string, mixed>
      */
     public function build(Organization $organization): array
+    {
+        $data = $this->buildData($organization);
+        $content = $this->contentBuilder->build($data);
+
+        return array_merge($data, [
+            'content' => $content,
+        ]);
+    }
+
+    /**
+     * Couche données pure (sans rédaction). Exposée séparément pour pouvoir
+     * la tester en isolation et la réutiliser depuis un job futur sans
+     * recalcul du contenu.
+     *
+     * @return array<string, mixed>
+     */
+    public function buildData(Organization $organization): array
     {
         $organization->load([
             'aiUsages.responses',
