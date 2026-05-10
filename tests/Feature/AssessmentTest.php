@@ -37,29 +37,39 @@ function usageWithAnswers(string $type, string $domain, array $answers): AiUsage
 
 it('classifie INACCEPTABLE une IA biométrique temps réel public', function () {
     $usage = usageWithAnswers('IA_BIO', 'SECURITE', [
+        'bio_type' => 'IDENTIFICATION',
         'bio_realtime' => 'yes',
     ]);
 
     $result = app(AiActClassifier::class)->classify($usage);
 
     expect($result['niveau'])->toBe('INACCEPTABLE');
-    expect($result['regle_id'])->toBe('art5_bio_realtime_public');
+    expect($result['regle_id'])->toBe('R-I-05');
     expect($result['type_regle'])->toBe('TEXTE_EXPLICITE');
 });
 
-it('classifie HAUT_RISQUE un usage RH (Annexe III)', function () {
+it('classifie HAUT_RISQUE un usage RH (R-H-02)', function () {
+    // R-H-02 attend toutes les conditions de la matrice : DOM=RH, DEC≥AIDE_DEC,
+    // PUB∋EMPLOYES, RH_USAGE dans la liste recrutement.
     $usage = usageWithAnswers('LLM_GEN', 'RH', [
         'finality' => 'Tri de CV',
         'data_personal' => 'yes',
+        'dec' => 'AIDE_DEC',
+        'pub' => 'EMPLOYES',
+        'rh_usage' => 'TRI_CV',
     ]);
 
     $result = app(AiActClassifier::class)->classify($usage);
 
     expect($result['niveau'])->toBe('HAUT_RISQUE');
-    expect($result['regle_id'])->toBe('annexe3_recrutement');
+    expect($result['regle_id'])->toBe('R-H-02');
 });
 
-it('classifie HAUT_RISQUE par interprétation : décision auto + impact + pas de supervision', function () {
+it('un usage interne sans condition matrice retombe sur RISQUE_MINIMAL', function () {
+    // L'ancienne règle "haut_risque_decision_automatique_impactante" classait
+    // ce cas en HAUT_RISQUE. La matrice v1.1 ne couvre pas ce cas — l'absence
+    // de contrôle humain est une AGGRAVATION (non classificatoire) qui ne se
+    // déclenche que si le niveau de base est déjà HAUT_RISQUE.
     $usage = usageWithAnswers('AUTRE', 'PROD_INT', [
         'impact_individual' => 'yes',
         'human_oversight' => 'never',
@@ -67,34 +77,37 @@ it('classifie HAUT_RISQUE par interprétation : décision auto + impact + pas de
 
     $result = app(AiActClassifier::class)->classify($usage);
 
-    expect($result['niveau'])->toBe('HAUT_RISQUE');
-    expect($result['type_regle'])->toBe('INTERPRETATION');
+    expect($result['niveau'])->toBe('RISQUE_MINIMAL');
+    expect($result['regle_id'])->toBe('DEFAULT');
 });
 
-it('classifie RISQUE_LIMITE un LLM générique sans flag haut risque', function () {
-    $usage = usageWithAnswers('LLM_GEN', 'PROD_INT', [
-        'data_personal' => 'no',
-        'impact_individual' => 'no',
+it('classifie RISQUE_LIMITE un chatbot interactif diffusé publiquement (R-L-01)', function () {
+    $usage = usageWithAnswers('LLM_GEN', 'MARKETING', [
+        'dec' => 'INFORMATIF',
+        'pub' => 'CLIENTS',
+        'diff' => 'PUBLIC',
+        'interaction_directe' => 'OUI',
     ]);
 
     $result = app(AiActClassifier::class)->classify($usage);
 
     expect($result['niveau'])->toBe('RISQUE_LIMITE');
-    expect($result['regle_id'])->toBe('art50_chatbot_llm');
+    expect($result['regle_id'])->toBe('R-L-01');
 });
 
-it('classifie RISQUE_LIMITE deepfake spécifiquement', function () {
+it('classifie RISQUE_LIMITE un deepfake diffusé (R-L-03)', function () {
     $usage = usageWithAnswers('IA_GEN', 'MARKETING', [
-        'gen_deepfake_risk' => 'yes',
+        'gen_contenu' => 'DEEPFAKE',
+        'diff' => 'PUBLIC',
     ]);
 
     $result = app(AiActClassifier::class)->classify($usage);
 
     expect($result['niveau'])->toBe('RISQUE_LIMITE');
-    expect($result['regle_id'])->toBe('art50_deepfake');
+    expect($result['regle_id'])->toBe('R-L-03');
 });
 
-it('classifie RISQUE_MINIMAL en fallback (type AUTRE, sans condition matche)', function () {
+it('classifie RISQUE_MINIMAL en fallback (DEFAULT)', function () {
     $usage = usageWithAnswers('AUTRE', 'AUTRE', [
         'impact_individual' => 'no',
         'human_oversight' => 'always',
@@ -103,7 +116,7 @@ it('classifie RISQUE_MINIMAL en fallback (type AUTRE, sans condition matche)', f
     $result = app(AiActClassifier::class)->classify($usage);
 
     expect($result['niveau'])->toBe('RISQUE_MINIMAL');
-    expect($result['regle_id'])->toBe('fallback_risque_minimal');
+    expect($result['regle_id'])->toBe('DEFAULT');
 });
 
 // ---------------------------------------------------------------------------
@@ -111,10 +124,13 @@ it('classifie RISQUE_MINIMAL en fallback (type AUTRE, sans condition matche)', f
 // ---------------------------------------------------------------------------
 
 it('donne priorité à INACCEPTABLE sur HAUT_RISQUE quand les deux matchent', function () {
-    // Bio temps réel public ET secteur SANTE — les deux matchent (INACCEPTABLE + HAUT_RISQUE)
-    // mais l'INACCEPTABLE doit gagner car listé en premier dans la matrice.
+    // Bio identification temps réel public ET DEC≥AIDE_DEC — R-I-05 (INACCEPTABLE)
+    // ET R-H-01 (HAUT_RISQUE) sont tous deux candidats. R-I-05 doit gagner
+    // car listé en premier dans la matrice (priorité par ordre).
     $usage = usageWithAnswers('IA_BIO', 'SANTE', [
+        'bio_type' => 'IDENTIFICATION',
         'bio_realtime' => 'yes',
+        'dec' => 'AIDE_DEC',
     ]);
 
     $result = app(AiActClassifier::class)->classify($usage);
@@ -153,14 +169,18 @@ it('remonte une alerte RGPD Article 22 sur décision auto + données personnelle
 // ---------------------------------------------------------------------------
 
 it('persiste un Assessment et remplace l\'ancien à chaque calcul', function () {
+    // Identification temps réel public + DEC=AIDE_DEC → R-I-05 (INACCEPTABLE).
+    // En retirant le flag temps réel, le cas redevient un système d'identif
+    // biométrique avec aide à la décision → R-H-01 (HAUT_RISQUE).
     $usage = usageWithAnswers('IA_BIO', 'SECURITE', [
+        'bio_type' => 'IDENTIFICATION',
         'bio_realtime' => 'yes',
+        'dec' => 'AIDE_DEC',
     ]);
 
     $first = app(AiActClassifier::class)->persist($usage);
     expect($first->niveau)->toBe('INACCEPTABLE');
 
-    // Modification : on retire le flag temps réel → reclassification HAUT_RISQUE
     $usage->responses()->where('variable_key', 'bio_realtime')->update(['variable_value' => 'no']);
     $second = app(AiActClassifier::class)->persist($usage->fresh('responses'));
 
@@ -207,10 +227,12 @@ it('crée et persiste l\'évaluation puis redirige vers la fiche usage', functio
         'type' => 'IA_BIO',
         'domain' => 'SECURITE',
     ]);
-    $usage->responses()->create([
-        'variable_key' => 'bio_realtime',
-        'variable_value' => 'yes',
-    ]);
+    foreach ([
+        'bio_type' => 'IDENTIFICATION',
+        'bio_realtime' => 'yes',
+    ] as $key => $value) {
+        $usage->responses()->create(['variable_key' => $key, 'variable_value' => $value]);
+    }
 
     $this->actingAs($user)
         ->post("/usages/{$usage->id}/assessment")

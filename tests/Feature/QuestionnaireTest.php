@@ -64,8 +64,11 @@ it('persiste les réponses du questionnaire', function () {
     $payload = [
         'answers' => [
             'finality' => 'Tri automatique des CV',
+            'dec' => 'AIDE_DEC',
+            'pub' => ['EMPLOYES'],
             'data_personal' => 'yes',
             'data_sensitive' => 'no',
+            'diff' => 'INTERNE',
             'human_oversight' => 'always',
             'impact_individual' => 'yes',
             'llm_provider' => 'anthropic',
@@ -95,8 +98,11 @@ it('met à jour une réponse existante (upsert) sans dupliquer en BDD', function
 
     $base = [
         'finality' => 'V1',
+        'dec' => 'AIDE_DEC',
+        'pub' => ['EMPLOYES'],
         'data_personal' => 'yes',
         'data_sensitive' => 'no',
+        'diff' => 'INTERNE',
         'human_oversight' => 'always',
         'impact_individual' => 'yes',
         'llm_provider' => 'openai',
@@ -123,8 +129,11 @@ it('rejette une réponse hors de la liste d\'options', function () {
     $this->actingAs($user)->post("/usages/{$aiUsage->id}/questionnaire", [
         'answers' => [
             'finality' => 'OK',
+            'dec' => 'AIDE_DEC',
+            'pub' => ['EMPLOYES'],
             'data_personal' => 'maybe', // valeur non listée
             'data_sensitive' => 'no',
+            'diff' => 'INTERNE',
             'human_oversight' => 'always',
             'impact_individual' => 'yes',
             'llm_provider' => 'openai',
@@ -152,8 +161,11 @@ it('ignore les clés inconnues même si la validation laisse passer', function (
     $this->actingAs($user)->post("/usages/{$aiUsage->id}/questionnaire", [
         'answers' => [
             'finality' => 'OK',
+            'dec' => 'AIDE_DEC',
+            'pub' => ['EMPLOYES'],
             'data_personal' => 'yes',
             'data_sensitive' => 'no',
+            'diff' => 'INTERNE',
             'human_oversight' => 'always',
             'impact_individual' => 'yes',
             'llm_provider' => 'openai',
