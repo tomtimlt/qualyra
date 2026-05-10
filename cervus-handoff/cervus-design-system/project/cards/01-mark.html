@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cervus — Mark</title>
+<link rel="stylesheet" href="../cervus.css">
+<style>
+  body { background: var(--ink-1000); }
+  .stage { min-height: 100vh; padding: 56px 72px; display: grid; grid-template-rows: auto 1fr auto; gap: 40px; max-width: 1280px; margin: 0 auto; }
+  .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 48px; }
+  .head h2 { margin: 8px 0 0; }
+  .head p { margin: 16px 0 0; max-width: 56ch; }
+  .meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.04em; white-space: nowrap; }
+
+  .grid { display: grid; grid-template-columns: 1.35fr 1fr; gap: 24px; }
+
+  .hero {
+    position: relative;
+    background:
+      radial-gradient(ellipse 80% 60% at 35% 35%, #182142 0%, var(--ink-1000) 65%);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 64px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 64px);
+    pointer-events: none;
+  }
+  .hero img { width: 78%; position: relative; z-index: 1; filter: drop-shadow(0 24px 60px rgba(91,224,201,0.15)); }
+  .hero__corners { position: absolute; inset: 16px; pointer-events: none; }
+  .hero__corner { position: absolute; width: 14px; height: 14px; border: 1px solid var(--accent); opacity: 0.4; }
+  .hero__corner.tl { top: 0; left: 0; border-right: none; border-bottom: none; }
+  .hero__corner.tr { top: 0; right: 0; border-left: none; border-bottom: none; }
+  .hero__corner.bl { bottom: 0; left: 0; border-right: none; border-top: none; }
+  .hero__corner.br { bottom: 0; right: 0; border-left: none; border-top: none; }
+  .hero__label { position: absolute; bottom: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-dim); }
+
+  .swatches { display: grid; grid-template-rows: 1fr 1fr 1fr; gap: 16px; }
+  .swatch {
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-md);
+    padding: 24px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 24px;
+  }
+  .swatch img { height: 64px; }
+  .swatch--bone { background: var(--bone-100); }
+  .swatch--bone img { filter: brightness(0) saturate(100%); }
+  .swatch--ink  { background: var(--ink-1000); border-color: var(--hairline-strong); }
+  .swatch--stag { background: var(--stag-300); }
+  .swatch--stag img { filter: brightness(0) saturate(100%); }
+  .swatch__meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; }
+  .swatch--bone .swatch__meta { color: var(--bone-700); }
+  .swatch--ink  .swatch__meta { color: var(--text-muted); }
+  .swatch--stag .swatch__meta { color: var(--ink-1000); }
+
+  .lockup {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    padding-top: 32px; border-top: 1px solid var(--hairline);
+  }
+  .lockup__item {
+    display: flex; flex-direction: column; gap: 16px;
+    padding: 28px;
+    background: var(--surface-raised);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-md);
+    min-height: 180px;
+  }
+  .lockup__row { display: flex; align-items: center; gap: 14px; flex: 1; }
+  .lockup__row img { height: 44px; }
+  .word { font-family: var(--font-display); font-size: 40px; line-height: 1; letter-spacing: -0.015em; color: var(--text); }
+  .word .dot { color: var(--accent); }
+  .word--sm { font-size: 28px; }
+  .descriptor { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; color: var(--text-dim); margin-top: 6px; }
+  .center { justify-content: center; padding: 12px 0; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head">
+    <div>
+      <div class="eyebrow eyebrow--accent">Brand · 01 · Mark</div>
+      <h2 class="h2">The Cervus stag.</h2>
+      <p class="lead muted">A low-poly geometric stag with circuit-traced antlers dispersing into a particle field — the legible body of compliance, the volatile edge of artificial intelligence. The mark is never tinted, recolored, or composed onto unbranded photography.</p>
+    </div>
+    <div class="meta">CDS · v0.1<br>brand/mark</div>
+  </div>
+
+  <div class="grid">
+    <div class="hero">
+      <div class="hero__corners">
+        <div class="hero__corner tl"></div>
+        <div class="hero__corner tr"></div>
+        <div class="hero__corner bl"></div>
+        <div class="hero__corner br"></div>
+      </div>
+      <img src="../brand/cervus-mark-original.png" alt="Cervus low-poly stag" />
+      <div class="hero__label">
+        <span>PRIMARY · FULL COLOR</span>
+        <span>1 of 4</span>
+      </div>
+    </div>
+
+    <div class="swatches">
+      <div class="swatch swatch--bone">
+        <img src="../brand/cervus-mark-original.png" alt="">
+        <div>
+          <div class="swatch__meta">02 · INK ON BONE</div>
+          <div class="swatch__meta" style="opacity: 0.6; margin-top: 4px">#0A0E1A on #F4F0E5</div>
+        </div>
+      </div>
+      <div class="swatch swatch--ink">
+        <img src="../brand/cervus-mark-original.png" alt="">
+        <div>
+          <div class="swatch__meta">03 · ORIGINAL ON INK</div>
+          <div class="swatch__meta" style="opacity: 0.6; margin-top: 4px">primary surface</div>
+        </div>
+      </div>
+      <div class="swatch swatch--stag">
+        <img src="../brand/cervus-mark-original.png" alt="">
+        <div>
+          <div class="swatch__meta">04 · INK ON STAG</div>
+          <div class="swatch__meta" style="opacity: 0.6; margin-top: 4px">accent only · sparingly</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lockup">
+    <div class="lockup__item">
+      <div class="eyebrow">Wordmark</div>
+      <div class="lockup__row">
+        <img src="../brand/cervus-mark-original.png" alt="">
+        <div>
+          <div class="word">Cervus<span class="dot">.</span></div>
+        </div>
+      </div>
+      <div class="meta">DISPLAY · INSTRUMENT SERIF · 40 / 100</div>
+    </div>
+    <div class="lockup__item">
+      <div class="eyebrow">With descriptor</div>
+      <div class="lockup__row">
+        <img src="../brand/cervus-mark-original.png" alt="" style="height: 36px">
+        <div>
+          <div class="word word--sm">Cervus<span class="dot">.</span></div>
+          <div class="descriptor">AI ACT · RGPD · COMPLIANCE</div>
+        </div>
+      </div>
+      <div class="meta">FOR DOC HEADERS · PDF COVERS</div>
+    </div>
+    <div class="lockup__item">
+      <div class="eyebrow">Mark only</div>
+      <div class="lockup__row center">
+        <img src="../brand/cervus-mark-original.png" alt="" style="height: 92px">
+      </div>
+      <div class="meta">FAVICON · APP ICON · 16 / 32 / 180 PX</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

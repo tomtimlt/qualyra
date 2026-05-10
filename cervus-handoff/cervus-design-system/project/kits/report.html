@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cervus — Report</title>
+<link rel="stylesheet" href="../cervus.css">
+<style>
+  body { background: var(--bone-50); color: var(--ink-950); }
+  .page { max-width: 880px; margin: 0 auto; padding: 80px 64px 96px; background: var(--bone-100); min-height: 100vh; box-shadow: 0 0 80px -20px rgba(0,0,0,0.15); }
+  .head { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 32px; border-bottom: 1px solid var(--bone-300); margin-bottom: 48px; }
+  .head__brand { display: flex; align-items: center; gap: 14px; }
+  .head__brand img { height: 36px; }
+  .head__brand .word { font-family: var(--font-display); font-size: 32px; line-height: 1; letter-spacing: -0.01em; color: var(--ink-950); }
+  .head__brand .dot { color: var(--stag-500); }
+  .head__meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--bone-500); text-align: right; line-height: 1.7; }
+  .head__meta b { color: var(--ink-950); font-weight: 500; }
+
+  h1.cover { font-family: var(--font-display); font-size: 88px; line-height: 0.98; letter-spacing: -0.02em; color: var(--ink-950); margin: 0 0 16px; }
+  h1.cover em { color: var(--stag-700); font-style: italic; }
+  .cover-sub { font-size: 17px; line-height: 1.55; color: var(--bone-700); max-width: 60ch; margin: 0; }
+  .cover-meta { display: flex; gap: 48px; margin-top: 48px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--bone-500); }
+  .cover-meta div { display: flex; flex-direction: column; gap: 4px; }
+  .cover-meta b { color: var(--ink-950); font-weight: 500; font-size: 13px; font-family: var(--font-sans); letter-spacing: 0; }
+
+  .eyebrow-l { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bone-500); font-weight: 500; }
+  .eyebrow-l.accent { color: var(--stag-700); }
+
+  .section { margin-top: 64px; }
+  .section h2 { font-family: var(--font-display); font-size: 44px; line-height: 1.05; letter-spacing: -0.02em; margin: 12px 0 24px; color: var(--ink-950); }
+
+  /* Risk band */
+  .risk-band { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr; border: 1px solid var(--bone-300); border-radius: var(--r-md); overflow: hidden; }
+  .rb__cell { padding: 24px 28px; border-right: 1px solid var(--bone-300); display: flex; flex-direction: column; gap: 4px; }
+  .rb__cell:last-child { border-right: none; }
+  .rb__cell.hero { background: var(--bone-200); }
+  .rb__num { font-family: var(--font-display); font-size: 56px; line-height: 1; letter-spacing: -0.02em; color: var(--ink-950); }
+  .rb__num.haut { color: #8C4810; }
+  .rb__num.lim { color: #8B6620; }
+  .rb__num.min { color: #2F6B53; }
+  .rb__label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bone-500); margin-top: 12px; }
+  .rb__cell.hero .rb__num { font-size: 36px; color: #8C4810; margin-top: 4px; }
+
+  /* Synthese */
+  .lede { font-family: var(--font-display); font-size: 28px; font-style: italic; line-height: 1.35; color: var(--ink-950); border-left: 2px solid var(--stag-500); padding-left: 24px; margin: 24px 0; }
+  .body-prose { font-size: 15px; line-height: 1.7; color: var(--bone-700); max-width: 64ch; }
+  .body-prose p { margin: 0 0 14px; }
+
+  /* Priorities */
+  .priorities { display: grid; gap: 14px; margin-top: 24px; }
+  .prio { display: grid; grid-template-columns: 56px 1fr auto; gap: 20px; align-items: center; padding: 20px 24px; border: 1px solid var(--bone-300); border-radius: var(--r-md); background: var(--bone-50); }
+  .prio__num { font-family: var(--font-display); font-size: 36px; line-height: 1; color: var(--stag-700); }
+  .prio__t { font-size: 16px; font-weight: 500; color: var(--ink-950); }
+  .prio__d { font-size: 13px; color: var(--bone-500); margin-top: 2px; }
+  .prio__when { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; color: var(--bone-500); }
+
+  /* Usage card */
+  .usage { border: 1px solid var(--bone-300); border-radius: var(--r-md); padding: 28px 32px; margin-top: 16px; background: var(--bone-50); }
+  .usage__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 12px; }
+  .usage__num { font-family: var(--font-display); font-size: 18px; color: var(--bone-500); margin-right: 12px; }
+  .usage__title { font-family: var(--font-display); font-size: 28px; line-height: 1.1; color: var(--ink-950); }
+  .usage__meta { font-family: var(--font-mono); font-size: 11px; color: var(--bone-500); letter-spacing: 0.04em; margin-top: 6px; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    border-radius: var(--r-xs);
+    border: 1px solid;
+  }
+  .badge.haut { color: #8C4810; background: #FBE9D8; border-color: #C4631C; }
+  .badge.lim  { color: #8B6620; background: #F5E9C8; border-color: #B98A2E; }
+  .badge.min  { color: #2F6B53; background: #DDEAE0; border-color: #2F6B53; }
+  .badge .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+  .obligation { border-left: 2px solid var(--stag-500); padding: 4px 0 4px 18px; margin-top: 14px; }
+  .obligation .t { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: var(--ink-950); text-transform: uppercase; font-family: var(--font-mono); }
+  .obligation .c { font-size: 14px; line-height: 1.6; color: var(--bone-700); margin-top: 4px; max-width: 64ch; }
+
+  /* Plan */
+  .plan { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
+  .phase { border: 1px solid var(--bone-300); border-radius: var(--r-md); padding: 24px; background: var(--bone-50); }
+  .phase__h { font-family: var(--font-display); font-size: 32px; color: var(--ink-950); line-height: 1; }
+  .phase__h em { color: var(--stag-700); font-style: italic; font-size: 18px; }
+  .phase__sub { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bone-500); margin-top: 6px; }
+  .phase__list { margin: 18px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .phase__list li { font-size: 13px; line-height: 1.5; color: var(--bone-700); padding-left: 16px; position: relative; }
+  .phase__list li::before { content: ''; position: absolute; left: 0; top: 8px; width: 6px; height: 1px; background: var(--stag-500); }
+
+  .footer { margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--bone-300); display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; color: var(--bone-500); }
+</style>
+</head>
+<body>
+<div class="page" data-screen-label="Report">
+  <!-- HEADER -->
+  <div class="head">
+    <div class="head__brand">
+      <img src="../brand/cervus-mark-original.png" alt="">
+      <div class="word">Cervus<span class="dot">.</span></div>
+    </div>
+    <div class="head__meta">
+      RAPPORT · <b>2026—04</b><br>
+      ATELIER SAINT-VINCENT<br>
+      SIRET 793 045 612 00018
+    </div>
+  </div>
+
+  <!-- COVER -->
+  <div class="eyebrow-l accent">AUDIT DE CONFORMITÉ · AI ACT + RGPD</div>
+  <h1 class="cover">Audit de conformité,<br><em>au 02 mai 2026.</em></h1>
+  <p class="cover-sub">Sept usages d'intelligence artificielle ont été déclarés. Un seul est classé haut risque ; aucune pratique interdite n'a été identifiée. Les obligations principales relèvent de l'Annexe III §6 et de l'Article 50 sur la transparence.</p>
+  <div class="cover-meta">
+    <div><span>PME</span><b>Atelier Saint-Vincent</b></div>
+    <div><span>EFFECTIF</span><b>28 salariés</b></div>
+    <div><span>SECTEUR</span><b>Industrie · ébénisterie</b></div>
+    <div><span>AUDITÉ PAR</span><b>Cervus · v0.1</b></div>
+  </div>
+
+  <!-- RISK -->
+  <div class="section">
+    <div class="eyebrow-l">01 · Niveau de risque</div>
+    <h2>Quatre niveaux, sept usages.</h2>
+    <div class="risk-band">
+      <div class="rb__cell hero">
+        <div class="eyebrow-l accent">Niveau global</div>
+        <div class="rb__num">Haut risque</div>
+        <div class="rb__label">déterminé par 1 usage · annexe iii §6</div>
+      </div>
+      <div class="rb__cell"><div class="rb__num">07</div><div class="rb__label">Usages déclarés</div></div>
+      <div class="rb__cell"><div class="rb__num haut">01</div><div class="rb__label">Haut risque</div></div>
+      <div class="rb__cell"><div class="rb__num lim">03</div><div class="rb__label">Risque limité</div></div>
+      <div class="rb__cell"><div class="rb__num min">03</div><div class="rb__label">Risque minimal</div></div>
+    </div>
+  </div>
+
+  <!-- SYNTHESE -->
+  <div class="section">
+    <div class="eyebrow-l">02 · Synthèse exécutive</div>
+    <h2>Ce que dit la matrice.</h2>
+    <p class="lede">Un usage RH — le scoring de CV — bascule la posture globale en haut risque. Le reste du système reste maîtrisable, à condition d'ouvrir trois chantiers de transparence dans les soixante prochains jours.</p>
+    <div class="body-prose">
+      <p>L'AI Act (règlement UE 2024/1689) classe le tri automatisé de candidatures parmi les systèmes à haut risque (Annexe III, §6). Cette qualification déclenche un faisceau d'obligations : analyse d'impact, tenue d'un registre, conservation des journaux d'usage, information explicite des candidats, et possibilité de revue humaine significative.</p>
+      <p>Les trois usages classés en risque limité (génération d'offres, chatbot support, synthèse de réunions) tombent sous l'Article 50 : l'utilisateur final doit être informé qu'il interagit avec un système d'IA. Vos paramètres actuels couvrent partiellement cette obligation pour le chatbot, pas pour les deux autres.</p>
+      <p>Aucun usage déclaré ne tombe sous l'Article 5 (pratiques interdites). Le risque de sanction directe au titre de l'AI Act est donc structurellement contenu — l'enjeu réel pour les douze prochains mois est documentaire.</p>
+    </div>
+
+    <div class="priorities">
+      <div class="prio"><div class="prio__num">01</div><div><div class="prio__t">Lancer l'analyse d'impact du scoring CV</div><div class="prio__d">AIPD requise par la CNIL et l'AI Act. Brouillon préparé par votre conseiller.</div></div><div class="prio__when">30 JOURS</div></div>
+      <div class="prio"><div class="prio__num">02</div><div><div class="prio__t">Mettre à jour les CGU avec mention IA</div><div class="prio__d">Information explicite pour les trois usages soumis à l'Article 50.</div></div><div class="prio__when">60 JOURS</div></div>
+      <div class="prio"><div class="prio__num">03</div><div><div class="prio__t">Ouvrir le registre des journaux d'usage</div><div class="prio__d">Conservation des prompts, sorties et décisions humaines pour le scoring CV.</div></div><div class="prio__when">90 JOURS</div></div>
+    </div>
+  </div>
+
+  <!-- DETAIL -->
+  <div class="section">
+    <div class="eyebrow-l">03 · Analyse détaillée</div>
+    <h2>Cas par cas.</h2>
+
+    <div class="usage">
+      <div class="usage__head">
+        <div>
+          <div class="usage__title"><span class="usage__num">01</span>Scoring CV automatisé</div>
+          <div class="usage__meta">MISTRAL LARGE · DÉCISION RH · RECRUTEMENT</div>
+        </div>
+        <span class="badge haut"><span class="dot"></span>Haut risque · Annexe III §6</span>
+      </div>
+      <div class="body-prose"><p>Le système attribue un score de pertinence à chaque candidature reçue, déterminant un ordre de priorité présenté aux recruteurs. Bien que la décision finale d'embauche reste humaine, l'AI Act considère le tri en amont comme un système RH à haut risque dès lors qu'il influence l'accès à l'emploi.</p></div>
+      <div class="obligation">
+        <div class="t">Obligation · AIPD</div>
+        <div class="c">Une analyse d'impact relative à la protection des données est obligatoire. Elle doit identifier les biais possibles (genre, âge, origine), les mesures de mitigation et la procédure de recours pour les candidats.</div>
+      </div>
+      <div class="obligation">
+        <div class="t">Obligation · Information du candidat</div>
+        <div class="c">Chaque candidat doit savoir, avant de postuler, qu'un traitement algorithmique intervient dans la sélection. Il doit pouvoir demander une revue humaine sans pénalité.</div>
+      </div>
+    </div>
+
+    <div class="usage">
+      <div class="usage__head">
+        <div>
+          <div class="usage__title"><span class="usage__num">02</span>Génération d'offres commerciales</div>
+          <div class="usage__meta">GENAI TEXTE · REVUE HUMAINE · SALES</div>
+        </div>
+        <span class="badge lim"><span class="dot"></span>Risque limité · Art. 50</span>
+      </div>
+      <div class="body-prose"><p>Le contenu généré est systématiquement relu et adapté par un commercial avant envoi. L'usage tombe sous l'obligation de transparence de l'Article 50, sans déclencher d'obligations supplémentaires.</p></div>
+      <div class="obligation">
+        <div class="t">Obligation · Mention dans la proposition</div>
+        <div class="c">Un paragraphe en pied de proposition doit indiquer que le document a été préparé avec l'aide d'un système d'IA et relu par un humain.</div>
+      </div>
+    </div>
+
+    <div class="usage">
+      <div class="usage__head">
+        <div>
+          <div class="usage__title"><span class="usage__num">04</span>Détection d'anomalies factures</div>
+          <div class="usage__meta">ML SUPERVISÉ · ALERTES · FINANCE</div>
+        </div>
+        <span class="badge min"><span class="dot"></span>Risque minimal</span>
+      </div>
+      <div class="body-prose"><p>Le système signale des écarts statistiques sur les factures fournisseurs ; il déclenche une alerte humaine et n'effectue aucun rejet automatique. Aucune obligation contraignante au titre de l'AI Act, mais l'adoption d'un code de bonne conduite est recommandée.</p></div>
+    </div>
+  </div>
+
+  <!-- PLAN -->
+  <div class="section">
+    <div class="eyebrow-l accent">04 · Plan d'action</div>
+    <h2>Trente, soixante, quatre-vingt-dix.</h2>
+    <div class="plan">
+      <div class="phase">
+        <div class="phase__h">30 <em>jours</em></div>
+        <div class="phase__sub">P0 · obligatoire</div>
+        <ul class="phase__list">
+          <li>Lancer l'AIPD du scoring CV avec un délégué à la protection des données.</li>
+          <li>Geler les déploiements RH non documentés.</li>
+          <li>Notifier les candidats actuels du processus algorithmique.</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div class="phase__h">60 <em>jours</em></div>
+        <div class="phase__sub">P1 · prioritaire</div>
+        <ul class="phase__list">
+          <li>Mettre à jour les CGU et les pages produit avec la mention IA.</li>
+          <li>Former trois recruteurs aux principes de revue humaine.</li>
+          <li>Ouvrir le registre des journaux d'usage du scoring.</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div class="phase__h">90 <em>jours</em></div>
+        <div class="phase__sub">P2 · structurant</div>
+        <ul class="phase__list">
+          <li>Adopter un code de bonne conduite IA, signé par la direction.</li>
+          <li>Programmer une revue annuelle des modèles et fournisseurs.</li>
+          <li>Préparer le dossier de conformité pour audit externe.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>CERVUS · v0.1 · GÉNÉRÉ LE 02 MAI 2026</span>
+    <span>PAGE 01 / 04 · CONFIDENTIEL · ATELIER SAINT-VINCENT</span>
+  </div>
+</div>
+</body>
+</html>

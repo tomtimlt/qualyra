@@ -26,9 +26,12 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Création de l'organisation rattachée au compte (1 user = 1 PME)
+    // Organisation rattachée au compte (1 user = 1 PME)
     Route::get('/organization/create', [OrganizationController::class, 'create'])->name('organization.create');
     Route::post('/organization', [OrganizationController::class, 'store'])->name('organization.store');
+    Route::get('/organization', [OrganizationController::class, 'show'])->name('organization.show');
+    Route::get('/organization/edit', [OrganizationController::class, 'edit'])->name('organization.edit');
+    Route::patch('/organization', [OrganizationController::class, 'update'])->name('organization.update');
 
     // CRUD des usages d'IA déclarés par l'organisation
     Route::resource('usages', AiUsageController::class)->parameters([

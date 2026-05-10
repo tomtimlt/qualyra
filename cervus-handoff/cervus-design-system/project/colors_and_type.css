@@ -1,0 +1,220 @@
+/* =========================================================================
+   Cervus — Tokens
+   GRC / AI Act + RGPD audit tool for French SMEs.
+   Editorial × premium × mysterious. Built from a Laravel + Tailwind base,
+   evolved toward a more sophisticated brand expression.
+   ========================================================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap");
+
+:root {
+  /* ---- Brand neutrals: ink-on-vellum, the editorial spine ------------- */
+  --ink-1000: #07101e;   /* deepest midnight — heroes, hero typography */
+  --ink-900:  #0c1a2c;   /* primary surface in dark mode, body text in light */
+  --ink-800:  #142440;   /* card surface in dark mode */
+  --ink-700:  #1f3357;   /* hairline borders on dark */
+  --ink-500:  #485879;
+  --ink-400:  #6b7a98;
+  --ink-300:  #98a4bd;
+  --ink-200:  #c5cdde;
+  --ink-100:  #e3e7f0;
+
+  --vellum-50:  #f8f5ee;  /* warm paper — primary light surface */
+  --vellum-100: #f1ece1;  /* paper edge / subtle stripe */
+  --vellum-200: #e6dfce;  /* hairline on paper */
+  --vellum-300: #cfc6b1;
+
+  /* ---- Cervus signature: cobalt × cyan (the stag's body × the sparks) - */
+  --cervus-blue-900: #0d1f57;
+  --cervus-blue-800: #142a78;
+  --cervus-blue-700: #1c39a3;
+  --cervus-blue-600: #2247c7;   /* primary action (replaces blue-600) */
+  --cervus-blue-500: #3a63e4;
+  --cervus-blue-400: #6f8df0;
+  --cervus-blue-200: #c8d4f8;
+  --cervus-blue-100: #e6ecfc;
+
+  --cyan-circuit-700: #0c6a8a;
+  --cyan-circuit-500: #19a8d6;   /* circuit accent — quiet, never neon */
+  --cyan-circuit-300: #79d3ec;
+  --cyan-circuit-100: #d3eff8;
+
+  /* ---- Risk semantics — AI Act levels (Article 5 → minimal) ----------- */
+  --risk-inacceptable: #6b1421;  /* oxblood, never bright red */
+  --risk-inacceptable-50: #f5e7e9;
+  --risk-haut:         #92500c;  /* burnt amber */
+  --risk-haut-50:      #fbeed6;
+  --risk-limite:       #8a6b14;  /* dim gold */
+  --risk-limite-50:    #f7eecf;
+  --risk-minimal:      #2f5d3a;  /* slate sage */
+  --risk-minimal-50:   #e1ede2;
+
+  /* ---- Functional ----------------------------------------------------- */
+  --success: #2f5d3a;
+  --warning: #92500c;
+  --danger:  #8a1f2c;
+  --info:    var(--cervus-blue-600);
+
+  /* ---- Semantic surface vars (light-mode default) --------------------- */
+  --bg:           var(--vellum-50);
+  --bg-elevated:  #ffffff;
+  --bg-inset:     var(--vellum-100);
+  --bg-inverse:   var(--ink-1000);
+
+  --fg-1: var(--ink-900);   /* primary body */
+  --fg-2: var(--ink-700);   /* secondary */
+  --fg-3: var(--ink-500);   /* tertiary / meta */
+  --fg-4: var(--ink-400);   /* placeholders */
+  --fg-on-inverse: var(--vellum-50);
+  --fg-accent: var(--cervus-blue-700);
+
+  --border-1: var(--vellum-200);  /* hairlines */
+  --border-2: var(--ink-100);     /* strong borders */
+  --border-focus: var(--cervus-blue-500);
+
+  /* ---- Typography ----------------------------------------------------- */
+  --font-sans:    "Figtree", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Newsreader", "Newsreader Display", Georgia, "Times New Roman", serif;
+  --font-mono:    "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  /* Type scale — generous for editorial display, tight for UI */
+  --t-display-xl: 4.5rem;   /* 72 — hero serif */
+  --t-display-l:  3.25rem;  /* 52 */
+  --t-display-m:  2.25rem;  /* 36 */
+  --t-h1:         2rem;     /* 32 — sans, UI */
+  --t-h2:         1.5rem;   /* 24 */
+  --t-h3:         1.25rem;  /* 20 */
+  --t-h4:         1.0625rem;/* 17 */
+  --t-body-l:     1.0625rem;/* 17 */
+  --t-body:       0.9375rem;/* 15 — UI default */
+  --t-body-s:     0.8125rem;/* 13 */
+  --t-meta:       0.75rem;  /* 12 — uppercase eyebrows, tabular */
+  --t-mono:       0.8125rem;
+
+  --lh-tight:  1.1;
+  --lh-snug:   1.25;
+  --lh-normal: 1.45;
+  --lh-prose:  1.6;
+
+  --tracking-eyebrow: 0.14em;   /* uppercase meta */
+  --tracking-tight:  -0.015em;  /* display serif */
+
+  /* ---- Spacing (4px base) -------------------------------------------- */
+  --s-1:  4px;
+  --s-2:  8px;
+  --s-3:  12px;
+  --s-4:  16px;
+  --s-5:  24px;
+  --s-6:  32px;
+  --s-7:  48px;
+  --s-8:  64px;
+  --s-9:  96px;
+
+  /* ---- Radii — restrained. Editorial doesn't bubble. ------------------ */
+  --r-xs: 2px;
+  --r-sm: 4px;       /* default UI radius */
+  --r-md: 6px;       /* cards, buttons */
+  --r-lg: 10px;      /* large cards */
+  --r-pill: 999px;   /* badges only */
+
+  /* ---- Elevation — quiet, never glowing ------------------------------- */
+  --shadow-1: 0 1px 0 0 rgba(12, 26, 44, 0.06);
+  --shadow-2: 0 1px 2px 0 rgba(12, 26, 44, 0.06), 0 1px 1px 0 rgba(12, 26, 44, 0.04);
+  --shadow-3: 0 4px 12px -2px rgba(12, 26, 44, 0.08), 0 2px 4px -2px rgba(12, 26, 44, 0.06);
+  --shadow-4: 0 12px 32px -8px rgba(12, 26, 44, 0.18), 0 4px 12px -4px rgba(12, 26, 44, 0.08);
+  --shadow-inset: inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ring-focus: 0 0 0 3px rgba(58, 99, 228, 0.28);
+
+  /* ---- Motion --------------------------------------------------------- */
+  --ease-standard: cubic-bezier(0.2, 0.0, 0.0, 1.0);
+  --ease-in:       cubic-bezier(0.4, 0.0, 1.0, 1.0);
+  --ease-out:      cubic-bezier(0.0, 0.0, 0.2, 1.0);
+  --dur-fast:   140ms;
+  --dur-base:   220ms;
+  --dur-slow:   360ms;
+}
+
+/* Dark mode — used in marketing hero & report covers ----------------- */
+[data-theme="dark"], .theme-dark {
+  --bg:          var(--ink-1000);
+  --bg-elevated: var(--ink-900);
+  --bg-inset:    var(--ink-800);
+  --bg-inverse:  var(--vellum-50);
+  --fg-1: var(--vellum-50);
+  --fg-2: var(--ink-200);
+  --fg-3: var(--ink-300);
+  --fg-4: var(--ink-400);
+  --fg-on-inverse: var(--ink-1000);
+  --fg-accent: var(--cyan-circuit-300);
+  --border-1: var(--ink-700);
+  --border-2: var(--ink-700);
+}
+
+/* =========================================================================
+   Element-level defaults
+   ========================================================================= */
+html { color-scheme: light; }
+[data-theme="dark"] { color-scheme: dark; }
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--t-body);
+  line-height: var(--lh-normal);
+  color: var(--fg-1);
+  background: var(--bg);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.display, h1.display, .t-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-tight);
+  text-wrap: balance;
+}
+
+h1, .t-h1 {
+  font-family: var(--font-sans);
+  font-size: var(--t-h1);
+  font-weight: 600;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.01em;
+}
+h2, .t-h2 { font-size: var(--t-h2); font-weight: 600; line-height: var(--lh-snug); }
+h3, .t-h3 { font-size: var(--t-h3); font-weight: 600; line-height: var(--lh-snug); }
+h4, .t-h4 { font-size: var(--t-h4); font-weight: 600; line-height: var(--lh-snug); }
+
+p, .t-body { font-size: var(--t-body); line-height: var(--lh-prose); color: var(--fg-2); }
+
+.t-eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--t-meta);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--fg-3);
+}
+
+.t-meta { font-size: var(--t-meta); color: var(--fg-3); }
+
+code, kbd, .t-mono {
+  font-family: var(--font-mono);
+  font-size: var(--t-mono);
+  font-feature-settings: "calt" 0;
+}
+
+/* Editorial rule — used to separate sections in long-form content. */
+.rule {
+  border: 0;
+  border-top: 1px solid var(--border-1);
+  margin: var(--s-7) 0;
+}
+.rule-double {
+  border: 0;
+  height: 6px;
+  border-top: 1px solid var(--border-1);
+  border-bottom: 1px solid var(--border-1);
+  margin: var(--s-7) 0;
+}

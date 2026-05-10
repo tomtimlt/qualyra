@@ -1,1 +1,8 @@
-<a {{ $attributes->merge(['class' => 'block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out']) }}>{{ $slot }}</a>
+<a {{ $attributes->merge(['class' => 'dropdown-link']) }}>{{ $slot }}</a>
+
+@once
+<style>
+    .dropdown-link { display: block; width: 100%; padding: 10px 16px; font-size: 13px; color: var(--ink-300); text-decoration: none; text-align: left; transition: all var(--d-fast); border: none; background: transparent; cursor: pointer; font-family: inherit; }
+    .dropdown-link:hover { background: var(--ink-900); color: var(--text); }
+</style>
+@endonce

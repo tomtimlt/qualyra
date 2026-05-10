@@ -22,41 +22,40 @@
 @endphp
 
 <div>
-    <x-input-label for="name" value="Nom de l'usage" />
+    <x-input-label for="name" value="Nom de l'usage *" />
     <x-text-input id="name" name="name" type="text" required autofocus
-                  class="mt-1 block w-full"
-                  :value="old('name', $aiUsage?->name)" />
-    <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                  :value="old('name', $aiUsage?->name)" style="margin-top: 6px" />
+    <p class="help">Donnez un nom court et reconnaissable. Ex : « Scoring CV », « Génération offres commerciales (Mistral) ».</p>
+    <x-input-error :messages="$errors->get('name')" />
 </div>
 
 <div>
     <x-input-label for="description" value="Description (facultative)" />
-    <textarea id="description" name="description" rows="3"
-              class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+    <textarea id="description" name="description" rows="3" class="input textarea" style="margin-top: 6px"
               placeholder="Ex : utilisé par le service RH pour pré-trier les CV.">{{ old('description', $aiUsage?->description) }}</textarea>
-    <x-input-error :messages="$errors->get('description')" class="mt-2" />
+    <x-input-error :messages="$errors->get('description')" />
 </div>
 
-<div>
-    <x-input-label for="type" value="Type d'IA" />
-    <select id="type" name="type" required
-            class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-        <option value="">— Sélectionner —</option>
-        @foreach ($types as $value => $label)
-            <option value="{{ $value }}" @selected(old('type', $aiUsage?->type) === $value)>{{ $label }}</option>
-        @endforeach
-    </select>
-    <x-input-error :messages="$errors->get('type')" class="mt-2" />
-</div>
+<div class="form-grid">
+    <div>
+        <x-input-label for="type" value="Type d'IA *" />
+        <select id="type" name="type" required class="input" style="margin-top: 6px">
+            <option value="">— Sélectionner —</option>
+            @foreach ($types as $value => $label)
+                <option value="{{ $value }}" @selected(old('type', $aiUsage?->type) === $value)>{{ $label }}</option>
+            @endforeach
+        </select>
+        <x-input-error :messages="$errors->get('type')" />
+    </div>
 
-<div>
-    <x-input-label for="domain" value="Domaine d'usage" />
-    <select id="domain" name="domain" required
-            class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-        <option value="">— Sélectionner —</option>
-        @foreach ($domains as $value => $label)
-            <option value="{{ $value }}" @selected(old('domain', $aiUsage?->domain) === $value)>{{ $label }}</option>
-        @endforeach
-    </select>
-    <x-input-error :messages="$errors->get('domain')" class="mt-2" />
+    <div>
+        <x-input-label for="domain" value="Domaine d'usage *" />
+        <select id="domain" name="domain" required class="input" style="margin-top: 6px">
+            <option value="">— Sélectionner —</option>
+            @foreach ($domains as $value => $label)
+                <option value="{{ $value }}" @selected(old('domain', $aiUsage?->domain) === $value)>{{ $label }}</option>
+            @endforeach
+        </select>
+        <x-input-error :messages="$errors->get('domain')" />
+    </div>
 </div>

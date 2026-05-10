@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cervus — Color</title>
+<link rel="stylesheet" href="../cervus.css">
+<style>
+  body { background: var(--ink-1000); }
+  .stage { min-height: 100vh; padding: 56px 72px; max-width: 1280px; margin: 0 auto; }
+  .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 48px; margin-bottom: 48px; }
+  .head h2 { margin: 8px 0 16px; }
+  .head p { margin: 0; max-width: 56ch; }
+  .meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.04em; white-space: nowrap; }
+
+  .section { margin-bottom: 56px; }
+  .section__head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 16px; border-bottom: 1px solid var(--hairline); margin-bottom: 24px; }
+  .section__head h3 { margin: 0; }
+  .section__head .descr { font-size: 13px; color: var(--text-muted); max-width: 44ch; text-align: right; }
+
+  /* Ink + Bone scales — horizontal strips */
+  .scale { display: grid; grid-template-columns: repeat(11, 1fr); border: 1px solid var(--hairline); border-radius: var(--r-md); overflow: hidden; }
+  .scale__cell { aspect-ratio: 1/1.4; padding: 14px 12px; display: flex; flex-direction: column; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; line-height: 1.2; letter-spacing: 0.02em; }
+  .scale__cell .step { font-weight: 500; }
+  .scale__cell .hex { opacity: 0.7; }
+
+  /* Risk scale — premium feature row */
+  .risk-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .risk-card {
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-md);
+    padding: 28px 24px;
+    display: flex; flex-direction: column; gap: 16px;
+    min-height: 220px;
+    position: relative;
+    overflow: hidden;
+  }
+  .risk-card__bar { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+  .risk-card__top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .risk-card__num { font-family: var(--font-display); font-size: 56px; line-height: 1; letter-spacing: -0.02em; }
+  .risk-card__name { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
+  .risk-card__desc { font-size: 12px; color: var(--text-muted); margin-top: auto; line-height: 1.5; }
+  .risk-card__hex { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); }
+
+  /* Stag accent treatment */
+  .accent-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .accent-card {
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-md);
+    padding: 32px;
+    display: flex; flex-direction: column; gap: 16px;
+    min-height: 200px;
+  }
+  .accent-card.is-stag { background: linear-gradient(180deg, var(--ink-900) 0%, var(--ink-1000) 100%); }
+  .accent-block { width: 100%; height: 96px; border-radius: var(--r-sm); }
+  .accent-meta { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; color: var(--text-dim); }
+
+  /* Surface contrast pairs */
+  .pairs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .pair {
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-md);
+    padding: 28px;
+    min-height: 160px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .pair__title { font-family: var(--font-display); font-size: 28px; letter-spacing: -0.01em; line-height: 1; }
+  .pair__caption { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.7; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head">
+    <div>
+      <div class="eyebrow eyebrow--accent">Foundations · 02 · Color</div>
+      <h2 class="h2">Velvet ink, parchment, antler.</h2>
+      <p class="lead muted">Cervus runs dark by default. Ink for surfaces, bone for parchment moments, and a single luminous Stag accent — used like punctuation, not paint. Risk colors are editorial: never bright, always saturated through ink.</p>
+    </div>
+    <div class="meta">CDS · v0.1<br>tokens/color</div>
+  </div>
+
+  <!-- INK SCALE -->
+  <div class="section">
+    <div class="section__head">
+      <h3 class="h4">Ink — primary chrome</h3>
+      <div class="descr">Eleven steps from obsidian to fog. Surfaces use 1000 / 950 / 900; type uses 100 / 300 / 400.</div>
+    </div>
+    <div class="scale">
+      <div class="scale__cell" style="background: var(--ink-1000); color: var(--ink-300)"><span class="step">1000</span><span class="hex">#050810</span></div>
+      <div class="scale__cell" style="background: var(--ink-950); color: var(--ink-300)"><span class="step">950</span><span class="hex">#0A0E1A</span></div>
+      <div class="scale__cell" style="background: var(--ink-900); color: var(--ink-300)"><span class="step">900</span><span class="hex">#11162A</span></div>
+      <div class="scale__cell" style="background: var(--ink-800); color: var(--ink-200)"><span class="step">800</span><span class="hex">#1B2138</span></div>
+      <div class="scale__cell" style="background: var(--ink-700); color: var(--ink-200)"><span class="step">700</span><span class="hex">#2A3148</span></div>
+      <div class="scale__cell" style="background: var(--ink-600); color: var(--ink-100)"><span class="step">600</span><span class="hex">#3F4863</span></div>
+      <div class="scale__cell" style="background: var(--ink-500); color: var(--ink-50)"><span class="step">500</span><span class="hex">#5B6383</span></div>
+      <div class="scale__cell" style="background: var(--ink-400); color: var(--ink-1000)"><span class="step">400</span><span class="hex">#828AA8</span></div>
+      <div class="scale__cell" style="background: var(--ink-300); color: var(--ink-1000)"><span class="step">300</span><span class="hex">#A9AFC4</span></div>
+      <div class="scale__cell" style="background: var(--ink-200); color: var(--ink-1000)"><span class="step">200</span><span class="hex">#CDD0DD</span></div>
+      <div class="scale__cell" style="background: var(--ink-100); color: var(--ink-1000)"><span class="step">100</span><span class="hex">#E6E7EE</span></div>
+    </div>
+  </div>
+
+  <!-- BONE SCALE -->
+  <div class="section">
+    <div class="section__head">
+      <h3 class="h4">Bone — parchment counterpart</h3>
+      <div class="descr">Warm, slightly aged off-whites. Used for marketing surfaces, PDF reports, and the printed plan d'action.</div>
+    </div>
+    <div class="scale" style="grid-template-columns: repeat(7, 1fr)">
+      <div class="scale__cell" style="background: var(--bone-50); color: var(--bone-700)"><span class="step">50</span><span class="hex">#FAF8F2</span></div>
+      <div class="scale__cell" style="background: var(--bone-100); color: var(--bone-700)"><span class="step">100</span><span class="hex">#F4F0E5</span></div>
+      <div class="scale__cell" style="background: var(--bone-200); color: var(--bone-700)"><span class="step">200</span><span class="hex">#E8E1CD</span></div>
+      <div class="scale__cell" style="background: var(--bone-300); color: var(--bone-700)"><span class="step">300</span><span class="hex">#C7BFA4</span></div>
+      <div class="scale__cell" style="background: var(--bone-400); color: var(--bone-50)"><span class="step">400</span><span class="hex">#8E876E</span></div>
+      <div class="scale__cell" style="background: var(--bone-500); color: var(--bone-50)"><span class="step">500</span><span class="hex">#5A553F</span></div>
+      <div class="scale__cell" style="background: var(--bone-700); color: var(--bone-100)"><span class="step">700</span><span class="hex">#2B281B</span></div>
+    </div>
+  </div>
+
+  <!-- ACCENT -->
+  <div class="section">
+    <div class="section__head">
+      <h3 class="h4">Stag — the single accent</h3>
+      <div class="descr">One luminous teal-cyan, lifted from the antler highlights. Reserved for primary CTA, focus rings, key links, and live status.</div>
+    </div>
+    <div class="accent-row">
+      <div class="accent-card is-stag">
+        <div class="accent-block" style="background: var(--stag-300); box-shadow: 0 0 48px -12px rgba(91,224,201,0.4);"></div>
+        <div>
+          <div class="h5" style="color: var(--stag-300)">Stag · 300</div>
+          <div class="meta" style="margin-top: 4px">primary accent</div>
+        </div>
+        <div class="accent-meta"><span>OKLCH(86% 0.13 175)</span><span>#5BE0C9</span></div>
+      </div>
+      <div class="accent-card">
+        <div class="accent-block" style="background: var(--stag-500);"></div>
+        <div>
+          <div class="h5">Antler · 500</div>
+          <div class="meta" style="margin-top: 4px">links · hover · pressed</div>
+        </div>
+        <div class="accent-meta"><span>OKLCH(70% 0.12 178)</span><span>#14B8A6</span></div>
+      </div>
+      <div class="accent-card">
+        <div class="accent-block" style="background: var(--stag-900);"></div>
+        <div>
+          <div class="h5">Forest · 900</div>
+          <div class="meta" style="margin-top: 4px">accent ground · selected row</div>
+        </div>
+        <div class="accent-meta"><span>OKLCH(35% 0.06 178)</span><span>#073C37</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RISK SCALE -->
+  <div class="section">
+    <div class="section__head">
+      <h3 class="h4">AI Act risk — semantic scale</h3>
+      <div class="descr">Four levels. Editorial pigments — desaturated, never alarming on their own. Severity is carried by the typography and the article reference, not the swatch.</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-card" style="background: var(--risk-inacc-bg)">
+        <div class="risk-card__bar" style="background: var(--risk-inacc)"></div>
+        <div class="risk-card__top">
+          <div class="risk-card__num" style="color: var(--risk-inacc)">04</div>
+          <span class="risk risk--inacc"><span class="risk__dot"></span>Inacceptable</span>
+        </div>
+        <div>
+          <div class="risk-card__name" style="color: var(--risk-inacc)">Ember</div>
+          <div class="risk-card__hex">#A52A2F · Article 5</div>
+          <div class="risk-card__desc">Pratique interdite par l'AI Act. Le rapport ouvre sur une recommandation d'arrêt immédiat.</div>
+        </div>
+      </div>
+      <div class="risk-card" style="background: var(--risk-haut-bg)">
+        <div class="risk-card__bar" style="background: var(--risk-haut)"></div>
+        <div class="risk-card__top">
+          <div class="risk-card__num" style="color: var(--risk-haut)">03</div>
+          <span class="risk risk--haut"><span class="risk__dot"></span>Haut risque</span>
+        </div>
+        <div>
+          <div class="risk-card__name" style="color: var(--risk-haut)">Ochre</div>
+          <div class="risk-card__hex">#C4631C · Annexe III</div>
+          <div class="risk-card__desc">Système soumis à exigences strictes. Documentation, gouvernance, conservation des journaux.</div>
+        </div>
+      </div>
+      <div class="risk-card" style="background: var(--risk-lim-bg)">
+        <div class="risk-card__bar" style="background: var(--risk-lim)"></div>
+        <div class="risk-card__top">
+          <div class="risk-card__num" style="color: var(--risk-lim)">02</div>
+          <span class="risk risk--lim"><span class="risk__dot"></span>Risque limité</span>
+        </div>
+        <div>
+          <div class="risk-card__name" style="color: var(--risk-lim)">Saffron</div>
+          <div class="risk-card__hex">#B98A2E · Article 50</div>
+          <div class="risk-card__desc">Obligations de transparence. L'utilisateur sait qu'il interagit avec un système d'IA.</div>
+        </div>
+      </div>
+      <div class="risk-card" style="background: var(--risk-min-bg)">
+        <div class="risk-card__bar" style="background: var(--risk-min)"></div>
+        <div class="risk-card__top">
+          <div class="risk-card__num" style="color: var(--risk-min)">01</div>
+          <span class="risk risk--min"><span class="risk__dot"></span>Risque minimal</span>
+        </div>
+        <div>
+          <div class="risk-card__name" style="color: var(--risk-min)">Lichen</div>
+          <div class="risk-card__hex">#2F6B53 · fallback</div>
+          <div class="risk-card__desc">Aucune obligation contraignante. Codes de bonne conduite recommandés.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTRAST PAIRS -->
+  <div class="section">
+    <div class="section__head">
+      <h3 class="h4">Working pairs</h3>
+      <div class="descr">The four canonical surface pairings used across the product. All pass WCAG AA on body text.</div>
+    </div>
+    <div class="pairs">
+      <div class="pair" style="background: var(--ink-1000); color: var(--ink-100)">
+        <div class="pair__title">Ink × Bone</div>
+        <div class="pair__caption">App default · 16.4 : 1</div>
+      </div>
+      <div class="pair" style="background: var(--ink-900); color: var(--ink-200)">
+        <div class="pair__title">Graphite × Mist</div>
+        <div class="pair__caption">Cards · 12.1 : 1</div>
+      </div>
+      <div class="pair" style="background: var(--bone-100); color: var(--ink-950)">
+        <div class="pair__title">Bone × Ink</div>
+        <div class="pair__caption">PDF report · 17.8 : 1</div>
+      </div>
+      <div class="pair" style="background: var(--ink-1000); color: var(--stag-300)">
+        <div class="pair__title">Ink × Stag</div>
+        <div class="pair__caption">Accent only · 12.6 : 1</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

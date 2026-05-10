@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tar -xf \"Cervus Design System-handoff.zip\" -C cervus-handoff)"
+    ]
+  }
+}

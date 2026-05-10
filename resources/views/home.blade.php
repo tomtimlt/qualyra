@@ -1,109 +1,234 @@
 @extends('layouts.public')
 
 @section('content')
-<div class="relative isolate px-6 pt-14 lg:px-8">
-    <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
-        <div class="text-center">
-            <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-                Audit de conformité AI Act + RGPD
-            </h1>
-            <p class="mt-6 text-lg leading-8 text-gray-600">
-                Vérifiez la conformité de vos usages d'intelligence artificielle 
-                au regard du règlement européen AI Act et du RGPD. 
-                Obtenez un rapport détaillé avec plan d'action personnalisé pour votre PME.
-            </p>
-            <div class="mt-10 flex items-center justify-center gap-x-6">
-                <a href="{{ route('register') }}" class="rounded-md bg-blue-600 px-6 py-3 text-lg font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
-                    Commencer mon audit
-                </a>
-                <a href="#comment-ca-marche" class="text-lg font-semibold leading-6 text-gray-900">
-                    Comment ça marche ? <span aria-hidden="true">→</span>
-                </a>
+<div class="home">
+
+    {{-- HERO --}}
+    <section class="home__hero">
+        <div class="home__hero-glow"></div>
+        <div class="home__hero-grid">
+            <div>
+                <div class="eyebrow eyebrow--accent">AI Act · Règlement UE 2024/1689</div>
+                <h1>L'audit,<br><em>posé.</em></h1>
+                <p class="lead">
+                    Cervus est l'outil d'audit de conformité AI Act + RGPD pour les PME françaises.
+                    Vous déclarez vos usages d'IA, nous évaluons leur niveau de risque selon le règlement européen,
+                    et nous générons un rapport avec un plan d'action 30/60/90 jours.
+                </p>
+                <div class="home__hero-cta">
+                    <a class="btn btn--primary btn--lg" href="{{ route('register') }}">Commencer mon audit</a>
+                    <a class="btn btn--secondary btn--lg" href="#methode">Comment ça marche →</a>
+                </div>
+                <div class="home__hero-meta">
+                    <span><b>4</b> niveaux de risque</span>
+                    <span><b>~ 15 min</b> pour un audit</span>
+                    <span><b>PDF figé</b> · snapshot daté</span>
+                </div>
+            </div>
+            <div class="home__hero-mark">
+                <img src="{{ asset('cervus/brand/cervus-mark-original.png') }}" alt="Cervus stag mark">
+                <div class="home__hero-mark-meta">CERVUS · LATIN<br>«&nbsp;LE CERF&nbsp;»<br>STAG · ANTLER · DEER</div>
             </div>
         </div>
-    </div>
+    </section>
+
+    {{-- PRINCIPES --}}
+    <section class="home__principles">
+        <div class="section__head">
+            <div>
+                <div class="eyebrow eyebrow--accent">Posture</div>
+                <h2>Quatre <em>principes.</em></h2>
+            </div>
+            <p class="section__head-aside">
+                L'AI Act ne se résume pas à une checklist. Cervus traduit la matrice réglementaire en posture opérationnelle pour les dirigeants de PME.
+            </p>
+        </div>
+        <div class="principles">
+            <div class="principle">
+                <div class="principle__num">i.</div>
+                <div class="principle__t">Lisible, pas juridique</div>
+                <div class="principle__d">Le rapport est rédigé pour un dirigeant, pas un avocat. Aucune mention « sous réserve d'interprétation jurisprudentielle ».</div>
+            </div>
+            <div class="principle">
+                <div class="principle__num">ii.</div>
+                <div class="principle__t">Quatre niveaux, déterminés</div>
+                <div class="principle__d">Inacceptable, haut, limité, minimal — la classification est calculée à partir de la matrice officielle, pas estimée à la main.</div>
+            </div>
+            <div class="principle">
+                <div class="principle__num">iii.</div>
+                <div class="principle__t">Plan d'action chiffré</div>
+                <div class="principle__d">À 30, 60 et 90 jours. Chaque action a un responsable suggéré et un effort estimé. Pas de TODO sans propriétaire.</div>
+            </div>
+            <div class="principle">
+                <div class="principle__num">iv.</div>
+                <div class="principle__t">Snapshot figé</div>
+                <div class="principle__d">Le rapport conserve l'état déclaré au moment de la génération. Modifier un usage n'altère jamais un rapport déjà payé.</div>
+            </div>
+        </div>
+    </section>
+
+    {{-- METHODE --}}
+    <section class="home__method" id="methode">
+        <div class="section__head">
+            <div>
+                <div class="eyebrow eyebrow--accent">03 · Méthode</div>
+                <h2>Trois <em>étapes.</em></h2>
+            </div>
+            <p class="section__head-aside">
+                De la déclaration au rapport PDF, sans appel commercial, sans réunion de cadrage. L'audit prend en moyenne quinze minutes pour une PME de moins de cinquante salariés.
+            </p>
+        </div>
+
+        <div class="method-grid">
+            <div class="method-step">
+                <div class="method-step__num">01</div>
+                <div class="method-step__t">Déclarez vos usages IA</div>
+                <div class="method-step__d">
+                    Listez chaque outil ou système d'IA déployé : ChatGPT en production, scoring CV, génération marketing,
+                    chatbot support, détection d'anomalies. Pour chacun, vous renseignez la finalité, les données traitées et le degré d'automatisation.
+                </div>
+            </div>
+            <div class="method-step">
+                <div class="method-step__num">02</div>
+                <div class="method-step__t">Répondez au questionnaire ciblé</div>
+                <div class="method-step__d">
+                    Les questions s'adaptent au type d'IA déclaré. Les réponses sont sauvegardées au fur et à mesure :
+                    vous pouvez interrompre l'audit et y revenir plus tard, ou faire valider chaque section par un collaborateur compétent.
+                </div>
+            </div>
+            <div class="method-step">
+                <div class="method-step__num">03</div>
+                <div class="method-step__t">Recevez le rapport PDF</div>
+                <div class="method-step__d">
+                    Synthèse exécutive, niveau de risque par usage, obligations applicables, alertes RGPD, plan d'action 30/60/90 jours,
+                    checklist opérationnelle. PDF figé, daté, conservé dans l'historique de votre organisation.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- ENJEUX --}}
+    <section class="home__why">
+        <div class="why-grid">
+            <div class="why-card why-card--ember">
+                <div class="why-card__num">35 M€</div>
+                <div class="why-card__t">ou 7 % du CA mondial</div>
+                <div class="why-card__d">
+                    Sanction maximale prévue par l'Article 99 §6 de l'AI Act pour les pratiques interdites (Article 5). Plafond
+                    réduit pour les PME, mais l'arrêt immédiat reste obligatoire.
+                </div>
+            </div>
+            <div class="why-card">
+                <div class="why-card__num">02 août 2026</div>
+                <div class="why-card__t">Article 6 (haut risque)</div>
+                <div class="why-card__d">
+                    Date d'entrée en vigueur des obligations principales pour les systèmes d'IA classés haut risque
+                    (Annexe III). Documentation, journalisation, supervision humaine.
+                </div>
+            </div>
+            <div class="why-card">
+                <div class="why-card__num">2 août 2027</div>
+                <div class="why-card__t">Pleine application</div>
+                <div class="why-card__d">
+                    Échéance complète du règlement. Avant cette date, les PME doivent avoir cartographié leurs usages
+                    et lancé les analyses d'impact requises par les classifications.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- CTA FINALE --}}
+    <section class="home__cta">
+        <div class="home__cta-card">
+            <div>
+                <div class="eyebrow eyebrow--accent">Audit AI Act · RGPD</div>
+                <div class="home__cta-title">Prêt à <em>commencer</em> ?</div>
+                <div class="home__cta-sub">L'inscription, la déclaration des usages et le questionnaire sont gratuits. Vous ne payez que le rapport PDF final, à la pièce.</div>
+            </div>
+            <div class="home__cta-actions">
+                <a class="btn btn--primary btn--lg" href="{{ route('register') }}">Créer mon compte</a>
+                <a class="btn btn--secondary btn--lg" href="{{ route('login') }}">J'ai déjà un compte</a>
+            </div>
+        </div>
+    </section>
+
 </div>
 
-<section id="comment-ca-marche" class="bg-white py-16">
-    <div class="mx-auto max-w-7xl px-6 lg:px-8">
-        <div class="mx-auto max-w-2xl lg:text-center">
-            <h2 class="text-base font-semibold leading-7 text-blue-600">Simple et rapide</h2>
-            <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                Comment fonctionne l'audit ?
-            </p>
-            <p class="mt-6 text-lg leading-8 text-gray-600">
-                En 3 étapes, obtenez votre rapport de conformité complet.
-            </p>
-        </div>
-        <div class="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
-            <dl class="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
-                <div class="flex flex-col">
-                    <dt class="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900">
-                        <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white font-bold">1</span>
-                        Déclarez vos usages IA
-                    </dt>
-                    <dd class="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600">
-                        <p class="flex-auto">Listez les outils et systèmes d'IA utilisés dans votre entreprise (ChatGPT, outils de scoring, génération de contenu, etc.).</p>
-                    </dd>
-                </div>
-                <div class="flex flex-col">
-                    <dt class="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900">
-                        <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white font-bold">2</span>
-                        Répondez au questionnaire
-                    </dt>
-                    <dd class="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600">
-                        <p class="flex-auto">Pour chaque usage, répondez à des questions ciblées sur la finalité, les données traitées et le niveau d'automatisation.</p>
-                    </dd>
-                </div>
-                <div class="flex flex-col">
-                    <dt class="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900">
-                        <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white font-bold">3</span>
-                        Recevez votre rapport
-                    </dt>
-                    <dd class="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600">
-                        <p class="flex-auto">Obtenez un rapport PDF détaillé avec le niveau de risque pour chaque usage et un plan d'action personnalisé.</p>
-                    </dd>
-                </div>
-            </dl>
-        </div>
-    </div>
-</section>
+<style>
+    .home { max-width: 1280px; margin: 0 auto; padding: 0 40px; }
 
-<section class="bg-gray-50 py-16">
-    <div class="mx-auto max-w-7xl px-6 lg:px-8">
-        <div class="mx-auto max-w-2xl text-center">
-            <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                Pourquoi se conformer ?
-            </h2>
-            <p class="mt-6 text-lg leading-8 text-gray-600">
-                L'AI Act impose des obligations légales aux entreprises utilisant des systèmes d'IA.
-            </p>
-        </div>
-        <div class="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-2">
-            <div class="bg-white p-6 rounded-lg shadow-sm">
-                <h3 class="text-xl font-semibold text-gray-900">Évitez les sanctions</h3>
-                <p class="mt-4 text-gray-600">
-                    Les non-conformités peuvent entraîner des amendes jusqu'à 35 millions d'euros ou 7% du chiffre d'affaires mondial.
-                </p>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow-sm">
-                <h3 class="text-xl font-semibold text-gray-900">Rassurez vos clients</h3>
-                <p class="mt-4 text-gray-600">
-                    Démontrer votre conformité renforce la confiance de vos clients et partenaires commerciaux.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
+    /* Section heads — shared */
+    .section__head { display: flex; justify-content: space-between; align-items: flex-end; gap: 48px; padding-bottom: 24px; border-bottom: 1px solid var(--hairline); margin-bottom: 32px; }
+    .section__head h2 { font-family: var(--font-display); font-size: 56px; line-height: 1; letter-spacing: -0.02em; margin: 8px 0 0; }
+    .section__head h2 em { color: var(--accent); font-style: italic; }
+    .section__head-aside { font-size: 14px; color: var(--text-muted); max-width: 44ch; margin: 0; text-align: right; line-height: 1.55; }
 
-<div class="bg-blue-600 py-12">
-    <div class="mx-auto max-w-7xl px-6 lg:px-8 text-center">
-        <h2 class="text-2xl font-bold text-white mb-6">
-            Prêt à commencer votre audit de conformité ?
-        </h2>
-        <a href="{{ route('register') }}" class="inline-block rounded-md bg-white px-8 py-3 text-lg font-semibold text-blue-600 shadow-sm hover:bg-gray-100">
-            Commencer mon audit gratuit
-        </a>
-    </div>
-</div>
+    /* HERO */
+    .home__hero { display: grid; grid-template-columns: 1.5fr 1fr; gap: 64px; align-items: center; min-height: 70vh; padding: 96px 0 80px; border-bottom: 1px solid var(--hairline); position: relative; }
+    .home__hero-glow { position: absolute; top: 0; left: -10vw; right: -10vw; bottom: 0; background: radial-gradient(ellipse 60% 80% at 70% 50%, rgba(46, 95, 160, 0.06) 0%, transparent 60%); pointer-events: none; z-index: -1; }
+    .home__hero-grid { display: contents; }
+    .home__hero h1 { font-family: var(--font-display); font-size: 132px; line-height: 0.95; letter-spacing: -0.025em; margin: 24px 0 0; color: var(--text); }
+    .home__hero h1 em { color: var(--accent); font-style: italic; }
+    .home__hero .lead { margin-top: 32px; max-width: 56ch; }
+    .home__hero-cta { margin-top: 40px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .home__hero-cta .btn { text-decoration: none; }
+    .home__hero-meta { margin-top: 36px; display: flex; gap: 36px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; }
+    .home__hero-meta b { color: var(--text); font-family: var(--font-display); font-size: 18px; font-weight: 600; letter-spacing: -0.01em; text-transform: none; margin-right: 8px; }
+
+    .home__hero-mark { display: flex; flex-direction: column; align-items: center; gap: 24px; }
+    .home__hero-mark img { width: 100%; max-width: 380px; filter: drop-shadow(0 24px 80px rgba(46, 95, 160, 0.18)); }
+    .home__hero-mark-meta { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; color: var(--text-dim); text-align: center; line-height: 1.8; }
+
+    /* PRINCIPLES */
+    .home__principles { margin: 80px 0; }
+    .principles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--hairline); border-radius: var(--r-md); overflow: hidden; }
+    .principle { padding: 32px 28px; border-right: 1px solid var(--hairline); }
+    .principle:last-child { border-right: none; }
+    .principle__num { font-family: var(--font-display); font-size: 32px; color: var(--accent); font-style: italic; line-height: 1; margin-bottom: 12px; }
+    .principle__t { font-size: 15px; font-weight: 500; margin-bottom: 6px; color: var(--text); }
+    .principle__d { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+    /* METHOD */
+    .home__method { margin: 80px 0; }
+    .method-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .method-step { border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--ink-950); padding: 32px 28px; display: flex; flex-direction: column; gap: 14px; min-height: 240px; }
+    .method-step__num { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; color: var(--accent-soft); }
+    .method-step__t { font-family: var(--font-display); font-size: 26px; line-height: 1.1; letter-spacing: -0.015em; color: var(--text); margin-top: auto; }
+    .method-step__d { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    /* WHY */
+    .home__why { margin: 80px 0; }
+    .why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .why-card { border: 1px solid var(--hairline); border-radius: var(--r-md); padding: 32px 28px; background: var(--ink-950); position: relative; overflow: hidden; }
+    .why-card--ember { border-color: var(--risk-haut); background: var(--risk-haut-bg); }
+    .why-card__num { font-family: var(--font-display); font-size: 44px; line-height: 1; letter-spacing: -0.02em; color: var(--text); margin-bottom: 8px; }
+    .why-card--ember .why-card__num { color: var(--risk-haut); }
+    .why-card__t { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; color: var(--text-dim); text-transform: uppercase; margin-bottom: 16px; }
+    .why-card__d { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    /* CTA */
+    .home__cta { margin: 80px 0 40px; }
+    .home__cta-card { border: 1px solid var(--hairline); border-radius: var(--r-md); padding: 48px 56px; display: flex; align-items: center; justify-content: space-between; gap: 32px; background: radial-gradient(ellipse at 90% 20%, rgba(46, 95, 160, 0.08) 0%, transparent 60%), var(--ink-950); }
+    .home__cta-title { font-family: var(--font-display); font-size: 48px; line-height: 1.05; letter-spacing: -0.02em; color: var(--text); }
+    .home__cta-title em { color: var(--accent); font-style: italic; }
+    .home__cta-sub { color: var(--text-muted); font-size: 14px; margin-top: 8px; max-width: 50ch; }
+    .home__cta-actions { display: flex; gap: 12px; flex-shrink: 0; }
+    .home__cta-actions .btn { text-decoration: none; }
+
+    /* Responsive */
+    @media (max-width: 960px) {
+        .home { padding: 0 24px; }
+        .home__hero { grid-template-columns: 1fr; padding: 48px 0; }
+        .home__hero h1 { font-size: 88px; }
+        .home__hero-mark { display: none; }
+        .principles, .method-grid, .why-grid { grid-template-columns: 1fr; }
+        .principle { border-right: none; border-bottom: 1px solid var(--hairline); }
+        .principle:last-child { border-bottom: none; }
+        .home__cta-card { flex-direction: column; align-items: flex-start; padding: 32px; }
+        .home__cta-title { font-size: 36px; }
+        .section__head { flex-direction: column; align-items: flex-start; gap: 16px; }
+        .section__head-aside { text-align: left; }
+        .section__head h2 { font-size: 40px; }
+    }
+</style>
 @endsection
