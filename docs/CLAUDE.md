@@ -14,6 +14,11 @@ one-shot ~1500€.
 - Eloquent pour les modèles, migrations propres avec foreign keys
 - Pas de query builder brut sauf si vraiment nécessaire
 - Tests : Pest, pas PHPUnit direct
+- Quand tu modifies config/questionnaire.php ou config/ai_act_rules.php, 
+  vérifie systématiquement que database/seeders/DemoSeeder.php est 
+  toujours cohérent. Le DemoSeeder est la démo client, il doit refléter 
+  l'état exact du moteur. Si tu ne peux pas le maintenir, signale-le.
+
 
 ## Conventions du projet
 - Tous les commentaires de code en français
@@ -34,3 +39,4 @@ one-shot ~1500€.
 - Demander avant d'agir si la décision a un impact structurel
 - Si une feature ressemble à du scope creep, le signaler
 - Toujours expliquer en français les choix non triviaux
+
