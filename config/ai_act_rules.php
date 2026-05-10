@@ -3,162 +3,416 @@
 declare(strict_types=1);
 
 /*
- * Matrice de classification AI Act.
+ * Matrice de classification AI Act — version 1.1.
+ *
+ * Source de vérité : docs/Matrice de Décision AI Act.md (v1.1).
  *
  * Niveaux (Règlement UE 2024/1689) :
- *   - INACCEPTABLE   : Article 5 — pratiques prohibées (notation sociale, manipulation,
- *                      identification biométrique temps réel dans l'espace public...)
- *   - HAUT_RISQUE    : Article 6 + Annexe III — IA dans recrutement, scoring crédit,
- *                      éducation, biométrie, santé...
- *   - RISQUE_LIMITE  : Article 50 — obligations de transparence (chatbots, contenu généré)
- *   - RISQUE_MINIMAL : reste — pas d'obligation spécifique
+ *   - INACCEPTABLE   : Article 5 — pratiques prohibées (8 règles R-I-XX)
+ *   - HAUT_RISQUE    : Article 6 §2 + Annexe III (8 règles R-H-XX)
+ *   - RISQUE_LIMITE  : Article 50 — transparence (6 règles R-L-XX)
+ *   - RISQUE_MINIMAL : reste — pas d'obligation spécifique (DEFAULT)
  *
- * Évaluation séquentielle : on prend la PREMIÈRE règle qui matche par ordre décroissant
- * de sévérité (INACCEPTABLE > HAUT_RISQUE > RISQUE_LIMITE > RISQUE_MINIMAL).
+ * Évaluation séquentielle : on prend la PREMIÈRE règle dont les conditions
+ * matchent. La matrice est rangée du plus sévère au plus laxiste, donc :
+ * INACCEPTABLE > HAUT_RISQUE > RISQUE_LIMITE > RISQUE_MINIMAL.
  *
  * type_regle :
  *   - TEXTE_EXPLICITE : règle directement citée par l'AI Act
  *   - INTERPRETATION  : déduction raisonnable mais non littérale
  *   - NA              : fallback (risque minimal par défaut)
+ *
+ * Mini-DSL des conditions `when` (toutes en string scalaire pour rester
+ * compatible avec la colonne responses.variable_value) :
+ *   - 'response.x' => 'V'                      → x === V (égalité)
+ *   - 'response.x' => '@in:A,B,C'              → x ∈ {A, B, C}
+ *   - 'response.x' => '@contains:A'            → x est un CSV qui contient A
+ *   - 'response.x' => '@intersects:A,B,C'      → x est un CSV qui partage au
+ *                                                  moins une valeur avec {A,B,C}
+ *
+ * Les clés peuvent référer à 'ai_usage.<champ>' (type, domain) ou
+ * 'response.<variable_key>' (toutes les autres réponses au questionnaire).
+ *
+ * Une règle peut déclarer :
+ *   - 'when'      : conditions de déclenchement classificatoires (toutes ET)
+ *   - 'classify'  : true (défaut) → la règle fixe le niveau ; false → la règle
+ *                   ajoute juste une alerte sans changer le niveau (utilisé
+ *                   pour R-H-BORDERLINE et l'AGGRAVATION CTRL=AUCUN)
+ *   - 'alerte'    : ['code' => ..., 'message' => ...] ajoutée si la règle
+ *                   matche (peut s'ajouter même sur une règle classificatoire)
+ *   - 'requires_niveau' : pour les règles non classificatoires qui ne
+ *                   s'évaluent qu'après détermination d'un niveau (ex:
+ *                   AGGRAVATION ne se déclenche que si niveau = HAUT_RISQUE)
  */
 
 return [
-    // -----------------------------------------------------------------------
-    // INACCEPTABLE (Article 5)
-    // -----------------------------------------------------------------------
+
+    // =========================================================================
+    // BLOC 1 — INACCEPTABLE (Article 5)
+    // Applicable depuis le 2 février 2025.
+    // =========================================================================
+
     [
-        'id' => 'art5_bio_realtime_public',
+        'id' => 'R-I-01',
         'niveau' => 'INACCEPTABLE',
-        'article' => 'Article 5 §1 (h)',
+        'article' => 'Art. 5 §1 f)',
         'type_regle' => 'TEXTE_EXPLICITE',
-        'raison' => 'L\'identification biométrique en temps réel dans des espaces accessibles au public à des fins répressives est prohibée par l\'AI Act (sauf exceptions strictes encadrées).',
+        'raison' => "L'inférence des émotions par IA sur le lieu de travail ou dans l'enseignement est explicitement interdite, sauf usage médical ou sécuritaire dûment justifié.",
         'when' => [
             'ai_usage.type' => 'IA_BIO',
-            'response.bio_realtime' => 'yes',
-        ],
-    ],
-    [
-        'id' => 'art5_social_scoring',
-        'niveau' => 'INACCEPTABLE',
-        'article' => 'Article 5 §1 (c)',
-        'type_regle' => 'TEXTE_EXPLICITE',
-        'raison' => 'La notation sociale d\'individus par les autorités ou pour leur compte est prohibée.',
-        'when' => [
-            'ai_usage.type' => 'IA_SCORING',
-            'response.scoring_target' => 'social',
+            'response.bio_type' => 'RECOG_EMOTIONS',
+            'ai_usage.domain' => '@in:RH,EDUCATION',
         ],
     ],
 
-    // -----------------------------------------------------------------------
-    // HAUT_RISQUE (Annexe III)
-    // -----------------------------------------------------------------------
     [
-        'id' => 'annexe3_recrutement',
-        'niveau' => 'HAUT_RISQUE',
-        'article' => 'Annexe III §4',
+        'id' => 'R-I-02',
+        'niveau' => 'INACCEPTABLE',
+        'article' => 'Art. 5 §1 g)',
         'type_regle' => 'TEXTE_EXPLICITE',
-        'raison' => 'Les IA utilisées dans le recrutement (tri de CV, évaluation de candidats) sont classées à haut risque par l\'Annexe III de l\'AI Act.',
-        'when' => [
-            'ai_usage.domain' => 'RH',
-        ],
-    ],
-    [
-        'id' => 'annexe3_credit',
-        'niveau' => 'HAUT_RISQUE',
-        'article' => 'Annexe III §5 (b)',
-        'type_regle' => 'TEXTE_EXPLICITE',
-        'raison' => 'Les IA évaluant la solvabilité ou notant le crédit des personnes physiques sont à haut risque.',
-        'when' => [
-            'ai_usage.domain' => 'CREDIT',
-        ],
-    ],
-    [
-        'id' => 'annexe3_scoring_recrutement',
-        'niveau' => 'HAUT_RISQUE',
-        'article' => 'Annexe III §4',
-        'type_regle' => 'TEXTE_EXPLICITE',
-        'raison' => 'Le scoring sur le recrutement entre dans le champ haut risque de l\'Annexe III.',
-        'when' => [
-            'ai_usage.type' => 'IA_SCORING',
-            'response.scoring_target' => 'recruitment',
-        ],
-    ],
-    [
-        'id' => 'annexe3_education',
-        'niveau' => 'HAUT_RISQUE',
-        'article' => 'Annexe III §3',
-        'type_regle' => 'TEXTE_EXPLICITE',
-        'raison' => 'Les IA d\'évaluation et d\'orientation dans l\'éducation et la formation professionnelle sont à haut risque.',
-        'when' => [
-            'ai_usage.domain' => 'EDUCATION',
-        ],
-    ],
-    [
-        'id' => 'annexe3_bio_categorisation',
-        'niveau' => 'HAUT_RISQUE',
-        'article' => 'Annexe III §1',
-        'type_regle' => 'TEXTE_EXPLICITE',
-        'raison' => 'Les systèmes biométriques (hors temps réel public) sont classés à haut risque par l\'Annexe III.',
+        'raison' => "La catégorisation biométrique inférant des caractéristiques protégées (race, religion, orientation sexuelle, etc.) est interdite, sauf usage des forces de l'ordre expressément encadré.",
         'when' => [
             'ai_usage.type' => 'IA_BIO',
+            'response.bio_type' => 'CATEGORISATION',
+            'response.bio_attr_sensibles' => 'OUI',
         ],
     ],
+
     [
-        'id' => 'haut_risque_decision_automatique_impactante',
-        'niveau' => 'HAUT_RISQUE',
-        'article' => 'Article 6 §2',
-        'type_regle' => 'INTERPRETATION',
-        'raison' => 'Une décision entièrement automatisée ayant un impact significatif sur des personnes (sans supervision humaine) relève du haut risque.',
+        'id' => 'R-I-03',
+        'niveau' => 'INACCEPTABLE',
+        'article' => 'Art. 5 §1 c)',
+        'type_regle' => 'TEXTE_EXPLICITE',
+        'raison' => "Un système de notation sociale globale des individus sur plusieurs domaines de vie (social scoring), entraînant un traitement défavorable ou disproportionné, est interdit.",
         'when' => [
-            'response.impact_individual' => 'yes',
+            'ai_usage.type' => 'IA_SCORING',
+            'response.scoring_portee' => 'GLOBAL_MULTI_DOMAINES',
+            'response.dec' => '@in:SEMI_AUTO,FULL_AUTO',
+        ],
+    ],
+
+    [
+        'id' => 'R-I-04',
+        'niveau' => 'INACCEPTABLE',
+        'article' => 'Art. 5 §1 b)',
+        'type_regle' => 'TEXTE_EXPLICITE',
+        'raison' => "L'exploitation des vulnérabilités (âge, handicap, précarité socio-économique) pour manipuler substantiellement le comportement commercial est interdite.",
+        'when' => [
+            'response.pub' => '@contains:VULNERABLES',
+            'ai_usage.domain' => 'MARKETING',
+            'response.persuasion_psychologique' => 'OUI',
+        ],
+    ],
+
+    [
+        'id' => 'R-I-05',
+        'niveau' => 'INACCEPTABLE',
+        'article' => 'Art. 5 §1 h)',
+        'type_regle' => 'TEXTE_EXPLICITE',
+        'raison' => "L'identification biométrique à distance en temps réel dans les espaces publics est interdite pour les acteurs privés. Les exceptions, strictement encadrées, sont réservées aux forces de l'ordre — hors scope PME.",
+        'when' => [
+            'ai_usage.type' => 'IA_BIO',
+            'response.bio_type' => 'IDENTIFICATION',
+            'response.bio_realtime' => 'yes',
+        ],
+    ],
+
+    [
+        'id' => 'R-I-06',
+        'niveau' => 'INACCEPTABLE',
+        'article' => 'Art. 5 §1 e)',
+        'type_regle' => 'TEXTE_EXPLICITE',
+        'raison' => "La création ou l'expansion de bases de données de reconnaissance faciale par collecte non ciblée sur Internet ou par CCTV est interdite.",
+        'when' => [
+            'ai_usage.type' => 'IA_BIO',
+            'response.bio_type' => 'IDENTIFICATION',
+            'response.bio_source_donnees' => '@in:SCRAPING_INTERNET,CCTV_NON_CIBLE',
+        ],
+    ],
+
+    [
+        'id' => 'R-I-07',
+        'niveau' => 'INACCEPTABLE',
+        'article' => 'Art. 5 §1 a)',
+        'type_regle' => 'TEXTE_EXPLICITE',
+        'raison' => "Les techniques subliminales ou délibérément trompeuses altérant substantiellement le comportement et causant un préjudice sont interdites.",
+        'when' => [
+            'response.techniques_subliminales' => 'OUI',
+        ],
+    ],
+
+    [
+        'id' => 'R-I-08',
+        'niveau' => 'INACCEPTABLE',
+        'article' => 'Art. 5 §1 d)',
+        'type_regle' => 'TEXTE_EXPLICITE',
+        'raison' => "L'évaluation du risque qu'une personne commette une infraction pénale, fondée uniquement sur le profilage ou les traits de personnalité, est interdite.",
+        'when' => [
+            'ai_usage.domain' => 'SECURITE',
+            'ai_usage.type' => 'IA_SCORING',
+            'response.prediction_criminelle' => 'OUI',
+        ],
+    ],
+
+    // =========================================================================
+    // BLOC 2 — HAUT RISQUE (Art. 6 §2 + Annexe III)
+    // Applicable au 2 août 2026 pour les déployeurs PME.
+    // =========================================================================
+
+    [
+        'id' => 'R-H-01',
+        'niveau' => 'HAUT_RISQUE',
+        'article' => 'Art. 6 §2 + Annexe III §1 a)',
+        'type_regle' => 'TEXTE_EXPLICITE',
+        'raison' => "Les systèmes biométriques d'identification des personnes ou de contrôle d'accès sont des systèmes d'IA à haut risque.",
+        'when' => [
+            'ai_usage.type' => 'IA_BIO',
+            'response.bio_type' => '@in:IDENTIFICATION,CONTROLE_ACCES',
+            'response.dec' => '@in:AIDE_DEC,SEMI_AUTO,FULL_AUTO',
+        ],
+    ],
+
+    [
+        'id' => 'R-H-02',
+        'niveau' => 'HAUT_RISQUE',
+        'article' => 'Art. 6 §2 + Annexe III §4 a)',
+        'type_regle' => 'TEXTE_EXPLICITE',
+        'raison' => "Tout système IA influençant la présélection, le classement ou la sélection des candidats à l'embauche est haut risque.",
+        'when' => [
+            'ai_usage.domain' => 'RH',
+            'response.dec' => '@in:AIDE_DEC,SEMI_AUTO,FULL_AUTO',
+            'response.pub' => '@contains:EMPLOYES',
+            'response.rh_usage' => '@in:TRI_CV,SCORING_CANDIDATS,DECISION_EMBAUCHE',
+        ],
+    ],
+
+    [
+        'id' => 'R-H-03',
+        'niveau' => 'HAUT_RISQUE',
+        'article' => 'Art. 6 §2 + Annexe III §4 b)',
+        'type_regle' => 'TEXTE_EXPLICITE',
+        'raison' => "Tout système IA influençant la gestion, la surveillance ou l'évaluation des salariés avec impact sur leurs conditions de travail est haut risque.",
+        'when' => [
+            'ai_usage.domain' => 'RH',
+            'response.dec' => '@in:AIDE_DEC,SEMI_AUTO,FULL_AUTO',
+            'response.pub' => '@contains:EMPLOYES',
+            'response.rh_usage' => '@in:EVAL_PERFORMANCE,SURVEILLANCE_COMPORTEMENT,ATTRIBUTION_TACHES,DECISION_PROMOTION,DECISION_LICENCIEMENT',
+        ],
+    ],
+
+    [
+        'id' => 'R-H-04',
+        'niveau' => 'HAUT_RISQUE',
+        'article' => 'Art. 6 §2 + Annexe III §3',
+        'type_regle' => 'TEXTE_EXPLICITE',
+        'raison' => "Les systèmes IA déterminant l'accès à la formation, les résultats d'évaluation académique ou l'orientation professionnelle sont haut risque.",
+        'when' => [
+            'ai_usage.domain' => 'EDUCATION',
+            'response.dec' => '@in:AIDE_DEC,SEMI_AUTO,FULL_AUTO',
+            'response.educ_usage' => '@in:ADMISSION,ORIENTATION,EVALUATION_ACADEMIQUE',
+        ],
+    ],
+
+    [
+        'id' => 'R-H-05',
+        'niveau' => 'HAUT_RISQUE',
+        'article' => 'Art. 6 §2 + Annexe III §5 b)',
+        'type_regle' => 'TEXTE_EXPLICITE',
+        'raison' => "Les systèmes IA d'évaluation de la solvabilité, de scoring crédit ou d'établissement de profil de risque financier pour des personnes physiques sont haut risque.",
+        'when' => [
+            'ai_usage.domain' => 'CREDIT',
+            'response.dec' => '@in:AIDE_DEC,SEMI_AUTO,FULL_AUTO',
+            'response.pub' => '@intersects:CLIENTS,GRAND_PUBLIC',
+        ],
+    ],
+
+    [
+        'id' => 'R-H-06',
+        'niveau' => 'HAUT_RISQUE',
+        'article' => 'Art. 6 §2 + Annexe III §5 c)',
+        'type_regle' => 'TEXTE_EXPLICITE',
+        'raison' => "Les systèmes IA évaluant le risque de santé ou de vie pour la tarification ou l'éligibilité à une assurance sont haut risque.",
+        'when' => [
+            'ai_usage.domain' => 'SANTE',
+            'response.sante_finalite' => 'ASSURANCE_RISQUE',
+            'response.dec' => '@in:AIDE_DEC,SEMI_AUTO,FULL_AUTO',
+            'response.pub' => '@intersects:CLIENTS,GRAND_PUBLIC',
+        ],
+    ],
+
+    [
+        'id' => 'R-H-07',
+        'niveau' => 'HAUT_RISQUE',
+        'article' => 'Art. 6 §2 + Annexe III §5 a)',
+        'type_regle' => 'TEXTE_EXPLICITE',
+        'raison' => "Les systèmes IA déterminant l'accès à des services ou prestations essentiels pour les personnes physiques sont haut risque.",
+        'when' => [
+            'response.dec' => '@in:AIDE_DEC,SEMI_AUTO,FULL_AUTO',
+            'response.pub' => '@intersects:GRAND_PUBLIC,VULNERABLES',
+            'response.usage_prestations_essentielles' => 'OUI',
+        ],
+    ],
+
+    [
+        'id' => 'R-H-08',
+        'niveau' => 'HAUT_RISQUE',
+        'article' => 'Art. 6 §1 + Annexe I (interprétation, Art. 6 §2 par analogie)',
+        'type_regle' => 'INTERPRETATION',
+        'raison' => "Les systèmes IA influençant des décisions médicales cliniques sont présumés haut risque. Vérifier le régime applicable (MDR 2017/745 ou IVDR 2017/746).",
+        'alerte' => [
+            'code' => 'flag_zone_grise_medical',
+            'type' => 'FLAG_ZONE_GRISE',
+            'message' => "Usage médical clinique détecté. Peut relever de Art. 6 §1 + Annexe I (dispositif médical) applicable au 2 août 2027. Consulter un juriste.",
+            'article' => 'Art. 6 §1 + Annexe I (MDR/IVDR)',
+        ],
+        'when' => [
+            'ai_usage.domain' => 'SANTE',
+            'response.sante_finalite' => 'DECISION_MEDICALE',
+            'response.dec' => '@in:AIDE_DEC,SEMI_AUTO,FULL_AUTO',
+        ],
+    ],
+
+    // -------------------------------------------------------------------------
+    // R-H-BORDERLINE — Zone grise RH déclarée informative.
+    // Non classificatoire (n'écrase pas le niveau de base) : ajoute uniquement
+    // une alerte forte FLAG_ZONE_GRISE selon le pseudo-code patché v1.1.
+    // L'évaluation continue vers les blocs suivants.
+    // -------------------------------------------------------------------------
+    [
+        'id' => 'R-H-BORDERLINE',
+        'classify' => false,
+        'alerte' => [
+            'code' => 'flag_zone_grise_rh_informatif',
+            'type' => 'FLAG_ZONE_GRISE',
+            'message' => "Usage IA en RH déclaré 'informatif' mais portant sur un domaine sensible. ZG-01 applicable : si la sortie IA influence en pratique la décision finale (ce qui est souvent le cas), classification HAUT_RISQUE recommandée par précaution. Vérification juridique conseillée.",
+            'article' => 'Annexe III §4 a) + ZG-01',
+        ],
+        'when' => [
+            'ai_usage.domain' => 'RH',
+            'response.rh_usage' => '@in:TRI_CV,SCORING_CANDIDATS,EVAL_PERFORMANCE,SURVEILLANCE_COMPORTEMENT,DECISION_EMBAUCHE,DECISION_PROMOTION,DECISION_LICENCIEMENT',
+            'response.dec' => 'INFORMATIF',
+            'response.pub' => '@contains:EMPLOYES',
+        ],
+    ],
+
+    // -------------------------------------------------------------------------
+    // AGGRAVATION CTRL=AUCUN sur HAUT_RISQUE.
+    // Non classificatoire, post-classification : ne se déclenche que si le
+    // niveau retenu est HAUT_RISQUE (Art. 26 §2 — contrôle humain effectif).
+    // -------------------------------------------------------------------------
+    [
+        'id' => 'AGGRAVATION-CTRL',
+        'classify' => false,
+        'requires_niveau' => 'HAUT_RISQUE',
+        'alerte' => [
+            'code' => 'aggravation_pas_de_controle_humain',
+            'type' => 'AGGRAVATION',
+            'message' => "Absence totale de contrôle humain sur un système haut risque. Art. 26 §2 exige un contrôle humain effectif par des personnes compétentes. Non-conformité caractérisée.",
+            'article' => 'Art. 26 §2',
+        ],
+        'when' => [
             'response.human_oversight' => 'never',
         ],
     ],
 
-    // -----------------------------------------------------------------------
-    // RISQUE_LIMITE (Article 50)
-    // -----------------------------------------------------------------------
+    // =========================================================================
+    // BLOC 3 — RISQUE LIMITÉ (Art. 50)
+    // Applicable au 2 août 2026.
+    // =========================================================================
+
     [
-        'id' => 'art50_deepfake',
+        'id' => 'R-L-01',
         'niveau' => 'RISQUE_LIMITE',
-        'article' => 'Article 50 §4',
+        'article' => 'Art. 50 §1',
         'type_regle' => 'TEXTE_EXPLICITE',
-        'raison' => 'Les contenus pouvant représenter des personnes réelles (deepfake) doivent être étiquetés comme générés par IA.',
+        'raison' => "Tout système IA interagissant directement avec des personnes doit les informer clairement qu'elles interagissent avec une IA (sauf si cela est évident).",
         'when' => [
-            'ai_usage.type' => 'IA_GEN',
-            'response.gen_deepfake_risk' => 'yes',
-        ],
-    ],
-    [
-        'id' => 'art50_contenu_genere',
-        'niveau' => 'RISQUE_LIMITE',
-        'article' => 'Article 50 §2',
-        'type_regle' => 'TEXTE_EXPLICITE',
-        'raison' => 'Les contenus générés par IA doivent être identifiés comme tels (transparence).',
-        'when' => [
-            'ai_usage.type' => 'IA_GEN',
-        ],
-    ],
-    [
-        'id' => 'art50_chatbot_llm',
-        'niveau' => 'RISQUE_LIMITE',
-        'article' => 'Article 50 §1',
-        'type_regle' => 'TEXTE_EXPLICITE',
-        'raison' => 'Les LLM en interaction directe avec des utilisateurs doivent les informer qu\'ils dialoguent avec une IA.',
-        'when' => [
-            'ai_usage.type' => 'LLM_GEN',
+            'ai_usage.type' => '@in:LLM_GEN,IA_GEN',
+            'response.diff' => '@in:TIERS,PUBLIC',
+            'response.pub' => '@intersects:CLIENTS,GRAND_PUBLIC,VULNERABLES',
+            'response.interaction_directe' => 'OUI',
         ],
     ],
 
-    // -----------------------------------------------------------------------
-    // RISQUE_MINIMAL (fallback)
-    // -----------------------------------------------------------------------
     [
-        'id' => 'fallback_risque_minimal',
+        'id' => 'R-L-02',
+        'niveau' => 'RISQUE_LIMITE',
+        'article' => 'Art. 50 §2',
+        'type_regle' => 'TEXTE_EXPLICITE',
+        'raison' => "Les contenus synthétiques (images, sons, vidéos) générés par IA doivent être signalés comme tels avec un marquage lisible par machine (ex : standard C2PA).",
+        'when' => [
+            'ai_usage.type' => 'IA_GEN',
+            'response.gen_contenu' => '@in:IMAGE,AUDIO,VIDEO',
+            'response.diff' => '@in:TIERS,PUBLIC',
+        ],
+    ],
+
+    [
+        'id' => 'R-L-03',
+        'niveau' => 'RISQUE_LIMITE',
+        'article' => 'Art. 50 §4',
+        'type_regle' => 'TEXTE_EXPLICITE',
+        'raison' => "Les hypertrucages (deepfakes) doivent être explicitement déclarés comme générés par IA lors de leur diffusion, sauf parodie ou satire clairement identifiée.",
+        'when' => [
+            'ai_usage.type' => 'IA_GEN',
+            'response.gen_contenu' => 'DEEPFAKE',
+            'response.diff' => '@in:TIERS,PUBLIC',
+        ],
+    ],
+
+    [
+        'id' => 'R-L-04',
+        'niveau' => 'RISQUE_LIMITE',
+        'article' => 'Art. 50 §3',
+        'type_regle' => 'TEXTE_EXPLICITE',
+        'raison' => "Tout système de reconnaissance d'émotions utilisé hors lieu de travail et hors éducation doit informer les personnes de son utilisation.",
+        'when' => [
+            'ai_usage.type' => 'IA_BIO',
+            'response.bio_type' => 'RECOG_EMOTIONS',
+            // R-I-01 traite déjà DOM ∈ {RH, EDUCATION} en INACCEPTABLE — donc
+            // si on arrive ici, on est nécessairement hors RH/EDUCATION, mais
+            // on garde la condition explicite pour la lisibilité de la règle.
+            'ai_usage.domain' => '@in:CREDIT,SANTE,SECURITE,MARKETING,PROD_INT,DEV_LOG,AUTRE',
+        ],
+    ],
+
+    [
+        'id' => 'R-L-05',
+        'niveau' => 'RISQUE_LIMITE',
+        'article' => 'Art. 50 §3',
+        'type_regle' => 'TEXTE_EXPLICITE',
+        'raison' => "Tout système de catégorisation biométrique doit informer les personnes concernées de son utilisation.",
+        'when' => [
+            'ai_usage.type' => 'IA_BIO',
+            'response.bio_type' => 'CATEGORISATION',
+            'response.bio_attr_sensibles' => 'NON',
+        ],
+    ],
+
+    [
+        'id' => 'R-L-06',
+        'niveau' => 'RISQUE_LIMITE',
+        'article' => 'Art. 50 §4 (interprétation — texte non couvert explicitement)',
+        'type_regle' => 'INTERPRETATION',
+        'raison' => "La diffusion publique de contenu textuel généré par IA est recommandée d'être signalée. Le texte n'est pas explicitement visé par Art. 50 §4, mais la bonne pratique l'impose.",
+        'when' => [
+            'ai_usage.type' => '@in:LLM_GEN,IA_GEN',
+            'response.gen_contenu' => 'TEXTE',
+            'response.diff' => 'PUBLIC',
+            'response.pub' => '@intersects:CLIENTS,GRAND_PUBLIC',
+            'response.interaction_directe' => 'NON',
+        ],
+    ],
+
+    // =========================================================================
+    // DEFAULT — RISQUE MINIMAL
+    // =========================================================================
+    [
+        'id' => 'DEFAULT',
         'niveau' => 'RISQUE_MINIMAL',
-        'article' => 'Article 95',
+        'article' => 'N/A',
         'type_regle' => 'NA',
-        'raison' => 'Aucune obligation spécifique au titre de l\'AI Act. Codes de conduite volontaires recommandés.',
-        'when' => [], // matche toujours
+        'raison' => "Aucun critère INACCEPTABLE, HAUT_RISQUE ou RISQUE_LIMITE n'est satisfait. Aucune obligation réglementaire AI Act spécifique.",
+        'when' => [],
     ],
 ];
