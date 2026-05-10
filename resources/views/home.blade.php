@@ -27,7 +27,6 @@
             </div>
             <div class="home__hero-mark">
                 <img src="{{ asset('cervus/brand/cervus-mark-original.png') }}" alt="Cervus stag mark">
-                <div class="home__hero-mark-meta">CERVUS · LATIN<br>«&nbsp;LE CERF&nbsp;»<br>STAG · ANTLER · DEER</div>
             </div>
         </div>
     </section>
