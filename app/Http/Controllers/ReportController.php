@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\Report;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
+use Spatie\Browsershot\Browsershot;
 
 class ReportController extends Controller
 {
@@ -32,19 +32,28 @@ class ReportController extends Controller
         return view('reports.show', compact('report'));
     }
 
-    /**
-     * Téléchargement du PDF — verrouillé tant que le report n'est pas payé.
-     * C'est le seul gate de monétisation : l'utilisateur peut consulter
-     * le récapitulatif HTML mais le PDF officiel exige le paiement.
-     */
     public function download(Request $request, Report $report): Response
     {
         $this->authorizeReport($request, $report);
-        abort_unless($report->isPaid(), 402, 'Paiement requis pour télécharger ce rapport.');
 
-        $pdf = Pdf::loadView('reports.pdf', ['report' => $report]);
+        $html = view('reports.pdf', ['report' => $report])->render();
 
-        return $pdf->download("rapport-ai-act-{$report->id}.pdf");
+        $browsershot = Browsershot::html($html)
+            ->setNodeModulePath(base_path('node_modules'))
+            ->showBackground();
+
+        if (PHP_OS_FAMILY === 'Darwin') {
+            $browsershot->setChromePath('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome');
+        } else {
+            $browsershot->setChromePath('/usr/bin/chromium')
+                ->noSandbox();
+        }
+
+        $pdf = $browsershot->pdf();
+
+        return response($pdf)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="rapport-ai-act-'.$report->id.'.pdf"');
     }
 
     private function authorizeReport(Request $request, Report $report): void

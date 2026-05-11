@@ -103,7 +103,7 @@ it('télécharge le PDF d\'un report payé', function () {
     expect($response->headers->get('content-type'))->toContain('application/pdf');
 });
 
-it('refuse le téléchargement d\'un report non payé (HTTP 402)', function () {
+it('télécharge le PDF d\'un report même sans paiement', function () {
     [$user, $organization] = userWithOrgAndUsage();
     $report = $organization->reports()->create([
         'snapshot' => ['organization' => ['name' => 'Acme'], 'usages' => [], 'summary' => [], 'generated_at' => now()->toIso8601String()],
@@ -111,7 +111,7 @@ it('refuse le téléchargement d\'un report non payé (HTTP 402)', function () {
 
     $this->actingAs($user)
         ->get(route('reports.download', $report))
-        ->assertStatus(402);
+        ->assertOk();
 });
 
 // ---------------------------------------------------------------------------

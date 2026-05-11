@@ -61,7 +61,7 @@
             <div class="principle">
                 <div class="principle__num">iv.</div>
                 <div class="principle__t">Snapshot figé</div>
-                <div class="principle__d">Le rapport conserve l'état déclaré au moment de la génération. Modifier un usage n'altère jamais un rapport déjà payé.</div>
+                <div class="principle__d">Le rapport conserve l'état déclaré au moment de la génération. Modifier un usage n'altère jamais un rapport déjà généré.</div>
             </div>
         </div>
     </section>
@@ -142,7 +142,7 @@
             <div>
                 <div class="eyebrow eyebrow--accent">Audit AI Act · RGPD</div>
                 <div class="home__cta-title">Prêt à <em>commencer</em> ?</div>
-                <div class="home__cta-sub">L'inscription, la déclaration des usages et le questionnaire sont gratuits. Vous ne payez que le rapport PDF final, à la pièce.</div>
+                <div class="home__cta-sub">L'inscription, la déclaration des usages et le questionnaire sont gratuits.</div>
             </div>
             <div class="home__cta-actions">
                 <a class="btn btn--primary btn--lg" href="{{ route('register') }}">Créer mon compte</a>

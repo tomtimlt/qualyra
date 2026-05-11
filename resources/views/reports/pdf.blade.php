@@ -1,171 +1,428 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Rapport AI Act + RGPD — {{ $report->snapshot['organization']['name'] ?? 'Rapport' }}</title>
-    <style>
-        /* dompdf-safe CSS: no CSS variables, no flexbox, no grid. Tables for layout. */
-        @page { margin: 2.2cm 2cm 2.5cm; }
+<meta charset="UTF-8">
+<title>Rapport AI Act + RGPD — {{ $report->snapshot['organization']['name'] ?? 'Rapport' }}</title>
+<style>
+@page { size: A4; margin: 0; }
 
-        body {
-            font-family: 'Helvetica', sans-serif;
-            font-size: 10.5px;
-            color: #0B0F14;
-            line-height: 1.65;
-            background: #F3F1EB;
-        }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-        p { margin: 0 0 10px; text-align: justify; }
-        ul { margin: 6px 0 12px 18px; padding: 0; }
-        ul li { margin-bottom: 4px; }
-        em { font-style: italic; color: #1B3A6F; }
-        strong, b { font-weight: bold; }
-        .page-break { page-break-before: always; }
+body {
+    font-family: "Geist", system-ui, -apple-system, sans-serif;
+    font-size: 12px;
+    color: #2A2820;
+    line-height: 1.6;
+    background: #F3F1EB;
+}
 
-        /* Display (heavy sans, matches the Geist look on the website) */
-        h1, h2, h3, h4 {
-            color: #0B0F14;
-            margin-top: 0;
-            font-family: 'Helvetica', sans-serif;
-            font-weight: bold;
-            letter-spacing: -0.5px;
-        }
-        h1 { font-size: 34px; margin-bottom: 6px; line-height: 1.05; }
-        h2 { font-size: 22px; margin: 28px 0 14px; line-height: 1.1; }
-        h3 { font-size: 14px; margin: 18px 0 8px; line-height: 1.2; letter-spacing: -0.3px; }
-        h4 { font-size: 12px; margin: 12px 0 4px; letter-spacing: -0.2px; }
+.report-page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 20mm 18mm;
+    background: #F3F1EB;
+    page-break-after: always;
+}
 
-        /* Helpers */
-        .mono { font-family: 'Courier', monospace; }
-        .small { font-size: 9.5px; color: #5A5746; }
-        .muted { color: #5A5746; }
-        .accent { color: #1B3A6F; }
+.report-page:last-child {
+    page-break-after: auto;
+}
 
-        /* Eyebrow */
-        .eyebrow { font-family: 'Courier', monospace; font-size: 9px; font-weight: bold; letter-spacing: 1.6px; text-transform: uppercase; color: #5A5746; }
-        .eyebrow.is-accent { color: #1B3A6F; }
+.report__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 28px;
+    border-bottom: 1px solid #C9C3B2;
+    margin-bottom: 42px;
+}
 
-        /* ============ HEADER (brand + meta) ============ */
-        .head { width: 100%; border-collapse: collapse; padding-bottom: 28px; border-bottom: 1px solid #C9C3B2; margin-bottom: 36px; }
-        .head td { border: none; padding: 0; vertical-align: middle; }
-        .head .brand-cell { width: 60%; }
-        .head .meta-cell { width: 40%; text-align: right; }
-        .head .brand-mark { width: 36px; height: 36px; vertical-align: middle; margin-right: 12px; }
-        .head .brand-word { display: inline-block; vertical-align: middle; font-family: 'Helvetica', sans-serif; font-size: 26px; font-weight: bold; color: #0B0F14; letter-spacing: -0.5px; }
-        .head .brand-word .dot { color: #1B3A6F; }
-        .head .meta-line { font-family: 'Courier', monospace; font-size: 10px; color: #5A5746; line-height: 1.7; letter-spacing: 0.5px; text-transform: uppercase; }
-        .head .meta-line b { color: #0B0F14; font-weight: bold; }
+.report__brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
-        /* ============ COVER ============ */
-        .cover h1 em { color: #1B3A6F; font-style: italic; font-weight: bold; }
-        .cover .subtitle { font-size: 14px; color: #5A5746; line-height: 1.55; margin: 16px 0 28px; max-width: 540px; }
+.report__brand img { height: 32px; }
 
-        /* Cover meta — horizontal columns */
-        .cover-meta { width: 100%; border-collapse: collapse; margin-top: 28px; padding-top: 20px; border-top: 1px solid #C9C3B2; }
-        .cover-meta td { vertical-align: top; padding: 0 16px 0 0; border: none; width: 25%; }
-        .cover-meta .label { font-family: 'Courier', monospace; font-size: 9px; color: #5A5746; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 6px; }
-        .cover-meta .value { font-family: 'Helvetica', sans-serif; font-size: 12px; color: #0B0F14; font-weight: bold; line-height: 1.3; }
+.report__brand-word {
+    font-family: "Geist", system-ui, sans-serif;
+    font-size: 28px;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: #0B0F14;
+    font-weight: 600;
+}
 
-        .cover .confidential {
-            position: absolute; bottom: 1.5cm; left: 0; right: 0;
-            text-align: center; font-family: 'Courier', monospace; font-size: 9px; color: #8E876E;
-            text-transform: uppercase; letter-spacing: 3px;
-        }
+.report__brand-word .dot { color: #1B3A6F; }
 
-        /* ============ TOC ============ */
-        .toc-row { width: 100%; padding: 6px 0; border-bottom: 1px dotted #C9C3B2; }
-        .toc-row td:first-child { font-size: 11px; color: #0B0F14; padding: 7px 0; }
-        .toc-row td:last-child { text-align: right; color: #5A5746; font-size: 10px; font-family: 'Courier', monospace; padding: 7px 0; }
+.report__head-meta {
+    font-family: "Geist Mono", ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: #5A5746;
+    text-align: right;
+    line-height: 1.7;
+}
 
-        /* ============ RISK BAND (mirror website) ============ */
-        .section-eyebrow { margin-top: 0; }
+.report__head-meta b { color: #0B0F14; font-weight: 500; }
 
-        .risk-band { width: 100%; border-collapse: collapse; margin: 14px 0 24px; border: 1px solid #C9C3B2; }
-        .risk-band td { vertical-align: top; padding: 18px 16px; border-right: 1px solid #C9C3B2; background: #FAF9F6; }
-        .risk-band td:last-child { border-right: none; }
-        .risk-band .hero-cell { background: #E4E0D5; width: 28%; }
-        .risk-band .stat-cell { width: 14.4%; text-align: left; }
+.eyebrow-l {
+    font-family: "Geist Mono", ui-monospace, monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #5A5746;
+    font-weight: 500;
+}
 
-        .rb-eyebrow { font-family: 'Courier', monospace; font-size: 9px; font-weight: bold; letter-spacing: 1.4px; text-transform: uppercase; color: #5A5746; }
-        .rb-eyebrow.is-accent { color: #1B3A6F; }
+.eyebrow-l.accent { color: #1B3A6F; }
 
-        .rb-hero-name { font-family: 'Helvetica', sans-serif; font-size: 22px; font-weight: bold; line-height: 1.1; margin-top: 6px; letter-spacing: -0.4px; }
-        .rb-hero-name.haut  { color: #8C4810; }
-        .rb-hero-name.lim   { color: #8B6620; }
-        .rb-hero-name.min   { color: #2F6B53; }
-        .rb-hero-name.inacc { color: #9B2933; }
-        .rb-hero-name.none  { color: #5A5746; }
+h1.cover {
+    font-family: "Geist", system-ui, sans-serif;
+    font-size: 56px;
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    color: #0B0F14;
+    margin: 0 0 14px;
+    font-weight: 600;
+}
 
-        .rb-stat-num { font-family: 'Helvetica', sans-serif; font-size: 36px; font-weight: bold; line-height: 1; color: #0B0F14; letter-spacing: -1px; }
-        .rb-stat-num.haut  { color: #8C4810; }
-        .rb-stat-num.lim   { color: #8B6620; }
-        .rb-stat-num.min   { color: #2F6B53; }
-        .rb-stat-num.inacc { color: #9B2933; }
-        .rb-stat-label { font-family: 'Courier', monospace; font-size: 9px; color: #5A5746; letter-spacing: 1px; text-transform: uppercase; margin-top: 14px; line-height: 1.3; }
+h1.cover em { color: #1B3A6F; font-style: italic; }
 
-        /* ============ Tables ============ */
-        table.data { width: 100%; border-collapse: collapse; margin: 12px 0 16px; }
-        table.data th, table.data td { text-align: left; padding: 9px 11px; border: 1px solid #C9C3B2; vertical-align: top; font-size: 10.5px; }
-        table.data th { background: #E4E0D5; font-weight: bold; text-transform: uppercase; font-size: 9.5px; color: #2A2820; letter-spacing: 0.6px; }
+.cover-sub {
+    font-size: 15px;
+    line-height: 1.55;
+    color: #5A5746;
+    max-width: 60ch;
+    margin: 0;
+}
 
-        /* Niveau bandeau (par usage, intra-section) */
-        .level-banner { padding: 10px 14px; margin: 12px 0; font-weight: bold; font-size: 12px; border-left: 4px solid #C9C3B2; background: #FAF9F6; }
-        .level-banner.inacc { border-color: #9B2933; color: #9B2933; }
-        .level-banner.haut  { border-color: #8C4810; color: #8C4810; }
-        .level-banner.lim   { border-color: #8B6620; color: #8B6620; }
-        .level-banner.min   { border-color: #2F6B53; color: #2F6B53; }
-        .level-banner.none  { border-color: #5A5746; color: #5A5746; }
+.cover-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    margin-top: 36px;
+    font-family: "Geist Mono", ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: #5A5746;
+}
 
-        /* Risk badge inline (pour usage-head) */
-        .badge { display: inline-block; padding: 3px 9px; font-family: 'Courier', monospace; font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; border: 1px solid; }
-        .badge.inacc { color: #9B2933; background: #F8DDDF; border-color: #9B2933; }
-        .badge.haut  { color: #8C4810; background: #FBE9D8; border-color: #C4631C; }
-        .badge.lim   { color: #8B6620; background: #F5E9C8; border-color: #B98A2E; }
-        .badge.min   { color: #2F6B53; background: #DDEAE0; border-color: #2F6B53; }
-        .badge.none  { color: #5A5746; background: transparent; border-color: #C9C3B2; }
+.cover-meta > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
 
-        /* Lede / italic */
-        .lede { font-family: 'Helvetica', sans-serif; font-style: italic; font-size: 16px; line-height: 1.45; color: #0B0F14; padding: 6px 0 6px 18px; border-left: 2px solid #1B3A6F; margin: 14px 0; font-weight: bold; }
+.cover-meta b {
+    color: #0B0F14;
+    font-weight: 500;
+    font-size: 12px;
+    font-family: "Geist", system-ui, sans-serif;
+    letter-spacing: 0;
+    text-transform: none;
+}
 
-        /* Encadrés */
-        .box { border-left: 3px solid #5A5746; background: #FAF9F6; padding: 10px 14px; margin: 10px 0; }
-        .box .box-t { font-family: 'Courier', monospace; font-weight: bold; font-size: 10px; color: #0B0F14; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
-        .box .box-c { font-size: 11px; color: #2A2820; line-height: 1.55; }
-        .box.is-accent  { border-color: #1B3A6F; background: #EFF3F8; }
-        .box.is-warn    { border-color: #8B6620; background: #FBF4DC; }
-        .box.is-danger  { border-color: #9B2933; background: #FCE6E8; }
-        .box.is-action  { border-color: #2F6B53; background: #E6F0E9; }
+.section { margin-top: 48px; }
 
-        /* Usage / Cas par cas */
-        .usage { border: 1px solid #C9C3B2; background: #FAF9F6; padding: 18px 22px; margin: 14px 0; }
-        .usage .usage-head { width: 100%; border-collapse: collapse; }
-        .usage .usage-head td { vertical-align: top; padding: 0; border: none; }
-        .usage .usage-num { font-family: 'Helvetica', sans-serif; font-size: 14px; color: #5A5746; font-weight: bold; }
-        .usage .usage-title { font-family: 'Helvetica', sans-serif; font-size: 18px; font-weight: bold; color: #0B0F14; margin-top: 2px; line-height: 1.2; letter-spacing: -0.3px; }
-        .usage .usage-meta { font-family: 'Courier', monospace; font-size: 9px; color: #5A5746; letter-spacing: 0.5px; margin-top: 6px; }
-        .usage .obligation { border-left: 2px solid #1B3A6F; padding: 4px 0 4px 14px; margin: 12px 0 0; }
-        .usage .obligation .t { font-family: 'Courier', monospace; font-size: 10px; font-weight: bold; color: #0B0F14; text-transform: uppercase; letter-spacing: 0.6px; }
-        .usage .obligation .c { font-size: 11px; color: #2A2820; line-height: 1.6; margin-top: 4px; }
+.section h2 {
+    font-family: "Geist", system-ui, sans-serif;
+    font-size: 32px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 10px 0 20px;
+    color: #0B0F14;
+    font-weight: 600;
+}
 
-        /* Plan d'action */
-        .action-item { border-left: 4px solid #1B3A6F; padding: 10px 14px; margin: 10px 0; background: #FAF9F6; }
-        .action-item .t { font-weight: bold; font-size: 11.5px; color: #0B0F14; }
-        .action-item .c { font-size: 11px; color: #2A2820; margin-top: 6px; line-height: 1.55; }
-        .action-item .meta { font-family: 'Courier', monospace; font-size: 9.5px; color: #5A5746; margin-top: 6px; letter-spacing: 0.5px; }
-        .effort { display: inline-block; padding: 1px 6px; font-size: 8.5px; font-weight: bold; text-transform: uppercase; color: #FFFFFF; letter-spacing: 0.8px; }
-        .effort.faible { background: #2F6B53; }
-        .effort.moyen  { background: #8B6620; }
-        .effort.fort   { background: #9B2933; }
+.section h3 {
+    font-family: "Geist", system-ui, sans-serif;
+    font-size: 20px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: #0B0F14;
+    margin: 0 0 8px;
+    font-weight: 500;
+}
 
-        /* Checklist */
-        .checklist { padding: 0; margin: 0; list-style: none; }
-        .checklist li { padding: 8px 0; border-bottom: 1px solid #C9C3B2; font-size: 11px; line-height: 1.55; }
-        .checklist .box-mark { display: inline-block; width: 11px; height: 11px; border: 1.5px solid #0B0F14; margin-right: 10px; vertical-align: -1px; }
+.risk-band {
+    display: flex;
+    border: 1px solid #C9C3B2;
+    border-radius: 6px;
+    overflow: hidden;
+}
 
-        /* Footer (pagination) */
-        footer { position: fixed; bottom: -1.5cm; left: 0; right: 0; text-align: center; font-family: 'Courier', monospace; font-size: 9px; color: #8E876E; letter-spacing: 0.6px; text-transform: uppercase; }
-        .page-num:after { content: counter(page); }
-    </style>
+.rb__cell {
+    flex: 1;
+    padding: 18px 20px;
+    border-right: 1px solid #C9C3B2;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.rb__cell:last-child { border-right: none; }
+
+.rb__cell--hero {
+    flex: 1.6;
+    background: #E4E0D5;
+}
+
+.rb__num {
+    font-family: "Geist", system-ui, sans-serif;
+    font-size: 40px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: #0B0F14;
+    font-weight: 600;
+}
+
+.rb__num--global { font-size: 22px; color: #8C4810; line-height: 1.1; margin-top: 4px; }
+.rb__num--inacc { color: #9B2933; }
+.rb__num--haut { color: #8C4810; }
+.rb__num--lim { color: #8B6620; }
+.rb__num--min { color: #2F6B53; }
+
+.rb__label {
+    font-family: "Geist Mono", ui-monospace, monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #5A5746;
+    margin-top: 10px;
+}
+
+.lede {
+    font-family: "Geist", system-ui, sans-serif;
+    font-size: 20px;
+    font-style: italic;
+    line-height: 1.4;
+    color: #0B0F14;
+    border-left: 2px solid #1B3A6F;
+    padding-left: 18px;
+    margin: 20px 0;
+}
+
+.body-prose { font-size: 12px; line-height: 1.7; color: #5A5746; max-width: 64ch; }
+.body-prose p { margin: 0 0 10px; }
+.muted-prose { font-size: 12px; line-height: 1.6; color: #5A5746; margin: 0 0 14px; max-width: 64ch; }
+
+.callout {
+    border-left: 2px solid #C9C3B2;
+    padding: 10px 0 10px 16px;
+    margin: 14px 0;
+}
+
+.callout--inacc { border-color: #9B2933; }
+.callout--lim { border-color: #8B6620; }
+
+.callout__t {
+    font-family: "Geist Mono", ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: #0B0F14;
+    text-transform: uppercase;
+}
+
+.callout__c {
+    font-size: 12px;
+    line-height: 1.6;
+    color: #5A5746;
+    margin-top: 4px;
+    max-width: 64ch;
+}
+
+.priorities {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.prio {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    padding: 14px 18px;
+    border: 1px solid #C9C3B2;
+    border-radius: 6px;
+    background: #FAF9F6;
+}
+
+.prio__num {
+    font-family: "Geist", system-ui, sans-serif;
+    font-size: 22px;
+    line-height: 1;
+    color: #1B3A6F;
+    font-weight: 600;
+    min-width: 36px;
+}
+
+.prio__t { font-size: 13px; color: #0B0F14; line-height: 1.5; }
+
+.usage {
+    border: 1px solid #C9C3B2;
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin-top: 14px;
+    background: #FAF9F6;
+}
+
+.usage__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.usage__num {
+    font-family: "Geist", system-ui, sans-serif;
+    font-size: 14px;
+    color: #5A5746;
+    margin-right: 8px;
+    font-weight: 600;
+}
+
+.usage__title {
+    font-family: "Geist", system-ui, sans-serif;
+    font-size: 22px;
+    line-height: 1.15;
+    color: #0B0F14;
+    font-weight: 600;
+}
+
+.usage__meta {
+    font-family: "Geist Mono", ui-monospace, monospace;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    color: #5A5746;
+    margin-top: 4px;
+}
+
+.obligation {
+    border-left: 2px solid #1B3A6F;
+    padding: 4px 0 4px 14px;
+    margin-top: 12px;
+}
+
+.obligation__t {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: #0B0F14;
+    text-transform: uppercase;
+    font-family: "Geist Mono", ui-monospace, monospace;
+}
+
+.obligation__c {
+    font-size: 12px;
+    line-height: 1.6;
+    color: #5A5746;
+    margin-top: 4px;
+    max-width: 64ch;
+}
+
+.report-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 9px;
+    font-family: "Geist Mono", ui-monospace, monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    border: 1px solid;
+    flex-shrink: 0;
+}
+
+.report-badge .dot { width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
+.report-badge--inacc { color: #9B2933; background: #F8DDDF; border-color: #9B2933; }
+.report-badge--haut { color: #8C4810; background: #FBE9D8; border-color: #C4631C; }
+.report-badge--lim  { color: #8B6620; background: #F5E9C8; border-color: #B98A2E; }
+.report-badge--min  { color: #2F6B53; background: #DDEAE0; border-color: #2F6B53; }
+.report-badge--none { color: #5A5746; background: transparent; border-color: #C9C3B2; }
+
+.plan {
+    display: flex;
+    gap: 14px;
+    margin-top: 14px;
+}
+
+.phase {
+    flex: 1;
+    border: 1px solid #C9C3B2;
+    border-radius: 6px;
+    padding: 18px;
+    background: #FAF9F6;
+}
+
+.phase__h {
+    font-family: "Geist", system-ui, sans-serif;
+    font-size: 26px;
+    color: #0B0F14;
+    line-height: 1;
+    font-weight: 600;
+}
+
+.phase__h em { color: #1B3A6F; font-style: italic; font-size: 14px; font-weight: 400; }
+
+.phase__sub {
+    font-family: "Geist Mono", ui-monospace, monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #5A5746;
+    margin-top: 6px;
+}
+
+.phase__intro { font-size: 11px; color: #5A5746; margin: 10px 0; line-height: 1.5; font-style: italic; }
+
+.phase__list { margin: 14px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.phase__list li { padding-left: 12px; position: relative; }
+.phase__list li::before { content: ''; position: absolute; left: 0; top: 7px; width: 5px; height: 1px; background: #1B3A6F; }
+
+.phase__action-t { font-size: 12px; font-weight: 500; color: #0B0F14; line-height: 1.4; }
+.phase__action-d { font-size: 11px; color: #5A5746; margin-top: 4px; line-height: 1.5; }
+.phase__action-meta { font-family: "Geist Mono", ui-monospace, monospace; font-size: 9px; color: #5A5746; letter-spacing: 0.04em; margin-top: 4px; }
+
+.phase__empty { padding-left: 0; font-size: 11px; color: #5A5746; font-style: italic; }
+.phase__empty::before { display: none; }
+
+.checklist { padding: 0; margin: 14px 0 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.checklist li { display: flex; gap: 10px; align-items: flex-start; padding: 10px 14px; border-bottom: 1px solid #C9C3B2; }
+.checklist__box { width: 13px; height: 13px; border: 1.5px solid #0B0F14; flex-shrink: 0; margin-top: 2px; border-radius: 2px; }
+.checklist__t { font-size: 12px; font-weight: 500; color: #0B0F14; }
+.checklist__d { font-size: 11px; color: #5A5746; margin-top: 2px; line-height: 1.5; }
+
+.grey { border-left: 2px solid #C9C3B2; padding: 8px 0 8px 16px; margin: 14px 0; }
+.grey__t { font-family: "Geist Mono", ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: #0B0F14; text-transform: uppercase; }
+.grey__c { font-size: 12px; line-height: 1.6; color: #5A5746; margin-top: 4px; max-width: 64ch; }
+
+.empty-state { padding: 40px 24px; text-align: center; color: #5A5746; font-size: 12px; }
+
+.report__foot {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid #C9C3B2;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    font-family: "Geist Mono", ui-monospace, monospace;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    color: #5A5746;
+    text-transform: uppercase;
+}
+
+.page-break { page-break-before: always; }
+</style>
 </head>
 <body>
 
@@ -175,352 +432,254 @@
     $meta = $content['meta'];
     $compteurs = $content['compteurs_par_niveau'];
     $labels = $content['niveau_labels'];
-
-    $niveauSlug = [
+    $niveauClass = [
         'INACCEPTABLE' => 'inacc',
         'HAUT_RISQUE' => 'haut',
         'RISQUE_LIMITE' => 'lim',
         'RISQUE_MINIMAL' => 'min',
         'NON_EVALUE' => 'none',
     ];
-
-    $priority = ['INACCEPTABLE'=>4,'HAUT_RISQUE'=>3,'RISQUE_LIMITE'=>2,'RISQUE_MINIMAL'=>1];
-    $globalLevel = null;
-    foreach (['INACCEPTABLE','HAUT_RISQUE','RISQUE_LIMITE','RISQUE_MINIMAL'] as $n) {
-        if (($compteurs[$n] ?? 0) > 0) { $globalLevel = $n; break; }
-    }
-
-    // Image embarquée via file path (dompdf charge depuis le filesystem)
-    $brandImagePath = public_path('cervus/brand/cervus-mark-original.png');
+    $boxClass = [
+        'FLAG_ZONE_GRISE' => 'lim',
+        'AGGRAVATION' => 'inacc',
+    ];
+    $brandPath = public_path('cervus/brand/cervus-mark-original.png');
+    $brandSrc = file_exists($brandPath) ? 'data:image/png;base64,'.base64_encode(file_get_contents($brandPath)) : '';
 @endphp
 
-<footer>
-    {{ \Illuminate\Support\Str::upper($meta['nom_pme']) }} · Cervus · Rapport #{{ $report->id }} · Page <span class="page-num"></span>
-</footer>
-
-{{-- ===== HEADER (deer mark + ORG meta) ===== --}}
-<table class="head">
-    <tr>
-        <td class="brand-cell">
-            @if (file_exists($brandImagePath))
-                <img src="{{ $brandImagePath }}" class="brand-mark" alt="">
+<div class="report-page">
+    {{-- Header brand --}}
+    <div class="report__head">
+        <div class="report__brand">
+            @if ($brandSrc)
+                <img src="{{ $brandSrc }}" alt="">
             @endif
-            <span class="brand-word">Cervus<span class="dot">.</span></span>
-        </td>
-        <td class="meta-cell">
-            <div class="meta-line">
-                Rapport · <b>#{{ $report->id }}</b><br>
-                <b>{{ \Illuminate\Support\Str::upper($meta['nom_pme']) }}</b>
-                @if (! empty($meta['siret']))
-                    <br>SIRET {{ $meta['siret'] }}
-                @endif
-            </div>
-        </td>
-    </tr>
-</table>
-
-{{-- ===== COVER ===== --}}
-<section class="cover">
-    <div class="eyebrow is-accent">Audit de conformité · AI Act + RGPD</div>
-    <h1>Audit de conformité,<br><em>au {{ \Illuminate\Support\Str::lower($meta['date_audit']) }}.</em></h1>
-    <div class="subtitle">{{ $content['synthese_executive']['header'] ?? '' }}</div>
-
-    <table class="cover-meta">
-        <tr>
-            <td>
-                <div class="label">PME</div>
-                <div class="value">{{ $meta['nom_pme'] }}</div>
-            </td>
-            @if (! empty($meta['size']))
-                <td>
-                    <div class="label">Effectif</div>
-                    <div class="value">{{ $meta['size'] }} salariés</div>
-                </td>
+            <div class="report__brand-word">Cervus<span class="dot">.</span></div>
+        </div>
+        <div class="report__head-meta">
+            RAPPORT · <b>#{{ $report->id }}</b><br>
+            {{ \Illuminate\Support\Str::upper($meta['nom_pme']) }}<br>
+            @if (! empty($meta['siret']))
+                SIRET {{ $meta['siret'] }}
             @endif
-            @if (! empty($meta['sector']))
-                <td>
-                    <div class="label">Secteur</div>
-                    <div class="value">{{ $meta['sector'] }}</div>
-                </td>
-            @endif
-            <td>
-                <div class="label">Audité par</div>
-                <div class="value">Cervus · v0.1</div>
-            </td>
-        </tr>
-    </table>
-</section>
+        </div>
+    </div>
 
-{{-- ===== SECTION 1 — NIVEAU DE RISQUE ===== --}}
-<section style="margin-top: 56px;">
-    <div class="eyebrow">01 · Niveau de risque</div>
+    {{-- Cover --}}
+    <div class="eyebrow-l accent">AUDIT DE CONFORMITÉ · AI ACT + RGPD</div>
+    <h1 class="cover">Audit de conformité,<br><em>au {{ \Illuminate\Support\Str::lower($meta['date_audit']) }}.</em></h1>
+    <p class="cover-sub">{{ $content['synthese_executive']['header'] ?? '' }}</p>
+    <div class="cover-meta">
+        <div><span>PME</span><b>{{ $meta['nom_pme'] }}</b></div>
+        @if (! empty($meta['size']))
+            <div><span>EFFECTIF</span><b>{{ $meta['size'] }} salariés</b></div>
+        @endif
+        @if (! empty($meta['sector']))
+            <div><span>SECTEUR</span><b>{{ $meta['sector'] }}</b></div>
+        @endif
+        <div><span>AUDITÉ PAR</span><b>Cervus · v0.1</b></div>
+    </div>
+</div>
+
+{{-- Section 1 — Niveau de risque global --}}
+<div class="report-page page-break">
+    <div class="eyebrow-l">01 · Niveau de risque</div>
     <h2>Quatre niveaux, {{ $meta['nb_usages_declares'] }} usage{{ $meta['nb_usages_declares'] > 1 ? 's' : '' }}.</h2>
+    <div class="risk-band">
+        <div class="rb__cell rb__cell--hero">
+            <div class="eyebrow-l accent">Niveau global</div>
+            <div class="rb__num rb__num--global">{{ $content['niveau_risque_global'] ?? '—' }}</div>
+        </div>
+        <div class="rb__cell"><div class="rb__num">{{ $meta['nb_usages_declares'] }}</div><div class="rb__label">Usages déclarés</div></div>
+        @foreach (['INACCEPTABLE', 'HAUT_RISQUE', 'RISQUE_LIMITE', 'RISQUE_MINIMAL'] as $niveau)
+            <div class="rb__cell">
+                <div class="rb__num rb__num--{{ $niveauClass[$niveau] }}">{{ str_pad((string) ($compteurs[$niveau] ?? 0), 2, '0', STR_PAD_LEFT) }}</div>
+                <div class="rb__label">{{ $labels[$niveau] }}</div>
+            </div>
+        @endforeach
+    </div>
+</div>
 
-    {{-- Risk band 6 colonnes (1 hero + 5 stats) — mirror website --}}
-    <table class="risk-band">
-        <tr>
-            <td class="hero-cell">
-                <div class="rb-eyebrow is-accent">Niveau global</div>
-                <div class="rb-hero-name {{ $niveauSlug[$globalLevel] ?? 'none' }}">{{ $content['niveau_risque_global'] ?? '—' }}</div>
-            </td>
-            <td class="stat-cell">
-                <div class="rb-stat-num">{{ $meta['nb_usages_declares'] }}</div>
-                <div class="rb-stat-label">Usages déclarés</div>
-            </td>
-            @foreach (['INACCEPTABLE', 'HAUT_RISQUE', 'RISQUE_LIMITE', 'RISQUE_MINIMAL'] as $niveau)
-                <td class="stat-cell">
-                    <div class="rb-stat-num {{ $niveauSlug[$niveau] }}">{{ str_pad((string) ($compteurs[$niveau] ?? 0), 2, '0', STR_PAD_LEFT) }}</div>
-                    <div class="rb-stat-label">{{ $labels[$niveau] }}</div>
-                </td>
-            @endforeach
-        </tr>
-    </table>
-</section>
-
-{{-- ===== SECTION 2 — SYNTHESE ===== --}}
-<section class="page-break">
-    <div class="eyebrow">02 · Synthèse</div>
-    <h2>Synthèse exécutive.</h2>
-
+{{-- Section 2 — Synthèse exécutive --}}
+<div class="report-page page-break">
+    <div class="eyebrow-l">02 · Synthèse exécutive</div>
+    <h2>Ce que dit la matrice.</h2>
     <p class="lede">{{ $content['synthese_executive']['repartition'] }}</p>
 
-    <p>{{ $content['synthese_executive']['header'] }}</p>
-
-    <table class="data">
-        <tr>
-            <th>Catégorie de risque (AI Act)</th>
-            <th width="14%">Usages</th>
-            <th>Impact sur la conformité</th>
-        </tr>
-        <tr><td><strong>Inacceptable</strong> · Article 5</td><td>{{ $compteurs['INACCEPTABLE'] }}</td><td>Interdiction stricte — arrêt immédiat requis.</td></tr>
-        <tr><td><strong>Haut risque</strong> · Annexe III</td><td>{{ $compteurs['HAUT_RISQUE'] }}</td><td>Conformité documentaire et supervision humaine obligatoires.</td></tr>
-        <tr><td><strong>Risque limité</strong> · Article 50</td><td>{{ $compteurs['RISQUE_LIMITE'] }}</td><td>Obligations de transparence et d'information.</td></tr>
-        <tr><td><strong>Risque minimal</strong></td><td>{{ $compteurs['RISQUE_MINIMAL'] }}</td><td>Application exclusive du RGPD si données personnelles.</td></tr>
-    </table>
-
-    <div class="box is-warn">
-        <div class="box-t">Plafond de sanctions PME · Article 99 §6</div>
-        <div class="box-c">{{ $content['synthese_executive']['sanctions'] }}</div>
-    </div>
-
-    <h3>Trois priorités d'action immédiates</h3>
-    <p>{{ $content['synthese_executive']['priorites_intro'] }}</p>
-    <ol>
-        @foreach ($content['priorites'] as $priorite)
-            <li><strong>{{ $priorite }}</strong></li>
-        @endforeach
-    </ol>
-</section>
-
-{{-- ===== SECTION 3 — INTRODUCTION ===== --}}
-<section class="page-break">
-    <div class="eyebrow">03 · Méthode</div>
-    <h2>Introduction et méthodologie.</h2>
-    @foreach (preg_split("/\n\n/", $content['introduction']) as $paragraph)
-        @if (trim($paragraph) !== '')
-            <p>{{ $paragraph }}</p>
-        @endif
-    @endforeach
-
-    <h3>Méthodologie</h3>
-    <ul>
-        @foreach ($content['methodologie_short'] as $item)
-            <li>{{ $item }}</li>
-        @endforeach
-    </ul>
-
-    <h3>Cadre réglementaire couvert</h3>
-    <ul>
-        @foreach ($content['cadre_reglementaire'] as $item)
-            <li>{{ $item }}</li>
-        @endforeach
-    </ul>
-</section>
-
-{{-- ===== SECTION 4+ — DETAIL PAR USAGE (1 par page) ===== --}}
-@foreach ($content['usages'] as $index => $usage)
-    <section class="page-break">
-        <div class="eyebrow">04.{{ $index + 1 }} · Cas d'usage</div>
-        <h2>{{ $usage['name'] }}.</h2>
-
-        <div class="usage">
-            <table class="usage-head">
-                <tr>
-                    <td>
-                        <div class="usage-num">{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</div>
-                        <div class="usage-title">{{ $usage['name'] }}</div>
-                        <div class="usage-meta">{{ \Illuminate\Support\Str::upper($usage['type']) }} · {{ \Illuminate\Support\Str::upper($usage['domain']) }}</div>
-                    </td>
-                    <td style="text-align: right; width: 200px">
-                        @php $cls = $niveauSlug[$usage['niveau']] ?? 'none'; @endphp
-                        <span class="badge {{ $cls }}">{{ $usage['niveau_label'] }}@if (! empty($usage['article'])) · {{ $usage['article'] }}@endif</span>
-                    </td>
-                </tr>
-            </table>
-        </div>
-
-        <table class="data">
-            @if (! empty($usage['description']))
-                <tr><th width="20%">Description</th><td>{{ $usage['description'] }}</td></tr>
-            @endif
-            @if ($usage['regle_id'])
-                <tr><th>Règle déclenchée</th><td>{{ $usage['regle_id'] }} · {{ $usage['article'] }}</td></tr>
-            @endif
-        </table>
-
-        <div class="level-banner {{ $niveauSlug[$usage['niveau']] ?? 'none' }}">
-            Niveau : {{ $usage['niveau_label'] }}
-            @if ($usage['article']) — {{ $usage['article'] }} @endif
-        </div>
-
-        @if (! empty($usage['raison']))
-            <h4>Justification</h4>
-            <p>{{ $usage['raison'] }}</p>
-        @endif
-
-        <h4>Analyse réglementaire</h4>
-        <p>{{ $usage['paragraphe_niveau'] }}</p>
-
-        @if (! empty($usage['encadres']))
-            <h4>Vos obligations de conformité</h4>
-            @foreach ($usage['encadres'] as $encadre)
-                <div class="box is-accent">
-                    <div class="box-t">{{ $encadre['titre'] }}</div>
-                    <div class="box-c">{{ $encadre['contenu'] }}</div>
-                </div>
-            @endforeach
-        @endif
-
-        @if (! empty($usage['alertes']))
-            <h4>Alertes complémentaires</h4>
-            @foreach ($usage['alertes'] as $alerte)
-                @php
-                    $boxKind = match ($alerte['type'] ?? null) {
-                        'FLAG_ZONE_GRISE' => 'is-warn',
-                        'AGGRAVATION' => 'is-danger',
-                        default => '',
-                    };
-                @endphp
-                <div class="box {{ $boxKind }}">
-                    <div class="box-t">
-                        {{ $alerte['code'] ?? 'alerte' }}
-                        @if (! empty($alerte['type'])) — {{ $alerte['type'] }} @endif
-                    </div>
-                    <div class="box-c">
-                        {{ $alerte['message'] ?? '' }}
-                        @if (! empty($alerte['article']))
-                            <br><span class="small">Article : {{ $alerte['article'] }}</span>
-                        @endif
-                    </div>
-                </div>
-            @endforeach
-        @endif
-    </section>
-@endforeach
-
-{{-- ===== PLAN D'ACTION ===== --}}
-<section class="page-break">
-    <div class="eyebrow is-accent">05 · Plan d'action</div>
-    <h2>Trente, soixante, quatre-vingt-dix.</h2>
-    <p>{{ $content['plan_action']['header'] }}</p>
-
-    <table class="data">
-        <tr>
-            <th width="14%">Échéance</th>
-            <th width="18%">Niveau d'urgence</th>
-            <th>Objectif principal</th>
-            <th width="22%">Acteurs impliqués</th>
-        </tr>
-        @foreach ($content['plan_action']['tableau'] as $row)
-            <tr>
-                <td><strong>{{ $row['echeance'] }}</strong></td>
-                <td>{{ $row['urgence'] }}</td>
-                <td>{{ $row['objectif'] }}</td>
-                <td>{{ $row['acteurs'] }}</td>
-            </tr>
-        @endforeach
-    </table>
-
-    @foreach (['phase_30j' => '30 jours · P0 — Urgentes & Bloquantes',
-              'phase_60j' => '60 jours · P1 — Importantes & Structurantes',
-              'phase_90j' => '90 jours · P2 — Consolidation & Processus']
-              as $key => $titre)
-        <h3 style="margin-top: 28px">{{ $titre }}</h3>
-        <p class="muted small">{{ $content['plan_action'][$key]['intro'] }}</p>
-
-        @forelse ($content['plan_action'][$key]['actions'] as $action)
-            <div class="action-item">
-                <div class="t">{{ $action['titre'] }}</div>
-                <div class="c">{{ $action['contenu'] }}</div>
-                <div class="meta">
-                    Responsable : <strong>{{ $action['responsable'] }}</strong> ·
-                    Effort : <span class="effort {{ $action['effort'] }}">{{ $action['effort'] }}</span>
-                </div>
-            </div>
-        @empty
-            <p class="small"><em>Aucune action déclenchée pour cette phase compte tenu du portefeuille audité.</em></p>
-        @endforelse
-    @endforeach
-</section>
-
-{{-- ===== CHECKLIST ===== --}}
-<section class="page-break">
-    <div class="eyebrow">06 · Checklist</div>
-    <h2>Checklist finale opérationnelle.</h2>
-    <p>La mise en conformité est un processus continu. Avant tout nouveau déploiement ou pour valider l'existant,
-       la direction de <strong>{{ $meta['nom_pme'] }}</strong> doit s'assurer de pouvoir cocher chacun des dix points suivants.</p>
-
-    <ol class="checklist">
-        @foreach ($content['checklist'] as $i => $item)
-            <li>
-                <span class="box-mark"></span>
-                <strong>{{ $i + 1 }}. {{ $item['point'] }}</strong>
-                <span class="muted"> — {{ $item['description'] }}</span>
-            </li>
-        @endforeach
-    </ol>
-</section>
-
-{{-- ===== ZONES GRISES ===== --}}
-<section class="page-break">
-    <div class="eyebrow">07 · Zones grises</div>
-    <h2>Zones grises juridiques.</h2>
-    <p>{{ $content['zones_grises']['intro'] }}</p>
-
-    <div class="box">
-        <div class="box-t">Calendrier AI Act et projet « Digital Omnibus »</div>
-        <div class="box-c">{{ $content['zones_grises']['digital_omnibus'] }}</div>
-    </div>
-
-    <div class="box">
-        <div class="box-t">Intervention humaine significative · Art. 22 RGPD</div>
-        <div class="box-c">{{ $content['zones_grises']['human_washing'] }}</div>
-    </div>
-
-    <div class="box">
-        <div class="box-t">Data Privacy Framework et risque Schrems III</div>
-        <div class="box-c">{{ $content['zones_grises']['dpf'] }}</div>
-    </div>
-</section>
-
-{{-- ===== DISCLAIMER ===== --}}
-<section class="page-break">
-    <div class="eyebrow">08 · Avertissement</div>
-    <h2>Limites de l'audit.</h2>
-
-    @foreach (['exclusion_responsabilite', 'peremption_normative', 'recommandation_assistance'] as $key)
-        <h3 style="margin-top: 24px">{{ $content['disclaimer'][$key]['titre'] }}</h3>
-        @foreach (preg_split("/\n\n/", $content['disclaimer'][$key]['contenu']) as $paragraph)
+    <div class="body-prose">
+        @foreach (preg_split("/\n\n/", $content['introduction'] ?? '') as $paragraph)
             @if (trim($paragraph) !== '')
                 <p>{{ $paragraph }}</p>
             @endif
         @endforeach
+    </div>
+
+    <div class="callout">
+        <div class="callout__t">Plafond PME · Article 99 §6</div>
+        <div class="callout__c">{{ $content['synthese_executive']['sanctions'] }}</div>
+    </div>
+
+    <h3 style="margin-top: 28px;">Trois priorités</h3>
+    <p class="muted-prose">{{ $content['synthese_executive']['priorites_intro'] ?? '' }}</p>
+    <div class="priorities">
+        @foreach ($content['priorites'] as $i => $priorite)
+            <div class="prio">
+                <div class="prio__num">{{ str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT) }}</div>
+                <div class="prio__t">{{ $priorite }}</div>
+            </div>
+        @endforeach
+    </div>
+</div>
+
+{{-- Section 3 — Détail par usage --}}
+@foreach ($content['usages'] as $i => $usage)
+    <div class="report-page page-break">
+        <div class="eyebrow-l">03.{{ $i + 1 }} · Cas d'usage</div>
+        <h2>{{ $usage['name'] }}.</h2>
+
+        <div class="usage">
+            <div class="usage__head">
+                <div>
+                    <div class="usage__title">
+                        <span class="usage__num">{{ str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT) }}</span>
+                        {{ $usage['name'] }}
+                    </div>
+                    <div class="usage__meta">{{ \Illuminate\Support\Str::upper($usage['type']) }} · {{ \Illuminate\Support\Str::upper($usage['domain']) }}</div>
+                </div>
+                @php $cls = $niveauClass[$usage['niveau']] ?? 'none'; @endphp
+                <span class="report-badge report-badge--{{ $cls }}">
+                    <span class="dot"></span>{{ $usage['niveau_label'] }}
+                    @if (! empty($usage['article']))
+                        · {{ $usage['article'] }}
+                    @endif
+                </span>
+            </div>
+
+            @if ($usage['raison'])
+                <div class="body-prose"><p>{{ $usage['raison'] }}</p></div>
+            @endif
+
+            <div class="body-prose"><p>{{ $usage['paragraphe_niveau'] }}</p></div>
+
+            @if (! empty($usage['encadres']))
+                @foreach ($usage['encadres'] as $encadre)
+                    <div class="obligation">
+                        <div class="obligation__t">{{ $encadre['titre'] }}</div>
+                        <div class="obligation__c">{{ $encadre['contenu'] }}</div>
+                    </div>
+                @endforeach
+            @endif
+
+            @if (! empty($usage['alertes']))
+                @foreach ($usage['alertes'] as $alerte)
+                    @php $aCls = $boxClass[$alerte['type'] ?? ''] ?? 'none'; @endphp
+                    <div class="callout callout--{{ $aCls }}">
+                        <div class="callout__t">
+                            {{ $alerte['code'] ?? 'alerte' }}
+                            @if (! empty($alerte['type']))
+                                · {{ $alerte['type'] }}
+                            @endif
+                        </div>
+                        <div class="callout__c">{{ $alerte['message'] ?? '' }}</div>
+                    </div>
+                @endforeach
+            @endif
+        </div>
+    </div>
+@endforeach
+
+{{-- Section 4 — Plan d'action 30/60/90 --}}
+<div class="report-page page-break">
+    <div class="eyebrow-l accent">04 · Plan d'action</div>
+    <h2>Trente, soixante, quatre-vingt-dix.</h2>
+    <p class="muted-prose">{{ $content['plan_action']['header'] }}</p>
+
+    <div class="plan">
+        @foreach (['phase_30j' => '30', 'phase_60j' => '60', 'phase_90j' => '90'] as $key => $days)
+            @php
+                $sub = match ($key) {
+                    'phase_30j' => 'P0 · obligatoire',
+                    'phase_60j' => 'P1 · prioritaire',
+                    default => 'P2 · structurant',
+                };
+            @endphp
+            <div class="phase">
+                <div class="phase__h">{{ $days }} <em>jours</em></div>
+                <div class="phase__sub">{{ $sub }}</div>
+                <p class="phase__intro">{{ $content['plan_action'][$key]['intro'] }}</p>
+                <ul class="phase__list">
+                    @forelse ($content['plan_action'][$key]['actions'] as $action)
+                        <li>
+                            <div class="phase__action-t">{{ $action['titre'] }}</div>
+                            <div class="phase__action-d">{{ $action['contenu'] }}</div>
+                            <div class="phase__action-meta">{{ $action['responsable'] }} · effort {{ $action['effort'] }}</div>
+                        </li>
+                    @empty
+                        <li class="phase__empty">Aucune action déclenchée pour cette phase.</li>
+                    @endforelse
+                </ul>
+            </div>
+        @endforeach
+    </div>
+</div>
+
+{{-- Section 5 — Checklist --}}
+<div class="report-page page-break">
+    <div class="eyebrow-l">05 · Checklist opérationnelle</div>
+    <h2>Dix points à valider.</h2>
+    <ol class="checklist">
+        @foreach ($content['checklist'] as $i => $item)
+            <li>
+                <span class="checklist__box"></span>
+                <div>
+                    <div class="checklist__t">{{ $i + 1 }}. {{ $item['point'] }}</div>
+                    <div class="checklist__d">{{ $item['description'] }}</div>
+                </div>
+            </li>
+        @endforeach
+    </ol>
+</div>
+
+{{-- Section 6 — Zones grises --}}
+<div class="report-page page-break">
+    <div class="eyebrow-l">06 · Zones grises juridiques</div>
+    <h2>Points de veille.</h2>
+    <p class="muted-prose">{{ $content['zones_grises']['intro'] }}</p>
+
+    <div class="grey">
+        <div class="grey__t">Calendrier AI Act et « Digital Omnibus »</div>
+        <div class="grey__c">{{ $content['zones_grises']['digital_omnibus'] }}</div>
+    </div>
+    <div class="grey">
+        <div class="grey__t">Intervention humaine significative · Art. 22 RGPD</div>
+        <div class="grey__c">{{ $content['zones_grises']['human_washing'] }}</div>
+    </div>
+    <div class="grey">
+        <div class="grey__t">Data Privacy Framework · risque Schrems III</div>
+        <div class="grey__c">{{ $content['zones_grises']['dpf'] }}</div>
+    </div>
+</div>
+
+{{-- Section 7 — Disclaimer --}}
+<div class="report-page page-break">
+    <div class="eyebrow-l">07 · Avertissement</div>
+    <h2>Limites de l'audit.</h2>
+    @foreach (['exclusion_responsabilite', 'peremption_normative', 'recommandation_assistance'] as $key)
+        <h3 style="margin-top: 20px">{{ $content['disclaimer'][$key]['titre'] }}</h3>
+        <div class="body-prose">
+            @foreach (preg_split("/\n\n/", $content['disclaimer'][$key]['contenu']) as $paragraph)
+                @if (trim($paragraph) !== '')
+                    <p>{{ $paragraph }}</p>
+                @endif
+            @endforeach
+        </div>
     @endforeach
 
-    <p class="small" style="margin-top: 32px; text-align: center;">
-        — Fin du rapport d'audit — Document confidentiel — Diffusion restreinte —
-    </p>
-</section>
+    <div class="report__foot">
+        <span>CERVUS · v0.1 · GÉNÉRÉ LE {{ $report->created_at->translatedFormat('d M Y') }}</span>
+        <span>RAPPORT #{{ $report->id }} · CONFIDENTIEL · {{ \Illuminate\Support\Str::upper($meta['nom_pme']) }}</span>
+    </div>
+</div>
 
 </body>
 </html>

@@ -3,34 +3,26 @@ set -e
 
 cd /app
 
+# ── Environment ──────────────────────────────────────────
 if [ ! -f .env ]; then
+    echo "→ Creating .env from .env.example…"
     cp .env.example .env
 fi
 
-if [ ! -f vendor/autoload.php ]; then
-    echo "→ Installing PHP dependencies (first run, this can take a few minutes)…"
-    composer install --no-interaction --prefer-dist --optimize-autoloader
-fi
-
-if ! grep -q '^APP_KEY=base64:' .env; then
+if ! grep -q '^APP_KEY=base64:' .env 2>/dev/null; then
     echo "→ Generating application key…"
     php artisan key:generate --force
 fi
 
-mkdir -p database
-if [ ! -f database/database.sqlite ]; then
-    touch database/database.sqlite
+# ── PHP dependencies (dev fallback: when vendor/ is a Docker volume) ──
+if [ ! -f vendor/autoload.php ]; then
+    echo "→ Installing Composer dependencies…"
+    composer install --no-interaction --prefer-dist --optimize-autoloader
 fi
 
-echo "→ Running migrations…"
-php artisan migrate --force --no-interaction
-
-php artisan storage:link 2>/dev/null || true
-
+# ── Node dependencies + build (dev fallback: when node_modules is a volume) ──
 if [ ! -f node_modules/.installed ]; then
-    echo "→ Installing Node dependencies (first run)…"
-    # The host's package-lock.json may be pinned to a different OS (Windows native
-    # bindings, etc.) — see npm/cli#4828. Regenerate inside the container.
+    echo "→ Installing Node dependencies…"
     rm -f package-lock.json
     npm install --no-audit --no-fund
     touch node_modules/.installed
@@ -41,5 +33,26 @@ if [ ! -d public/build ]; then
     npm run build
 fi
 
-echo "→ Ready. http://localhost:8000  ·  /design-system for the design system."
+# ── Database ──────────────────────────────────────────────
+mkdir -p database
+
+if [ ! -f database/database.sqlite ]; then
+    touch database/database.sqlite
+    DB_FRESH=true
+else
+    DB_FRESH=false
+fi
+
+echo "→ Running migrations…"
+php artisan migrate --force --no-interaction
+
+if [ "$DB_FRESH" = true ]; then
+    echo "→ Seeding database…"
+    php artisan db:seed --force --no-interaction
+fi
+
+# ── Storage link ──────────────────────────────────────────
+php artisan storage:link 2>/dev/null || true
+
+echo "→ Ready. http://localhost:8000"
 exec "$@"

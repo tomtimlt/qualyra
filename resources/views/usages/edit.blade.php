@@ -8,7 +8,7 @@
             <div class="eyebrow eyebrow--accent">Édition · {{ $aiUsage->type }}</div>
             <h1>{{ $aiUsage->name }}</h1>
             <p class="lead">
-                Toute modification ne s'applique qu'aux nouveaux rapports générés. Les rapports déjà payés
+                Toute modification ne s'applique qu'aux nouveaux rapports générés. Les rapports déjà générés
                 conservent l'état de l'usage au moment de leur création (snapshot).
             </p>
         </div>

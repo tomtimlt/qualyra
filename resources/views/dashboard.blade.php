@@ -266,7 +266,7 @@
                             @if ($organization->sector)
                                 <div><dt>Secteur</dt><dd>{{ $organization->sector }}</dd></div>
                             @endif
-                            <div><dt>Inscrit</dt><dd>{{ $organization->created_at->translatedFormat('d M Y') }}</dd></div>
+                            <div><dt>Inscrit</dt><dd>{{ $organization->created_at->translatedFormat('d F Y') }}</dd></div>
                         </dl>
                     </div>
                 </div>

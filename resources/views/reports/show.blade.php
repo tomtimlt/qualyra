@@ -28,20 +28,8 @@
         <div class="report-paper__topbar">
             <div class="report-paper__topbar-left">
                 <span class="meta">RAPPORT · <b>#{{ $report->id }}</b></span>
-                @if ($report->isPaid())
-                    <span class="badge badge--paid"><span class="badge__dot"></span>PAYÉ · {{ $report->paid_at->translatedFormat('d M Y') }}</span>
-                @else
-                    <span class="badge badge--pending"><span class="badge__dot"></span>EN ATTENTE</span>
-                @endif
             </div>
-            @if ($report->isPaid())
-                <a href="{{ route('reports.download', $report) }}" class="btn btn--primary btn--sm">Télécharger le PDF</a>
-            @else
-                <form method="POST" action="{{ route('checkout.create') }}" style="margin: 0">
-                    @csrf
-                    <button type="submit" class="btn btn--accent btn--sm">Confirmer la génération</button>
-                </form>
-            @endif
+            <a href="{{ route('reports.download', $report) }}" class="btn btn--primary btn--sm">Télécharger le PDF</a>
         </div>
 
         <div class="report-paper__sheet">
@@ -286,10 +274,6 @@
         .report-paper__topbar-left { display: flex; align-items: center; gap: 16px; }
         .report-paper__topbar .meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.06em; }
         .report-paper__topbar .meta b { color: var(--text); font-weight: 500; }
-        .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border: 1px solid; border-radius: var(--r-xs); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
-        .badge__dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
-        .badge--paid { color: var(--risk-min); border-color: var(--risk-min); background: var(--risk-min-bg); }
-        .badge--pending { color: var(--risk-lim); border-color: var(--risk-lim); background: var(--risk-lim-bg); }
         .report-paper__topbar .btn { text-decoration: none; }
 
         .report-paper__sheet { background: var(--bone-100); color: var(--ink-950); border-radius: var(--r-md); padding: 80px 80px 96px; box-shadow: 0 0 80px -20px rgba(0,0,0,0.5); max-width: 920px; margin: 0 auto; width: 100%; }

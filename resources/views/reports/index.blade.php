@@ -5,11 +5,6 @@
 
     @php
         $statusMessages = [
-            'report-paid' => ['type' => 'ok', 'msg' => 'Paiement confirmé. Votre rapport est prêt.'],
-            'report-fake-paid' => ['type' => 'ok', 'msg' => 'Rapport généré (mode dev — paiement court-circuité).'],
-            'payment-cancelled' => ['type' => 'warn', 'msg' => 'Paiement annulé. Le rapport est en attente.'],
-            'payment-not-confirmed' => ['type' => 'warn', 'msg' => "Le paiement n'a pas été confirmé par Stripe."],
-            'payment-verification-failed' => ['type' => 'warn', 'msg' => 'Vérification du paiement impossible. Réessayez ou contactez le support.'],
             'reports-need-usages' => ['type' => 'warn', 'msg' => 'Déclarez au moins un usage IA avant de générer un rapport.'],
         ];
         $status = session('status');
@@ -62,9 +57,7 @@
                     <tr>
                         <th style="width: 48px"></th>
                         <th>Référence</th>
-                        <th>Statut</th>
                         <th>Généré</th>
-                        <th>Payé</th>
                         <th style="width: 200px; text-align: right">Actions</th>
                     </tr>
                 </thead>
@@ -77,20 +70,10 @@
                                     Rapport #{{ $report->id }}
                                 </a>
                             </td>
-                            <td>
-                                @if ($report->isPaid())
-                                    <span class="risk risk--min"><span class="risk__dot"></span>Payé</span>
-                                @else
-                                    <span class="risk risk--lim"><span class="risk__dot"></span>En attente</span>
-                                @endif
-                            </td>
                             <td class="num">{{ $report->created_at->translatedFormat('d M Y · H:i') }}</td>
-                            <td class="num">{{ $report->paid_at ? $report->paid_at->translatedFormat('d M Y') : '—' }}</td>
                             <td style="text-align: right">
                                 <a href="{{ route('reports.show', $report) }}" class="row-action">Consulter</a>
-                                @if ($report->isPaid())
-                                    <a href="{{ route('reports.download', $report) }}" class="row-action row-action--accent">Télécharger PDF</a>
-                                @endif
+                                <a href="{{ route('reports.download', $report) }}" class="row-action row-action--accent">Télécharger PDF</a>
                             </td>
                         </tr>
                     @endforeach
