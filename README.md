@@ -1,308 +1,236 @@
-# AI Assistant - Outil de Conformité AI Act + RGPD
+# Cervus · Audit de Conformité AI Act + RGPD
 
-Application web d'audit de conformité des usages IA pour les PME françaises au regard du règlement européen AI Act et du RGPD.
+Application web d'audit de conformité des usages d'intelligence artificielle pour les PME françaises, conforme au **Règlement (UE) 2024/1689 (AI Act)** et au **RGPD**.
 
-## 🎯 Objectif
+## ✦ Objectif
 
-Permettre aux PME de déclarer leurs usages d'intelligence artificielle, d'évaluer leur niveau de risque selon l'AI Act, et de générer un rapport de conformité avec plan d'action.
+Permettre aux PME de déclarer leurs outils d'IA, d'évaluer automatiquement leur niveau de risque selon la matrice AI Act, et de générer un rapport de conformité détaillé avec plan d'action 30/60/90 jours.
 
-## 🛠️ Stack Technique
+## ✦ Stack Technique
 
 | Composant | Technologie |
 |-----------|-------------|
-| Backend | PHP 8.3 + Laravel 11 |
-| Frontend | Blade + Tailwind CSS + Vite |
-| Base de données | MySQL 8 (Docker) |
-| Authentification | Laravel Breeze |
+| Backend | PHP 8.4 + Laravel 13 |
+| Frontend | Blade + Tailwind CSS 3 + Alpine.js + Vite |
+| Base de données | SQLite (dev/Docker), MySQL 8 optionnel |
+| Authentification | Laravel Breeze (Blade stack) |
 | Tests | Pest 4 |
 | Autorisation | Policies Laravel (auto-discovery) |
-| PDF | barryvdh/laravel-dompdf |
+| Génération PDF | spatie/browsershot + Chromium/Chrome headless |
 | Paiement | Stripe Checkout (stripe/stripe-php) |
+| Design System | Cervus/Argos (propre systême de tokens CSS) |
 
-## 📋 Prérequis
+## ✦ Démarrage rapide
 
-- PHP 8.3+
-- Composer
-- Node.js 18+
-- Docker (pour MySQL)
-- Git
-
-## 🚀 Démarrage rapide
-
-### 1. Installation des dépendances
+### Un seul conteneur Docker (recommandé)
 
 ```bash
-# Installer les dépendances PHP
-composer install
+# Builder l'image
+docker build -t ai-assistant .
 
-# Installer les dépendances Node.js
-npm install
+# Lancer le conteneur
+docker run -d --name ai-assistant -p 8000:8000 ai-assistant
 ```
 
-### 2. Configuration de l'environnement
+L'application est accessible sur **http://localhost:8000**.
+
+Au premier démarrage, le conteneur :
+1. Crée le fichier `.env` depuis `.env.example`
+2. Génère la clé d'application (`APP_KEY`)
+3. Crée la base SQLite et exécute les migrations
+4. Peuple la base avec les données de démonstration
+5. Démarre le serveur PHP
+
+### Avec Docker Compose (développement)
 
 ```bash
-# Copier le fichier .env.example et générer la clé d'application
+docker compose up -d
+```
+
+Compatible avec le bind mount des sources pour le hot-reload.
+
+### En local (sans Docker)
+
+```bash
+# Dépendances
+composer install
+npm install && npm run build
+
+# Configuration
 cp .env.example .env
 php artisan key:generate
-```
 
-### 3. Démarrage de la base de données
+# Base de données (SQLite)
+touch database/database.sqlite
+php artisan migrate --seed
 
-```bash
-# Lancer le conteneur MySQL
-docker start ai-assistant-mysql
-
-# Ou le créer s'il n'existe pas
-docker run --name ai-assistant-mysql \
-  -e MYSQL_ROOT_PASSWORD=secret \
-  -e MYSQL_DATABASE=ai_assistant \
-  -e MYSQL_USER=aiuser \
-  -e MYSQL_PASSWORD=secret \
-  -p 3306:3306 \
-  -d mysql:8
-```
-
-### 4. Migrations et seeders
-
-```bash
-# Exécuter les migrations
-php artisan migrate
-
-# (Optionnel) Peupler la base avec des données de test
-php artisan db:seed
-```
-
-### 5. Lancement du serveur
-
-```bash
-# Terminal 1 : Serveur Laravel
+# Serveur
 php artisan serve
-
-# Terminal 2 : Build des assets (développement)
-npm run dev
+npm run dev     # terminal séparé
 ```
 
-L'application est accessible sur : **http://localhost:8000**
+## ✦ Comptes de démonstration
 
-## 🛑 Arrêter le projet
+Après `php artisan db:seed` (automatique au premier démarrage Docker) :
 
-```bash
-# Arrêter le serveur Laravel (Ctrl+C dans le terminal)
+| Email | Mot de passe | Description |
+|-------|--------------|-------------|
+| demo@example.com | password | Compte démo avec données préremplies (organisation + usages IA + rapports) |
+| test@example.com | password | Compte de test vierge |
 
-# Arrêter le build Vite (Ctrl+C dans le terminal)
-
-# Arrêter le conteneur MySQL
-docker stop ai-assistant-mysql
-```
-
-## 🏗️ Architecture du projet
-
-### Structure des dossiers
+## ✦ Architecture
 
 ```
-ai-assistant/
-├── app/
-│   ├── Http/
-│   │   ├── Controllers/     # AiUsage, Assessment, Checkout, Dashboard,
-│   │   │                    # Organization, Profile, Questionnaire, Report
-│   │   └── Requests/        # Form Requests (validation)
-│   ├── Models/              # Modèles Eloquent
-│   │   ├── User.php
-│   │   ├── Organization.php
-│   │   ├── AiUsage.php
-│   │   ├── Response.php
-│   │   ├── Assessment.php
-│   │   └── Report.php
-│   ├── Policies/            # Policies (autorisation par organisation)
-│   │   └── AiUsagePolicy.php
-│   ├── Services/            # Logique métier
-│   │   ├── AiActClassifier.php       # Classification AI Act (4 niveaux)
-│   │   └── ReportSnapshotBuilder.php # Snapshot figé pour les rapports PDF
-│   └── View/                # Composants Blade
-├── config/
-│   ├── ai_act_rules.php     # Matrice des règles AI Act
-│   └── questionnaire.php    # Questions par type d'IA
-├── database/
-│   ├── factories/           # Factories pour les tests/seeders
-│   ├── migrations/          # Migrations de la base de données
-│   └── seeders/             # Seeders pour peupler la BDD
-├── resources/
-│   ├── css/                 # Styles Tailwind
-│   ├── js/                  # JavaScript (Alpine.js, Axios)
-│   └── views/               # Vues Blade
-│       ├── auth/            # Pages d'authentification
-│       ├── components/      # Composants réutilisables
-│       ├── layouts/         # Layouts (app, guest, public)
-│       ├── questionnaire/   # Formulaire AI Act dynamique
-│       ├── reports/         # Rapports HTML + template PDF (dompdf)
-│       └── home.blade.php   # Page d'accueil
-├── routes/
-│   ├── web.php              # Routes web
-│   └── auth.php             # Routes d'authentification
-└── tests/                   # Tests Pest 4 (82 tests, 221 assertions)
+app/
+├── Http/Controllers/
+│   ├── AiUsageController.php        # CRUD usages IA déclarés
+│   ├── QuestionnaireController.php  # Questionnaire dynamique par type d'IA
+│   ├── AssessmentController.php     # Calcul et persistance du niveau AI Act
+│   ├── CheckoutController.php       # Paiement Stripe (ou mode dev)
+│   ├── ReportController.php         # Génération PDF via Browsershot
+│   └── OrganizationController.php   # Onboarding PME
+├── Services/
+│   ├── AiActClassifier.php          # Moteur de classification (4 niveaux)
+│   ├── ReportContentBuilder.php     # Contenu rédactionnel du rapport
+│   └── ReportSnapshotBuilder.php    # Snapshot figé (garantie légale)
+└── Policies/
+    └── AiUsagePolicy.php            # Isolation tenant stricte
+
+config/
+├── ai_act_rules.php                 # Matrice de décision AI Act (22 règles)
+├── questionnaire.php                # Questions dynamiques par type/domaine
+└── report_templates.php             # Templates rédactionnels du rapport
+
+database/
+├── migrations/                      # 5 tables custom + 3 Laravel
+└── seeders/
+    ├── DatabaseSeeder.php           # Comptes de référence
+    └── DemoSeeder.php               # Jeu de données complet
+
+resources/views/
+├── reports/
+│   ├── pdf.blade.php                # Template PDF standalone (Chrome headless)
+│   └── show.blade.php               # Vue web du rapport
+└── questionnaire/                   # Formulaire dynamique AI Act
 ```
 
-### Modèle de données
+## ✦ Parcours utilisateur
 
-```
-┌─────────────┐
-│    users    │
-└──────┬──────┘
-       │ 1:1
-       ▼
-┌─────────────┐      ┌──────────────┐
-│organizations│──────│  ai_usages   │
-└─────────────┘ 1:N  └──────┬───────┘
-                           │ 1:N
-              ┌────────────┼────────────┐
-              ▼            ▼            ▼
-       ┌──────────┐  ┌──────────┐  ┌──────────┐
-       │ responses│  │responses │  │assessments│
-       └──────────┘  └──────────┘  └──────────┘
-```
+1. **Inscription** → Création de compte Breeze
+2. **Onboarding** → Création de l'organisation (nom, SIRET, secteur)
+3. **Déclaration** → Ajout des usages IA de l'entreprise (type, domaine, description)
+4. **Questionnaire** → Réponses aux questions dynamiques selon le type d'IA
+5. **Classification** → Évaluation automatique par le moteur AiActClassifier
+6. **Rapport** → Génération du PDF avec snapshot figé (valeur légale)
+7. **Paiement** → Stripe Checkout (ou mode dev gratuit)
 
-### Tables de la base de données
+## ✦ Moteur de classification AI Act
 
-| Table | Description |
-|-------|-------------|
-| `users` | Utilisateurs (Laravel Breeze) |
-| `organizations` | PME clientes (1 user = 1 org) |
-| `ai_usages` | Outils IA déclarés par l'organisation |
-| `responses` | Réponses au questionnaire par usage IA |
-| `assessments` | Résultats de classification AI Act |
+Le service `AiActClassifier` implémente la matrice de décision officielle :
 
-## 📊 Avancement du projet
+### Niveaux
 
-### ✅ Semaines 1-2 : Setup initial (TERMINÉ)
+| Niveau | Description | Délai | Sanction max (PME) |
+|--------|-------------|-------|-------------------|
+| Inacceptable | Pratiques prohibées (Art. 5) | Interdit depuis le 02/02/2025 | 35 M€ ou 7 % CA |
+| Haut risque | Systèmes critiques (Annexe III) | 02/08/2026 | 15 M€ ou 3 % CA |
+| Risque limité | Chatbots, deepfakes (Art. 50) | 02/02/2027 | — |
+| Risque minimal | Autres systèmes | Aucune obligation AI Act | — |
 
-- [x] Initialisation projet Laravel 11
-- [x] Installation Laravel Breeze (Blade + Tailwind)
-- [x] Configuration MySQL via Docker
-- [x] Création des migrations (5 tables)
-- [x] Modèles Eloquent avec relations
-- [x] Factories et Seeders
-- [x] Page d'accueil avec navbar/footer
-- [x] Authentification fonctionnelle
+### Règles (22 au total)
 
-### ✅ Semaine 3 : Formulaire de déclaration (TERMINÉ)
+- **8 règles INACCEPTABLE** : notation sociale, subliminal, biométrie temps réel, profiling sensible, etc.
+- **8 règles HAUT_RISQUE** : recrutement, éducation, crédit, santé, biométrie, infrastructures, justice, migration
+- **6 règles RISQUE_LIMITE** : chatbots, émotions, catégorisation biométrique, deepfakes, synthèse
+- **1 règle DEFAULT** : aucun critère satisfait = risque minimal
 
-- [x] Routes dashboard / profile / organization / usages
-- [x] Onboarding Organization depuis le dashboard (1 user = 1 PME)
-- [x] CRUD complet des usages IA (Route::resource)
-- [x] Form Requests dédiés (StoreOrganization, StoreAiUsage, UpdateAiUsage)
-- [x] AiUsagePolicy (isolation stricte entre organisations)
-- [x] Vues Blade (index, create, edit, show + partial _form)
-- [x] Pest 4 + tests Feature (Dashboard, Organization, AiUsage)
-- [x] Tests sécurité IDOR cross-organisation (4 cas : show/edit/update/delete)
-- [x] Migration : `siret` et `user_id` uniques en BDD
+Algorithme : premier match gagnant dans l'ordre (INACCEPTABLE > HAUT_RISQUE > RISQUE_LIMITE > DEFAULT) + alertes RGPD complémentaires.
 
-### ✅ Semaine 4 : Questionnaire dynamique (TERMINÉ)
+## ✦ Génération PDF
 
-- [x] Questions dynamiques selon le type d'IA (config/questionnaire.php — communes + spécifiques par type)
-- [x] Sauvegarde des réponses (upsert via contrainte unique `ai_usage_id, variable_key`)
-- [x] Navigation entre les questions (formulaire unique multi-sections, pré-rempli si déjà répondu)
-- [x] FormRequest dynamique (StoreQuestionnaireRequest) avec `Rule::in` sur les options
-- [x] Tests Pest (10) : affichage par type, persistence, upsert, validation, isolation tenant cross-org
+Le projet utilise **spatie/browsershot** (headless Chrome/Chromium via Puppeteer) pour générer des PDF identiques au rendu web, contrairement à DomPDF qui ne supporte ni flexbox ni les variables CSS.
 
-### ✅ Semaine 5 : Moteur de classification (TERMINÉ)
+- Template standalone dans `resources/views/reports/pdf.blade.php`
+- Logo embarqué en base64
+- Détection automatique du navigateur (Chrome sur macOS, Chromium sur Linux/Docker)
+- Sections : couverture, synthèse exécutive, détail par usage, plan d'action 30/60/90, checklist, zones grises, disclaimer
 
-- [x] Encodage de la matrice AI Act dans `config/ai_act_rules.php` (Article 5, Annexe III, Article 50, fallback)
-- [x] Service `App\Services\AiActClassifier` — algorithme à 4 niveaux : INACCEPTABLE / HAUT_RISQUE / RISQUE_LIMITE / RISQUE_MINIMAL
-- [x] Évaluation séquentielle (priorité au plus sévère) + alertes RGPD complémentaires (Article 9, Article 22)
-- [x] `AssessmentController` — POST `/usages/{aiUsage}/assessment` calcule + persiste l'évaluation
-- [x] UI : badge coloré + raison + article + alertes sur la fiche usage
-- [x] Tests Pest (14) : couverture des 4 niveaux + priorité INACCEPTABLE > HAUT_RISQUE + alertes + isolation tenant
+## ✦ Docker
 
-### ✅ Semaine 6 : Génération PDF + Paiement (TERMINÉ)
+### Image autonome
 
-- [x] Génération du rapport PDF (`barryvdh/laravel-dompdf`) — synthèse + détail par usage avec niveau, raison, alertes
-- [x] Snapshot figé sur `Report::snapshot` (JSON) → préservé même si l'usage est modifié/supprimé après
-- [x] Intégration Stripe Checkout (`stripe/stripe-php`) — session de paiement one-shot, prix configurable via `STRIPE_REPORT_PRICE`
-- [x] Mode dev (sans `STRIPE_SECRET` configuré) : paiement court-circuité pour faciliter les tests bout-en-bout
-- [x] Historique des rapports (`/reports`) avec statut payé/en attente
-- [x] Téléchargement PDF verrouillé tant que `paid_at` est nul (HTTP 402)
-- [x] Tests Pest (9) : checkout en mode dev, capture snapshot, gating PDF, isolation tenant cross-org
+Le `Dockerfile` build une image self-contained avec tout le nécessaire :
 
-### 📅 Semaine 7-8 : Finalisation
+- PHP 8.4 + extensions (pdo_sqlite, gd, intl, bcmath, zip, exif)
+- Node.js 20 + Chromium (pour le rendu PDF)
+- Dépendances Composer installées au build (`--no-dev`)
+- Assets frontend compilés (Vite build)
 
-- [ ] Pages légales (CGV, confidentialité)
-- [ ] Tests end-to-end
-- [ ] Déploiement OVH/Infomaniak
-- [ ] Beta avec design partner
+### docker-compose.yml
 
-## 👥 Comptes de test
+Pour le développement avec bind mount et volumes persistants (`vendor`, `node_modules`).
 
-Après avoir lancé `php artisan db:seed` :
+### entrypoint.sh
 
-| Email | Mot de passe |
-|-------|--------------|
-| test@example.com | password |
-| demo@example.com | password |
+Au démarrage du conteneur :
+1. Crée `.env` depuis `.env.example` si absent
+2. Génère `APP_KEY`
+3. Installe les dépendances si les volumes sont vides (fallback dev)
+4. Crée la base SQLite, migrations, seed (uniquement si base vierge)
+5. Démarre `php artisan serve`
 
-## 🔧 Commandes utiles
+## ✦ Configuration Stripe
 
-```bash
-# Voir toutes les routes
-php artisan route:list
-
-# Clear cache
-php artisan cache:clear
-php artisan config:clear
-php artisan view:clear
-
-# Lancer les tests (Pest)
-./vendor/bin/pest
-# ou via Laravel
-php artisan test
-
-# Lancer un seul fichier de test
-./vendor/bin/pest tests/Feature/AiUsageTest.php
-
-# Formatter le code
-./vendor/bin/pint
-```
-
-## 🔐 Sécurité
-
-L'application traite des données sensibles de PME (déclarations d'usages IA, SIRET).
-Quelques garde-fous structurels :
-
-- **Isolation tenant stricte** : `AiUsagePolicy` empêche tout accès croisé entre organisations.
-  Les tests `tests/Feature/AiUsageTest.php` couvrent les 4 vecteurs IDOR (show, edit, update, delete).
-- **Pas de mass assignment des FK** : `organization_id` (AiUsage) et `user_id` (Organization)
-  sont volontairement hors de `$fillable`. Les FK sont injectées via les relations Eloquent.
-- **Contraintes BDD** : `user_id` unique sur `organizations` (1 user = 1 PME), `siret` unique.
-- **CSRF** : protection native Laravel sur tous les formulaires Blade.
-- **Validation** : enums stricts via Form Requests (jamais de validation inline).
-
-## 📝 Conventions de code
-
-- **Langue** : Commentaires et textes en français
-- **Models** : Singulier (ex: `AiUsage`)
-- **Tables** : Pluriel (ex: `ai_usages`)
-- **Type hints** : Strict (`declare(strict_types=1)`)
-- **Validation** : Form Requests (pas de validation inline)
-
-## 💳 Configuration Stripe (paiement des rapports)
-
-L'intégration Stripe Checkout est branchée mais inactive par défaut.
-Tant que `STRIPE_SECRET` est vide dans `.env`, le paiement est court-circuité :
-le rapport est généré et marqué `paid_at = now()` sans appel à Stripe.
-
-Pour activer le paiement réel :
+Le paiement Stripe est optionnel. En l'absence de `STRIPE_SECRET`, les rapports sont générés gratuitement en mode dev.
 
 ```env
-STRIPE_SECRET=sk_test_...    # clé secrète Stripe (test ou live)
+# Activation du paiement
+STRIPE_SECRET=sk_test_...
 STRIPE_CURRENCY=eur
-STRIPE_REPORT_PRICE=4900     # en centimes (49 €)
+STRIPE_REPORT_PRICE=4900     # 49 € en centimes
 ```
 
-## 📄 Licence
+## ✦ Tests (102 tests — 290 assertions)
 
-Projet propriétaire - Tous droits réservés
+```bash
+# Tout lancer
+php artisan test
+
+# Par module
+php artisan test --filter="AiUsage"
+php artisan test --filter="Report"
+php artisan test --filter="télécharge le PDF"
+```
+
+| Module | Tests | Couverture |
+|--------|-------|------------|
+| AiUsage | ~20 | CRUD + 4 vecteurs IDOR (isolation tenant) |
+| Questionnaire | ~10 | Questions dynamiques, persistence, upsert, validation |
+| Assessment | ~14 | Classification 4 niveaux, alertes, isolation |
+| Matrice AI Act | 5 | Scénarios Annexe III (tests de cohérence) |
+| Report | ~9 | Checkout, snapshot, PDF, tenant isolation, contenus conditionnels |
+| Dashboard | ~3 | Affichage flux tendu |
+| Auth | ~35 | Breeze (par défaut) |
+
+## ✦ Sécurité
+
+- **Isolation tenant stricte** : `AiUsagePolicy` + contrainte `user_id` UNIQUE sur `organizations`
+- **Snapshot figé** : le rapport stocke un JSON immuable des données au moment de la génération
+- **Pas de mass assignment** : les FK sont injectées via les relations Eloquent
+- **Validation** : enums stricts via Form Requests, jamais de validation inline
+- **CSRF** : natif Laravel sur tous les formulaires
+
+## ✦ Conventions
+
+- Langue : français (commentaires, textes UI, documentation)
+- Modèles : singulier (`AiUsage`) — Tables : pluriel (`ai_usages`)
+- PHP : `declare(strict_types=1)` partout
+- Tests : Pest 4 avec helper functions (`userWithOrgAndUsage()`, `usageWithAnswers()`)
+
+## ✦ Licence
+
+Projet propriétaire — Tous droits réservés
 
 ---
 
-**Projet développé par** : tomtimlt  
-**Contact** : thomas.lhostete@viacesi.fr
+**Projet développé par** : tomtimlt · **Contact** : thomas.lhostete@viacesi.fr
