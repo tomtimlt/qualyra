@@ -1,0 +1,50 @@
+version: 2
+updates:
+  # PHP (Composer)
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "dev"
+    labels:
+      - "dependencies"
+      - "php"
+    groups:
+      patch-minor:
+        applies-to: version-updates
+        update-types:
+          - "patch"
+          - "minor"
+      major:
+        applies-to: version-updates
+        update-types:
+          - "major"
+
+  # JavaScript (npm)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "dev"
+    labels:
+      - "dependencies"
+      - "javascript"
+    groups:
+      patch-minor:
+        applies-to: version-updates
+        update-types:
+          - "patch"
+          - "minor"
+      major:
+        applies-to: version-updates
+        update-types:
+          - "major"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "infra"

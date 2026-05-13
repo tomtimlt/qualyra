@@ -1,0 +1,45 @@
+# Labeler — auto-label des PR selon les fichiers modifiés
+# Utilisé par .github/workflows/labeler.yml (quand activé)
+
+version: 1
+
+labels:
+  - label: "hot-spot"
+    files:
+      - "config/ai_act_rules.php"
+      - "config/questionnaire.php"
+      - "config/report_templates.php"
+      - "database/seeders/*"
+
+  - label: "core"
+    files:
+      - "app/Services/*"
+
+  - label: "frontend"
+    files:
+      - "resources/views/**/*"
+      - "resources/css/**/*"
+      - "resources/js/**/*"
+
+  - label: "migration"
+    files:
+      - "database/migrations/*"
+
+  - label: "infra"
+    files:
+      - ".github/**/*"
+      - "docker/**/*"
+      - "Dockerfile"
+      - "docker-compose.yml"
+
+  - label: "docs"
+    files:
+      - "docs/**/*"
+      - "AGENTS.md"
+      - "CONTRIBUTING.md"
+      - "CHANGELOG.md"
+      - "README.md"
+
+  - label: "tests"
+    files:
+      - "tests/**/*"

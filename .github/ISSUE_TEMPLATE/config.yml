@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: AGENTS.md — Guide IA universel
+    url: https://github.com/tomtimlt/ai-assistant/blob/dev/AGENTS.md
+    about: Lire avant de créer une issue (contexte projet, hot spots, protocoles)
+  - name: docs/AI_GUIDE.md — Guide IA détaillé
+    url: https://github.com/tomtimlt/ai-assistant/blob/dev/docs/AI_GUIDE.md
+    about: Exemples concrets de modifications
+  - name: docs/MAP.md — Carte du projet
+    url: https://github.com/tomtimlt/ai-assistant/blob/dev/docs/MAP.md
+    about: Structure exhaustive du projet

@@ -3,9 +3,10 @@
 *.blade.php diff=html
 *.css diff=css
 *.html diff=html
-*.md diff=markdown
+*.md diff=markdown linguist-detectable=true
 *.php diff=php
 
 /.github export-ignore
+AGENTS.md export-ignore
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore

@@ -1,0 +1,67 @@
+name: Demande de fonctionnalité
+description: Nouvelle fonctionnalité ou modification
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problème à résoudre
+      description: Quel est le besoin ou le problème ?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution proposée
+      description: Comment résoudre le problème ?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives envisagées
+      description: Autres approches possibles
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      description: Quelle couche est concernée ?
+      multiple: true
+      options:
+        - Frontend (Blade/Tailwind/Alpine)
+        - Backend (PHP/Laravel)
+        - Configuration (AI Act / Questionnaire)
+        - Documentation
+        - Infrastructure (GitHub/Docker/CI)
+    validations:
+      required: true
+  - type: dropdown
+    id: ai_assistance
+    attributes:
+      label: Assistance IA
+      description: Cette tâche sera-t-elle confiée à une IA ?
+      options:
+        - Oui
+        - Non
+        - Peut-être / À déterminer
+  - type: checkboxes
+    id: hot_spots
+    attributes:
+      label: Hot spots potentiellement impactés
+      description: Cochez si la modification touche ces zones sensibles
+      options:
+        - label: config/ai_act_rules.php
+        - label: config/questionnaire.php
+        - label: config/report_templates.php
+        - label: app/Services/AiActClassifier.php
+        - label: app/Services/ReportContentBuilder.php
+        - label: app/Services/ReportSnapshotBuilder.php
+        - label: app/Policies/AiUsagePolicy.php
+        - label: database/seeders/DemoSeeder.php
+        - label: resources/views/reports/pdf.blade.php
+  - type: textarea
+    id: ai_context
+    attributes:
+      label: Contexte additionnel pour l'IA
+      description: Toute information utile pour l'agent IA qui traitera cette tâche
+      placeholder: Fichiers à lire, conventions à respecter, tests à lancer...
