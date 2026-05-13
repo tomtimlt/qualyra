@@ -29,3 +29,6 @@ storage/*.html
 storage/*.pdf
 *.zip
 cervus-handoff/
+scripts/*.log
+.cache/
+*.local.md
