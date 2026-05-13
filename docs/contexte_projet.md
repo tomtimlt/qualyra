@@ -60,7 +60,7 @@ Documents produits et présents dans le workspace :
 
 ### Ce qui reste à faire (cadrage)
 
-- Prompt 5 : textes du rapport PDF (paragraphes types par niveau de risque, encadrés explicatifs des obligations, plan 30/60/90 jours, disclaimer juridique)
+- Prompt 5 : textes du rapport PDF (paragraphes types par niveau de risque, encadrés explicatifs des obligations, plan 1 mois / 6 mois / 1 an, disclaimer juridique)
 - Validation par les 5 tests de cohérence de l'annexe 3 de la matrice
 
 ### Ce qui reste à faire (développement)

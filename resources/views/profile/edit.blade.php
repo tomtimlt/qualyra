@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        Cervus / <b>Profil</b>
+        Qualyra / <b>Profil</b>
     </x-slot>
 
     <div class="profile-page">

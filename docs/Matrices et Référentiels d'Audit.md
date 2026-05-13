@@ -20,7 +20,7 @@ Le cadre d'analyse englobe les deux piliers indissociables de la régulation tec
 
 Il est impératif d'énoncer clairement les limites inhérentes à cette restitution. Ce rapport constitue une photographie opérationnelle à un instant précis, basée sur la règle du « _garbage in, garbage out_ » : la fiabilité de ces conclusions dépend intrinsèquement de l'exhaustivité des déclarations initiales. Ce document constitue un outil d'aide à la décision stratégique et ne saurait en aucun cas se substituer à une consultation juridique formelle. La réglementation technologique étant soumise à de fréquentes évolutions, l'intervention d'un avocat spécialisé ou d'un Délégué à la Protection des Données (DPO) demeure fortement recommandée pour valider les implémentations complexes.
 
-Pour une lecture optimale, il est conseillé de parcourir en priorité la synthèse exécutive, qui consolide le niveau de risque global, avant de s'approprier le plan d'action séquentiel à 30, 60 et 90 jours. Ce dernier constitue l'outil central permettant à {nom_pme} de sécuriser ses processus tout en maintenant son agilité technologique.
+Pour une lecture optimale, il est conseillé de parcourir en priorité la synthèse exécutive, qui consolide le niveau de risque global, avant de s'approprier le plan d'action séquentiel à 1 mois, 6 mois et 1 an. Ce dernier constitue l'outil central permettant à {nom_pme} de sécuriser ses processus tout en maintenant son agilité technologique.
 
 ### 2. Synthèse Exécutive Template
 
@@ -86,7 +86,7 @@ La direction est invitée à mobiliser les ressources nécessaires pour amorcer 
 
 **Charte d'usage interne IA** La démocratisation de l'IA générative a engendré le phénomène du « Shadow AI » : l'utilisation non encadrée d'outils par les collaborateurs (copier-coller de documents sensibles, saisie de données clients). Ce comportement expose gravement l'entreprise à des violations de confidentialité. Pour pallier ce risque, la CNIL recommande la rédaction et la diffusion immédiate d'une Charte d'utilisation de l'IA. Ce document, intégré au règlement intérieur, a pour fonction de définir clairement les outils logiciels approuvés, d'édicter l'interdiction stricte de soumettre des données à caractère personnel à des modèles publics, et de rappeler aux équipes que la responsabilité juridique et éditoriale du résultat produit incombe systématiquement à l'employé qui le valide.
 
-### 5. Plan d'Action Stratégique 30 / 60 / 90 Jours
+### 5. Plan d'Action Stratégique 1 mois / 6 mois / 1 an
 
 **[Ce bloc est conçu pour transformer les constats juridiques en une feuille de route managériale actionnable, assignant des responsabilités claires.]**
 
@@ -94,11 +94,11 @@ L'accumulation des exigences issues du RGPD et de l'AI Act requiert une gestion 
 
 |**Échéance**|**Niveau d'urgence**|**Objectif principal**|**Acteurs impliqués**|
 |---|---|---|---|
-|**30 Jours**|**P0 (Urgent & Bloquant)**|Neutraliser les risques d'amendes majeures et les fuites de données immédiates.|Direction Générale, DSI|
-|**60 Jours**|**P1 (Important & Structurant)**|Établir la documentation légale (RGPD) et le dialogue social (AI Act).|DSI, RH, Référent DPO|
-|**90 Jours**|**P2 (Consolidation)**|Déployer la traçabilité technique et la formation continue des équipes.|DSI, RH, Managers|
+|**1 mois**|**P0 (Urgent & Bloquant)**|Neutraliser les risques d'amendes majeures et les fuites de données immédiates.|Direction Générale, DSI|
+|**6 mois**|**P1 (Important & Structurant)**|Établir la documentation légale (RGPD) et le dialogue social (AI Act).|DSI, RH, Référent DPO|
+|**1 an**|**P2 (Consolidation)**|Déployer la traçabilité technique et la formation continue des équipes.|DSI, RH, Managers|
 
-**Phase 1 : Actions à 30 jours (Mesures P0 - Urgentes et Bloquantes)**
+**Phase 1 : Actions à 1 mois (Mesures P0 - Urgentes et Bloquantes)**
 
 Ce premier mois est consacré au « triage ». Il s'agit de purger l'organisation de toute pratique prohibée et de sécuriser le périmètre contractuel.
 
@@ -109,9 +109,9 @@ Ce premier mois est consacré au « triage ». Il s'agit de purger l'organisatio
 - **Diffusion de la Charte IA :** La Direction doit diffuser une politique interne de tolérance zéro concernant le _Shadow AI_. Cette note courte doit lister les générateurs d'IA autorisés et proscrire la saisie de données confidentielles ou nominatives sur des plateformes grand public.
     
 
-**Phase 2 : Actions à 60 jours (Mesures P1 - Importantes et Structurantes)**
+**Phase 2 : Actions à 6 mois (Mesures P1 - Importantes et Structurantes)**
 
-Le deuxième mois vise à produire la documentation opposable aux autorités de contrôle et à structurer l'information aux parties prenantes.
+Le premier semestre vise à produire la documentation opposable aux autorités de contrôle et à structurer l'information aux parties prenantes.
 
 - **Saisine et information du CSE :** Conformément à l'Article 26 paragraphe 7 de l'AI Act, les RH doivent inscrire à l'ordre du jour du Comité Social et Économique l'introduction des systèmes d'IA à haut risque touchant au personnel, afin d'informer officiellement les représentants des travailleurs de leurs modalités d'application.
     
@@ -120,9 +120,9 @@ Le deuxième mois vise à produire la documentation opposable aux autorités de 
 - **Mise à jour de la transparence externe :** La DSI doit actualiser les bannières web et les politiques de confidentialité pour rendre évidente l'utilisation de chatbots et intégrer les étiquettes signalant la nature synthétique des contenus générés (textes ou images d'intérêt public).
     
 
-**Phase 3 : Actions à 90 jours (Mesures P2 - Consolidation et Processus)**
+**Phase 3 : Actions à 1 an (Mesures P2 - Consolidation et Processus)**
 
-La dernière étape inscrit la conformité technologique dans le fonctionnement routinier de l'entreprise.
+La première année s'achève en inscrivant la conformité technologique dans le fonctionnement routinier de l'entreprise.
 
 - **Infrastructure de Journalisation (Logs) :** La DSI doit paramétrer les systèmes d'information pour capturer de manière inaltérable les journaux d'événements des IA à haut risque, en automatisant leur conservation sécurisée pour une durée stricte de six mois minimum, garantissant ainsi la traçabilité des opérations.
     
@@ -230,7 +230,7 @@ Le cadre d'analyse englobe les deux piliers indissociables de la régulation tec
 
 Il est impératif d'énoncer clairement les limites inhérentes à cette restitution. Ce rapport constitue une photographie opérationnelle à un instant précis, basée sur la règle du « _garbage in, garbage out_ » : la fiabilité de ces conclusions dépend intrinsèquement de l'exhaustivité des déclarations initiales. Ce document constitue un outil d'aide à la décision stratégique et ne saurait en aucun cas se substituer à une consultation juridique formelle. La réglementation technologique étant soumise à de fréquentes évolutions, l'intervention d'un avocat spécialisé ou d'un Délégué à la Protection des Données (DPO) demeure fortement recommandée pour valider les implémentations complexes.
 
-Pour une lecture optimale, il est conseillé de parcourir en priorité la synthèse exécutive, qui consolide le niveau de risque global, avant de s'approprier le plan d'action séquentiel à 30, 60 et 90 jours. Ce dernier constitue l'outil central permettant à Innovia Conseil SAS de sécuriser ses processus tout en maintenant son agilité technologique.
+Pour une lecture optimale, il est conseillé de parcourir en priorité la synthèse exécutive, qui consolide le niveau de risque global, avant de s'approprier le plan d'action séquentiel à 1 mois, 6 mois et 1 an. Ce dernier constitue l'outil central permettant à Innovia Conseil SAS de sécuriser ses processus tout en maintenant son agilité technologique.
 
 ---
 
@@ -303,17 +303,17 @@ _Focus sur vos obligations de conformité pour cet outil :_
 
 ---
 
-### Plan d'Action Stratégique 30 / 60 / 90 Jours
+### Plan d'Action Stratégique 1 mois / 6 mois / 1 an
 
 L'accumulation des exigences issues du RGPD et de l'AI Act requiert une gestion de projet méthodique. Il est illusoire d'envisager une mise en conformité instantanée. La stratégie recommandée pour Innovia Conseil SAS s'articule autour d'un plan d'action séquencé en trois phases, permettant de traiter les urgences vitales avant de consolider les processus de gouvernance sur le long terme. Cette feuille de route nécessite l'implication conjointe de la Direction, de la Direction des Systèmes d'Information (DSI) et des Ressources Humaines (RH).
 
 |**Échéance**|**Niveau d'urgence**|**Objectif principal**|**Acteurs impliqués**|
 |---|---|---|---|
-|**30 Jours**|**P0 (Urgent & Bloquant)**|Neutraliser les risques d'amendes majeures et les fuites de données immédiates.|Direction Générale, DSI|
-|**60 Jours**|**P1 (Important & Structurant)**|Établir la documentation légale (RGPD) et le dialogue social (AI Act).|DSI, RH, Référent DPO|
-|**90 Jours**|**P2 (Consolidation)**|Déployer la traçabilité technique et la formation continue des équipes.|DSI, RH, Managers|
+|**1 mois**|**P0 (Urgent & Bloquant)**|Neutraliser les risques d'amendes majeures et les fuites de données immédiates.|Direction Générale, DSI|
+|**6 mois**|**P1 (Important & Structurant)**|Établir la documentation légale (RGPD) et le dialogue social (AI Act).|DSI, RH, Référent DPO|
+|**1 an**|**P2 (Consolidation)**|Déployer la traçabilité technique et la formation continue des équipes.|DSI, RH, Managers|
 
-**Phase 1 : Actions à 30 jours (Mesures P0 - Urgentes et Bloquantes)**
+**Phase 1 : Actions à 1 mois (Mesures P0 - Urgentes et Bloquantes)**
 
 Ce premier mois est consacré au « triage ». Il s'agit de purger l'organisation de toute pratique prohibée et de sécuriser le périmètre contractuel.
 
@@ -324,9 +324,9 @@ Ce premier mois est consacré au « triage ». Il s'agit de purger l'organisatio
 - **Diffusion de la Charte IA :** La Direction doit diffuser une politique interne de tolérance zéro concernant le _Shadow AI_. Cette note courte doit lister les générateurs d'IA autorisés et proscrire la saisie de données confidentielles sur des plateformes grand public.
     
 
-**Phase 2 : Actions à 60 jours (Mesures P1 - Importantes et Structurantes)**
+**Phase 2 : Actions à 6 mois (Mesures P1 - Importantes et Structurantes)**
 
-Le deuxième mois vise à produire la documentation opposable aux autorités de contrôle et à structurer l'information aux parties prenantes.
+Le premier semestre vise à produire la documentation opposable aux autorités de contrôle et à structurer l'information aux parties prenantes.
 
 - **Saisine et information du CSE :** Conformément à l'Article 26 paragraphe 7 de l'AI Act, les RH doivent inscrire à l'ordre du jour du Comité Social et Économique l'introduction de l'outil de recrutement à haut risque, afin d'informer officiellement les représentants des travailleurs de ses modalités d'application.
     
@@ -335,9 +335,9 @@ Le deuxième mois vise à produire la documentation opposable aux autorités de 
 - **Mise à jour de la transparence externe :** La DSI doit actualiser les bannières web et la politique de confidentialité pour rendre évidente l'utilisation du chatbot client.
     
 
-**Phase 3 : Actions à 90 jours (Mesures P2 - Consolidation et Processus)**
+**Phase 3 : Actions à 1 an (Mesures P2 - Consolidation et Processus)**
 
-La dernière étape inscrit la conformité technologique dans le fonctionnement routinier de l'entreprise.
+La première année s'achève en inscrivant la conformité technologique dans le fonctionnement routinier de l'entreprise.
 
 - **Infrastructure de Journalisation (Logs) :** La DSI doit paramétrer les systèmes d'information pour capturer de manière inaltérable les journaux d'événements de l'IA de recrutement, en automatisant leur conservation sécurisée pour une durée stricte de six mois minimum.
     

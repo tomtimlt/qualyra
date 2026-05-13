@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <span>Cervus</span> / <b>Tableau de bord</b>
+        <span>Qualyra</span> / <b>Tableau de bord</b>
     </x-slot>
 
     @php
@@ -102,7 +102,23 @@
                     uniquement pour qualifier le contexte de l'audit (taille, secteur, SIRET).
                 </p>
                 <div style="margin-top: 32px; display: flex; gap: 12px;">
-                    <a class="btn btn--primary btn--lg" href="{{ route('organization.create') }}">Créer mon organisation</a>
+                    <a class="btn btn--accent btn--lg btn--uiverse" href="{{ route('organization.create') }}">
+                        <div class="wrapper">
+                            <span>Créer mon organisation</span>
+                            <div class="circle circle-12"></div>
+                            <div class="circle circle-11"></div>
+                            <div class="circle circle-10"></div>
+                            <div class="circle circle-9"></div>
+                            <div class="circle circle-8"></div>
+                            <div class="circle circle-7"></div>
+                            <div class="circle circle-6"></div>
+                            <div class="circle circle-5"></div>
+                            <div class="circle circle-4"></div>
+                            <div class="circle circle-3"></div>
+                            <div class="circle circle-2"></div>
+                            <div class="circle circle-1"></div>
+                        </div>
+                    </a>
                     <a class="btn btn--secondary btn--lg" href="{{ route('home') }}">Voir la méthode</a>
                 </div>
             </div>
@@ -123,7 +139,23 @@
             </div>
             <div class="dashboard-head__actions">
                 <a class="btn btn--secondary" href="{{ route('reports.index') }}">Mes rapports</a>
-                <a class="btn btn--primary" href="{{ route('usages.create') }}">+ Déclarer un usage</a>
+                <a class="btn btn--accent btn--uiverse" href="{{ route('usages.create') }}">
+                    <div class="wrapper">
+                        <span>+ Déclarer un usage</span>
+                        <div class="circle circle-12"></div>
+                        <div class="circle circle-11"></div>
+                        <div class="circle circle-10"></div>
+                        <div class="circle circle-9"></div>
+                        <div class="circle circle-8"></div>
+                        <div class="circle circle-7"></div>
+                        <div class="circle circle-6"></div>
+                        <div class="circle circle-5"></div>
+                        <div class="circle circle-4"></div>
+                        <div class="circle circle-3"></div>
+                        <div class="circle circle-2"></div>
+                        <div class="circle circle-1"></div>
+                    </div>
+                </a>
             </div>
         </div>
 
@@ -207,7 +239,23 @@
                             Aucun usage d'IA n'est encore déclaré pour <b>{{ $organization->name }}</b>.
                             Cliquez sur « Déclarer un usage » pour ajouter votre premier outil.
                         </p>
-                        <a class="btn btn--primary" href="{{ route('usages.create') }}">+ Déclarer un usage</a>
+                        <a class="btn btn--accent btn--uiverse" href="{{ route('usages.create') }}">
+                            <div class="wrapper">
+                                <span>+ Déclarer un usage</span>
+                                <div class="circle circle-12"></div>
+                                <div class="circle circle-11"></div>
+                                <div class="circle circle-10"></div>
+                                <div class="circle circle-9"></div>
+                                <div class="circle circle-8"></div>
+                                <div class="circle circle-7"></div>
+                                <div class="circle circle-6"></div>
+                                <div class="circle circle-5"></div>
+                                <div class="circle circle-4"></div>
+                                <div class="circle circle-3"></div>
+                                <div class="circle circle-2"></div>
+                                <div class="circle circle-1"></div>
+                            </div>
+                        </a>
                     </div>
                 @else
                     <table class="tbl">
@@ -285,10 +333,26 @@
                             @if ($globalLevel === 'INACCEPTABLE')
                                 L'Article 5 impose un arrêt immédiat. Générez le rapport pour disposer du détail réglementaire et du plan de remédiation.
                             @else
-                                Une analyse d'impact (AIPD) est probablement requise. Le rapport contient le détail des obligations et un plan d'action 30/60/90 jours.
+                                Une analyse d'impact (AIPD) est probablement requise. Le rapport contient le détail des obligations et un plan d'action 1 mois / 6 mois / 1 an.
                             @endif
                         </div>
-                        <a class="btn btn--accent" href="{{ route('reports.index') }}" style="margin-top: 12px">Générer le rapport</a>
+                        <a class="btn btn--accent btn--uiverse" href="{{ route('reports.index') }}" style="margin-top: 12px">
+                            <div class="wrapper">
+                                <span>Générer le rapport</span>
+                                <div class="circle circle-12"></div>
+                                <div class="circle circle-11"></div>
+                                <div class="circle circle-10"></div>
+                                <div class="circle circle-9"></div>
+                                <div class="circle circle-8"></div>
+                                <div class="circle circle-7"></div>
+                                <div class="circle circle-6"></div>
+                                <div class="circle circle-5"></div>
+                                <div class="circle circle-4"></div>
+                                <div class="circle circle-3"></div>
+                                <div class="circle circle-2"></div>
+                                <div class="circle circle-1"></div>
+                            </div>
+                        </a>
                     </div>
                 @endif
             </div>

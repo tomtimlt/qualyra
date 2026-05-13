@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <a href="{{ route('organization.show') }}" style="color: inherit; text-decoration: none">Cervus / Organisation</a> / <b>Modifier</b>
+        <a href="{{ route('organization.show') }}" style="color: inherit; text-decoration: none">Qualyra / Organisation</a> / <b>Modifier</b>
     </x-slot>
 
     <div class="form-page">

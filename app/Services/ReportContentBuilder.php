@@ -449,9 +449,9 @@ class ReportContentBuilder
         return [
             'header' => $this->render($tpl['header'], $variables),
             'tableau' => $tpl['tableau'],
-            'phase_30j' => $resolvePhase($tpl['phase_30j']),
-            'phase_60j' => $resolvePhase($tpl['phase_60j']),
-            'phase_90j' => $resolvePhase($tpl['phase_90j']),
+            'phase_1m' => $resolvePhase($tpl['phase_1m']),
+            'phase_6m' => $resolvePhase($tpl['phase_6m']),
+            'phase_1y' => $resolvePhase($tpl['phase_1y']),
         ];
     }
 

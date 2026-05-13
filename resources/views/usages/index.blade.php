@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        Cervus / <b>Mes usages IA</b>
+        Qualyra / <b>Mes usages IA</b>
     </x-slot>
 
     @if (session('status') === 'usage-created')
@@ -35,7 +35,23 @@
                 Cliquez sur un usage pour ouvrir sa fiche, son questionnaire et sa classification.
             </p>
         </div>
-        <a href="{{ route('usages.create') }}" class="btn btn--primary">+ Déclarer un usage</a>
+        <a href="{{ route('usages.create') }}" class="btn btn--accent btn--uiverse">
+            <div class="wrapper">
+                <span>+ Déclarer un usage</span>
+                <div class="circle circle-12"></div>
+                <div class="circle circle-11"></div>
+                <div class="circle circle-10"></div>
+                <div class="circle circle-9"></div>
+                <div class="circle circle-8"></div>
+                <div class="circle circle-7"></div>
+                <div class="circle circle-6"></div>
+                <div class="circle circle-5"></div>
+                <div class="circle circle-4"></div>
+                <div class="circle circle-3"></div>
+                <div class="circle circle-2"></div>
+                <div class="circle circle-1"></div>
+            </div>
+        </a>
     </div>
 
     <div class="surface">
@@ -43,7 +59,23 @@
             <div class="empty-state">
                 <div class="eyebrow">Aucun usage</div>
                 <p>Aucun usage d'IA n'a encore été déclaré pour votre organisation. Cliquez sur « Déclarer un usage » pour commencer.</p>
-                <a class="btn btn--primary" href="{{ route('usages.create') }}">+ Déclarer un usage</a>
+                        <a class="btn btn--accent btn--uiverse" href="{{ route('usages.create') }}">
+                            <div class="wrapper">
+                                <span>+ Déclarer un usage</span>
+                                <div class="circle circle-12"></div>
+                                <div class="circle circle-11"></div>
+                                <div class="circle circle-10"></div>
+                                <div class="circle circle-9"></div>
+                                <div class="circle circle-8"></div>
+                                <div class="circle circle-7"></div>
+                                <div class="circle circle-6"></div>
+                                <div class="circle circle-5"></div>
+                                <div class="circle circle-4"></div>
+                                <div class="circle circle-3"></div>
+                                <div class="circle circle-2"></div>
+                                <div class="circle circle-1"></div>
+                            </div>
+                        </a>
             </div>
         @else
             <table class="tbl">

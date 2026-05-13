@@ -21,7 +21,7 @@ use Illuminate\Database\Seeder;
  *   - 2 RISQUE_MINIMAL : LLM interne (rédaction CR, Copilot dev)
  *
  * IDÉMPOTENT : repasser le seeder purge l'organisation existante de demo@
- * et la recrée à zéro. Ne touche jamais à test@example.com ni à un autre user.
+ * et la recrée à zéro. Ne touche jamais à un autre user.
  */
 class DemoSeeder extends Seeder
 {

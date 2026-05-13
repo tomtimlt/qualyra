@@ -1,4 +1,5 @@
 import './bootstrap';
+import './brain';
 
 import Alpine from 'alpinejs';
 

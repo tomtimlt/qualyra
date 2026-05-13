@@ -167,22 +167,22 @@ return [
     ],
 
     // =========================================================================
-    // 5. Plan d'action 30 / 60 / 90 jours
+    // 5. Plan d'action 1 mois / 6 mois / 1 an
     // =========================================================================
     'plan_action' => [
-        'header' => "L'accumulation des exigences issues du RGPD et de l'AI Act requiert une gestion de projet méthodique. Il est illusoire d'envisager une mise en conformité instantanée. La stratégie recommandée pour {nom_pme} s'articule autour d'un plan d'action séquencé en trois phases, permettant de traiter les urgences vitales avant de consolider les processus de gouvernance sur le long terme. Cette feuille de route nécessite l'implication conjointe de la Direction, de la Direction des Systèmes d'Information (DSI) et des Ressources Humaines (RH).",
+        'header' => "L'accumulation des exigences issues du RGPD et de l'AI Act requiert une gestion de projet méthodique. Il est illusoire d'envisager une mise en conformité instantanée. La stratégie recommandée pour {nom_pme} s'articule autour d'un plan d'action séquencé en trois phases, permettant de traiter les urgences vitales avant de consolider les processus de gouvernance sur le long terme. Cette feuille de route nécessite l'implication conjointe de la Direction, de la Direction des Systèmes d'Information (DSI) et des Ressources Humaines (RH).\n\n⚠️ **Avertissement réglementaire** : Cette planification interne ne reporte pas les échéances impératives fixées par le règlement. Les obligations de l'Article 26 (systèmes à haut risque) et de l'Article 50 (transparence) s'appliquent au plus tard le 2 août 2026, indépendamment du rythme de déploiement choisi par l'entreprise.",
 
         'tableau' => [
-            ['echeance' => '30 jours', 'urgence' => 'P0 (Urgent & Bloquant)', 'objectif' => "Neutraliser les risques d'amendes majeures et les fuites de données immédiates.", 'acteurs' => 'Direction Générale, DSI'],
-            ['echeance' => '60 jours', 'urgence' => 'P1 (Important & Structurant)', 'objectif' => 'Établir la documentation légale (RGPD) et le dialogue social (AI Act).', 'acteurs' => 'DSI, RH, Référent DPO'],
-            ['echeance' => '90 jours', 'urgence' => 'P2 (Consolidation)', 'objectif' => 'Déployer la traçabilité technique et la formation continue des équipes.', 'acteurs' => 'DSI, RH, Managers'],
+            ['echeance' => '1 mois', 'urgence' => 'P0 (Urgent & Bloquant)', 'objectif' => "Neutraliser les risques d'amendes majeures et les fuites de données immédiates.", 'acteurs' => 'Direction Générale, DSI'],
+            ['echeance' => '6 mois', 'urgence' => 'P1 (Important & Structurant)', 'objectif' => 'Établir la documentation légale (RGPD) et le dialogue social (AI Act).', 'acteurs' => 'DSI, RH, Référent DPO'],
+            ['echeance' => '1 an', 'urgence' => 'P2 (Consolidation)', 'objectif' => 'Déployer la traçabilité technique et la formation continue des équipes.', 'acteurs' => 'DSI, RH, Managers'],
         ],
 
         // Actions templates par phase. Chaque action déclare ses conditions
         // d'apparition (mêmes prédicats que les encadrés, évalués à l'échelle
         // du rapport entier). Les templates {usages_*_list} sont substitués
         // par ReportContentBuilder.
-        'phase_30j' => [
+        'phase_1m' => [
             'intro' => "Ce premier mois est consacré au « triage ». Il s'agit de purger l'organisation de toute pratique prohibée et de sécuriser le périmètre contractuel.",
             'actions' => [
                 [
@@ -209,8 +209,8 @@ return [
             ],
         ],
 
-        'phase_60j' => [
-            'intro' => 'Le deuxième mois vise à produire la documentation opposable aux autorités de contrôle et à structurer l\'information aux parties prenantes.',
+        'phase_6m' => [
+            'intro' => 'Le premier semestre vise à produire la documentation opposable aux autorités de contrôle et à structurer l\'information aux parties prenantes.',
             'actions' => [
                 [
                     'titre' => 'Saisine et information du CSE',
@@ -236,12 +236,12 @@ return [
             ],
         ],
 
-        'phase_90j' => [
-            'intro' => 'La dernière étape inscrit la conformité technologique dans le fonctionnement routinier de l\'entreprise.',
+        'phase_1y' => [
+            'intro' => "La première année s'achève en inscrivant la conformité technologique dans le fonctionnement routinier de l'entreprise.",
             'actions' => [
                 [
                     'titre' => 'Infrastructure de Journalisation (Logs)',
-                    'contenu' => "La DSI doit paramétrer les systèmes d'information pour capturer de manière inaltérable les journaux d'événements des IA à haut risque, en automatisant leur conservation sécurisée pour une durée stricte de six mois minimum (Art. 26 §6).",
+                    'contenu' => "La DSI doit paramétrer les systèmes d'information pour capturer de manière inaltérable les journaux d'événements des IA à haut risque, en automatisant leur conservation sécurisée pour une durée de six mois glissants minimum (Art. 26 §6).",
                     'effort' => 'fort',
                     'responsable' => 'DSI',
                     'declenche_si' => ['report:has_haut_risque'],

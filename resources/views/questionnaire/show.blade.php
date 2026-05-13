@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <a href="{{ route('usages.index') }}" style="color: inherit; text-decoration: none">Cervus / Mes usages IA</a>
+        <a href="{{ route('usages.index') }}" style="color: inherit; text-decoration: none">Qualyra / Mes usages IA</a>
         / <a href="{{ route('usages.show', $aiUsage) }}" style="color: inherit; text-decoration: none">{{ \Illuminate\Support\Str::limit($aiUsage->name, 30) }}</a>
         / <b>Questionnaire</b>
     </x-slot>

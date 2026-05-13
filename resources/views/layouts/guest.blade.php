@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'Cervus' }}</title>
-    <link rel="icon" type="image/png" href="{{ asset('cervus/brand/cervus-mark-original.png') }}">
-    <link rel="stylesheet" href="{{ asset('cervus/css/cervus.css') }}">
+    <title>{{ $title ?? 'Qualyra' }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('qualyra/brand/qualyra-mark-original.png') }}">
+    <link rel="stylesheet" href="{{ asset('qualyra/css/qualyra.css') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="guest">
@@ -15,8 +15,8 @@
 
 <div class="guest__shell">
     <a href="{{ route('dashboard') }}" class="guest__brand">
-        <img src="{{ asset('cervus/brand/cervus-mark-original.png') }}" alt="">
-        <div class="brand-word">Cervus<span class="dot">.</span></div>
+        <img src="{{ asset('qualyra/brand/qualyra-mark-original.png') }}" alt="">
+        <div class="brand-word">Qualyra<span class="dot">.</span></div>
     </a>
 
     <div class="guest__card">

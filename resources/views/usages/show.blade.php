@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <a href="{{ route('usages.index') }}" style="color: inherit; text-decoration: none">Cervus / Mes usages IA</a> / <b>{{ \Illuminate\Support\Str::limit($aiUsage->name, 40) }}</b>
+        <a href="{{ route('usages.index') }}" style="color: inherit; text-decoration: none">Qualyra / Mes usages IA</a> / <b>{{ \Illuminate\Support\Str::limit($aiUsage->name, 40) }}</b>
     </x-slot>
 
     @if (session('status') === 'questionnaire-saved')
@@ -76,8 +76,22 @@
                             Pas encore renseigné. Répondez aux questions pour permettre le calcul du niveau de risque.
                         @endif
                     </p>
-                    <a href="{{ route('usages.questionnaire.show', $aiUsage) }}" class="btn btn--primary">
-                        {{ $hasResponses ? 'Modifier mes réponses' : 'Répondre au questionnaire' }}
+                    <a href="{{ route('usages.questionnaire.show', $aiUsage) }}" class="btn btn--accent btn--uiverse">
+                        <div class="wrapper">
+                            <span>{{ $hasResponses ? 'Modifier mes réponses' : 'Répondre au questionnaire' }}</span>
+                            <div class="circle circle-12"></div>
+                            <div class="circle circle-11"></div>
+                            <div class="circle circle-10"></div>
+                            <div class="circle circle-9"></div>
+                            <div class="circle circle-8"></div>
+                            <div class="circle circle-7"></div>
+                            <div class="circle circle-6"></div>
+                            <div class="circle circle-5"></div>
+                            <div class="circle circle-4"></div>
+                            <div class="circle circle-3"></div>
+                            <div class="circle circle-2"></div>
+                            <div class="circle circle-1"></div>
+                        </div>
                     </a>
                 </div>
             </div>
@@ -89,8 +103,22 @@
                     @if ($hasResponses)
                         <form method="POST" action="{{ route('usages.assessment.store', $aiUsage) }}" style="margin: 0">
                             @csrf
-                            <button type="submit" class="btn btn--accent btn--sm">
-                                {{ $assessment ? 'Recalculer' : 'Évaluer' }}
+                            <button type="submit" class="btn btn--accent btn--sm btn--uiverse">
+                                <div class="wrapper">
+                                    <span>{{ $assessment ? 'Recalculer' : 'Évaluer' }}</span>
+                                    <div class="circle circle-12"></div>
+                                    <div class="circle circle-11"></div>
+                                    <div class="circle circle-10"></div>
+                                    <div class="circle circle-9"></div>
+                                    <div class="circle circle-8"></div>
+                                    <div class="circle circle-7"></div>
+                                    <div class="circle circle-6"></div>
+                                    <div class="circle circle-5"></div>
+                                    <div class="circle circle-4"></div>
+                                    <div class="circle circle-3"></div>
+                                    <div class="circle circle-2"></div>
+                                    <div class="circle circle-1"></div>
+                                </div>
                             </button>
                         </form>
                     @endif

@@ -443,7 +443,7 @@ h1.cover em { color: #1B3A6F; font-style: italic; }
         'FLAG_ZONE_GRISE' => 'lim',
         'AGGRAVATION' => 'inacc',
     ];
-    $brandPath = public_path('cervus/brand/cervus-mark-original.png');
+    $brandPath = public_path('qualyra/brand/qualyra-mark-original.png');
     $brandSrc = file_exists($brandPath) ? 'data:image/png;base64,'.base64_encode(file_get_contents($brandPath)) : '';
 @endphp
 
@@ -454,7 +454,7 @@ h1.cover em { color: #1B3A6F; font-style: italic; }
             @if ($brandSrc)
                 <img src="{{ $brandSrc }}" alt="">
             @endif
-            <div class="report__brand-word">Cervus<span class="dot">.</span></div>
+            <div class="report__brand-word">Qualyra<span class="dot">.</span></div>
         </div>
         <div class="report__head-meta">
             RAPPORT · <b>#{{ $report->id }}</b><br>
@@ -477,7 +477,7 @@ h1.cover em { color: #1B3A6F; font-style: italic; }
         @if (! empty($meta['sector']))
             <div><span>SECTEUR</span><b>{{ $meta['sector'] }}</b></div>
         @endif
-        <div><span>AUDITÉ PAR</span><b>Cervus · v0.1</b></div>
+        <div><span>AUDITÉ PAR</span><b>Qualyra · v0.1</b></div>
     </div>
 </div>
 
@@ -588,23 +588,23 @@ h1.cover em { color: #1B3A6F; font-style: italic; }
     </div>
 @endforeach
 
-{{-- Section 4 — Plan d'action 30/60/90 --}}
+{{-- Section 4 — Plan d'action 1m/6m/1an --}}
 <div class="report-page page-break">
     <div class="eyebrow-l accent">04 · Plan d'action</div>
-    <h2>Trente, soixante, quatre-vingt-dix.</h2>
+    <h2>Un mois, six mois, un an.</h2>
     <p class="muted-prose">{{ $content['plan_action']['header'] }}</p>
 
     <div class="plan">
-        @foreach (['phase_30j' => '30', 'phase_60j' => '60', 'phase_90j' => '90'] as $key => $days)
+        @foreach (['phase_1m' => '1 mois', 'phase_6m' => '6 mois', 'phase_1y' => '1 an'] as $key => $label)
             @php
                 $sub = match ($key) {
-                    'phase_30j' => 'P0 · obligatoire',
-                    'phase_60j' => 'P1 · prioritaire',
+                    'phase_1m' => 'P0 · obligatoire',
+                    'phase_6m' => 'P1 · prioritaire',
                     default => 'P2 · structurant',
                 };
             @endphp
             <div class="phase">
-                <div class="phase__h">{{ $days }} <em>jours</em></div>
+                <div class="phase__h">{{ $label }}</div>
                 <div class="phase__sub">{{ $sub }}</div>
                 <p class="phase__intro">{{ $content['plan_action'][$key]['intro'] }}</p>
                 <ul class="phase__list">
@@ -676,7 +676,7 @@ h1.cover em { color: #1B3A6F; font-style: italic; }
     @endforeach
 
     <div class="report__foot">
-        <span>CERVUS · v0.1 · GÉNÉRÉ LE {{ $report->created_at->translatedFormat('d M Y') }}</span>
+        <span>QUALYRA · v0.1 · GÉNÉRÉ LE {{ $report->created_at->translatedFormat('d M Y') }}</span>
         <span>RAPPORT #{{ $report->id }} · CONFIDENTIEL · {{ \Illuminate\Support\Str::upper($meta['nom_pme']) }}</span>
     </div>
 </div>

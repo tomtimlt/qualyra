@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        Cervus / <b>Rapports de conformité</b>
+        Qualyra / <b>Rapports de conformité</b>
     </x-slot>
 
     @php
@@ -31,11 +31,27 @@
         <div>
             <div class="eyebrow eyebrow--accent">Nouveau rapport</div>
             <div class="cta-title">Générer un audit pour <em>l'état actuel</em>.</div>
-            <div class="cta-sub">Synthèse exécutive · classification AI Act par usage · plan d'action 30/60/90 jours · checklist opérationnelle.</div>
+            <div class="cta-sub">Synthèse exécutive · classification AI Act par usage · plan d'action 1 mois / 6 mois / 1 an · checklist opérationnelle.</div>
         </div>
         <form method="POST" action="{{ route('checkout.create') }}" style="margin: 0">
             @csrf
-            <button type="submit" class="btn btn--accent btn--lg">Générer le rapport</button>
+            <button type="submit" class="btn btn--accent btn--lg btn--uiverse">
+                <div class="wrapper">
+                    <span>Générer le rapport</span>
+                    <div class="circle circle-12"></div>
+                    <div class="circle circle-11"></div>
+                    <div class="circle circle-10"></div>
+                    <div class="circle circle-9"></div>
+                    <div class="circle circle-8"></div>
+                    <div class="circle circle-7"></div>
+                    <div class="circle circle-6"></div>
+                    <div class="circle circle-5"></div>
+                    <div class="circle circle-4"></div>
+                    <div class="circle circle-3"></div>
+                    <div class="circle circle-2"></div>
+                    <div class="circle circle-1"></div>
+                </div>
+            </button>
         </form>
     </div>
 

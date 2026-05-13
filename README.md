@@ -1,10 +1,14 @@
-# Cervus · Audit de Conformité AI Act + RGPD
+# Qualyra · Audit de Conformité AI Act + RGPD
+
+<p align="center">
+  <img src="public/qualyra/brand/qualyra-mark-original.png" alt="Qualyra logo" width="120">
+</p>
 
 Application web d'audit de conformité des usages d'intelligence artificielle pour les PME françaises, conforme au **Règlement (UE) 2024/1689 (AI Act)** et au **RGPD**.
 
 ## ✦ Objectif
 
-Permettre aux PME de déclarer leurs outils d'IA, d'évaluer automatiquement leur niveau de risque selon la matrice AI Act, et de générer un rapport de conformité détaillé avec plan d'action 30/60/90 jours.
+Permettre aux PME de déclarer leurs outils d'IA, d'évaluer automatiquement leur niveau de risque selon la matrice AI Act, et de générer un rapport de conformité détaillé avec plan d'action 1 mois / 6 mois / 1 an.
 
 ## ✦ Stack Technique
 
@@ -18,7 +22,7 @@ Permettre aux PME de déclarer leurs outils d'IA, d'évaluer automatiquement leu
 | Autorisation | Policies Laravel (auto-discovery) |
 | Génération PDF | spatie/browsershot + Chromium/Chrome headless |
 | Paiement | Stripe Checkout (stripe/stripe-php) |
-| Design System | Cervus/Argos (propre systême de tokens CSS) |
+| Design System | Qualyra (propre systême de tokens CSS) |
 
 ## ✦ Démarrage rapide
 
@@ -76,7 +80,6 @@ Après `php artisan db:seed` (automatique au premier démarrage Docker) :
 | Email | Mot de passe | Description |
 |-------|--------------|-------------|
 | demo@example.com | password | Compte démo avec données préremplies (organisation + usages IA + rapports) |
-| test@example.com | password | Compte de test vierge |
 
 ## ✦ Architecture
 
@@ -153,7 +156,7 @@ Le projet utilise **spatie/browsershot** (headless Chrome/Chromium via Puppeteer
 - Template standalone dans `resources/views/reports/pdf.blade.php`
 - Logo embarqué en base64
 - Détection automatique du navigateur (Chrome sur macOS, Chromium sur Linux/Docker)
-- Sections : couverture, synthèse exécutive, détail par usage, plan d'action 30/60/90, checklist, zones grises, disclaimer
+- Sections : couverture, synthèse exécutive, détail par usage, plan d'action 1 mois / 6 mois / 1 an, checklist, zones grises, disclaimer
 
 ## ✦ Docker
 

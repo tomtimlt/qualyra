@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        Cervus / <b>Organisation</b>
+        Qualyra / <b>Organisation</b>
     </x-slot>
 
     @if (session('status') === 'organization-updated')
@@ -17,7 +17,23 @@
                     Toute modification s'applique aux <b>nouveaux rapports</b> uniquement.
                 </p>
             </div>
-            <a href="{{ route('organization.edit') }}" class="btn btn--primary">Modifier</a>
+            <a href="{{ route('organization.edit') }}" class="btn btn--accent btn--uiverse">
+                <div class="wrapper">
+                    <span>Modifier</span>
+                    <div class="circle circle-12"></div>
+                    <div class="circle circle-11"></div>
+                    <div class="circle circle-10"></div>
+                    <div class="circle circle-9"></div>
+                    <div class="circle circle-8"></div>
+                    <div class="circle circle-7"></div>
+                    <div class="circle circle-6"></div>
+                    <div class="circle circle-5"></div>
+                    <div class="circle circle-4"></div>
+                    <div class="circle circle-3"></div>
+                    <div class="circle circle-2"></div>
+                    <div class="circle circle-1"></div>
+                </div>
+            </a>
         </div>
 
         <div class="surface">

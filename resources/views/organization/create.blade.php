@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <span>Cervus</span> / Tableau de bord / <b>Création de l'organisation</b>
+        <span>Qualyra</span> / Tableau de bord / <b>Création de l'organisation</b>
     </x-slot>
 
     <div class="form-page">
