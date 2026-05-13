@@ -1,4 +1,6 @@
 let canvas = document.querySelector('#canvas');
+if (!canvas) { /* not on a page with the brain canvas */ } else {
+
 let ctx = canvas.getContext('2d');
 
 // const colors = ["#4A90D9", "#549FCC", "#116699", "#6E92C7", "#2E5FA0"];
@@ -397,3 +399,5 @@ var savedBrain = {"neurons":[{"x":376,"y":445,"color":"#6E92C7","size":26.455622
 
 let brain = new Brain(savedBrain);
 window.requestAnimationFrame(anim);
+
+} // end if (canvas)

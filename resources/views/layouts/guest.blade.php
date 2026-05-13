@@ -13,7 +13,7 @@
 
 <div class="guest__bg"></div>
 
-<div class="guest__shell">
+<div class="guest__shell" x-data="customScrollbar($el)" class="guest-scroll">
     <a href="{{ route('dashboard') }}" class="guest__brand">
         <img src="{{ asset('qualyra/brand/qualyra-mark-original.png') }}" alt="">
         <div class="brand-word">Qualyra<span class="dot">.</span></div>
@@ -27,13 +27,38 @@
         <a href="{{ route('home') }}">← Retour à l'accueil</a>
         <span>AI Act · RGPD · v0.1</span>
     </div>
+
+    <!-- Custom scrollbar track + thumb -->
+    <div class="qs-track"
+         x-ref="track"
+         @mousedown="onTrackClick($event)"
+         :class="{ 'is-visible': isVisible, 'is-dragging': isDragging }">
+        <div class="qs-thumb"
+             x-ref="thumb"
+             @mousedown.stop="onThumbMouseDown($event)">
+        </div>
+    </div>
 </div>
 
 <style>
-    body.guest { background: var(--ink-1000); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; position: relative; overflow-x: hidden; }
+    body.guest { background: var(--ink-1000); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; position: relative; overflow-x: hidden; height: 100vh; overflow: hidden; }
     .guest__bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(46, 95, 160, 0.08) 0%, transparent 70%); }
 
-    .guest__shell { width: 100%; max-width: 440px; position: relative; z-index: 1; display: flex; flex-direction: column; gap: 32px; }
+    .guest-scroll {
+        position: relative;
+        width: 100%;
+        max-width: 440px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+    }
+    .guest-scroll::-webkit-scrollbar {
+        display: none; /* WebKit */
+    }
 
     .guest__brand { display: flex; align-items: center; gap: 12px; text-decoration: none; justify-content: center; }
     .guest__brand img { height: 36px; }
@@ -58,5 +83,6 @@
     .link-button { background: none; border: none; color: var(--text-muted); font-size: 13px; cursor: pointer; padding: 0; font-family: inherit; transition: color var(--d-fast); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--hairline-strong); }
     .link-button:hover { color: var(--text); text-decoration-color: var(--text); }
 </style>
+
 </body>
 </html>

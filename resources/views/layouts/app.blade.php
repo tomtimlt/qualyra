@@ -60,7 +60,7 @@
                 </div>
             </button>
 
-            <div x-show="open" x-cloak x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-1" class="side__dropdown">
+            <div x-show="open" style="display:none" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-1" class="side__dropdown">
                 @if ($organization)
                     <a href="#" @click.prevent="open = false; $dispatch('open-modal', 'edit-organization')">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V7l8-4 8 4v14M9 9h.01M9 13h.01M9 17h.01M14 9h.01M14 13h.01M14 17h.01"/></svg>
@@ -152,18 +152,26 @@
             </div>
         @endisset
 
-        <main class="app-content">
-            {{ $slot }}
-        </main>
+        <div class="q-scroll">
+            <main class="app-content">
+                {{ $slot }}
+            </main>
+        </div>
     </div>
 </div>
 
 <style>
     [x-cloak] { display: none !important; }
-    body { background: var(--ink-1000); color: var(--text); }
+    body { background: var(--ink-1000); color: var(--text); overflow-x: hidden; }
     .app-shell { min-height: 100vh; display: grid; grid-template-columns: 240px 1fr; }
 
-    .side { background: var(--ink-1000); border-right: 1px solid var(--hairline); padding: 24px 20px; display: flex; flex-direction: column; gap: 28px; position: sticky; top: 0; height: 100vh; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: rgba(11, 15, 20, 0.3); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb { background: #2E5FA0; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #6E92C7; }
+    * { scrollbar-width: thin; scrollbar-color: #2E5FA0 rgba(11, 15, 20, 0.3); }
+
+    .side { background: var(--ink-1000); border-right: 1px solid var(--hairline); padding: 24px 20px; display: flex; flex-direction: column; gap: 28px; position: sticky; top: 0; height: 100vh; z-index: 20; }
     .brand { display: flex; align-items: center; gap: 10px; padding: 0 4px; text-decoration: none; transition: opacity var(--d-fast); }
     .brand:hover { opacity: 0.85; }
     .brand img { height: 28px; }
@@ -193,18 +201,18 @@
     .avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--stag-500), var(--ink-700)); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--ink-50); flex-shrink: 0; }
     .side__foot-name { font-size: 12px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .side__foot-meta { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .side__dropdown { position: absolute; bottom: 100%; left: 0; right: 0; margin-bottom: 8px; background: var(--ink-1000); border: 1px solid var(--hairline); border-radius: var(--r-md); padding: 6px; display: flex; flex-direction: column; gap: 2px; box-shadow: 0 -4px 24px rgba(0,0,0,0.3); }
+    .side__dropdown { position: absolute; bottom: 100%; left: 0; right: 0; margin-bottom: 8px; background: var(--ink-1000); border: 1px solid var(--hairline); border-radius: var(--r-md); padding: 6px; display: flex; flex-direction: column; gap: 2px; box-shadow: 0 -4px 24px rgba(0,0,0,0.3); z-index: 50; }
     .side__dropdown a, .side__dropdown button { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: var(--r-sm); color: var(--ink-300); text-decoration: none; font-family: var(--font-sans); font-size: 13px; font-weight: 500; transition: all var(--d-fast) var(--ease-out); background: transparent; border: none; width: 100%; cursor: pointer; text-align: left; }
     .side__dropdown a:hover, .side__dropdown button:hover { background: var(--ink-900); color: var(--text); }
     .side__dropdown a svg, .side__dropdown button svg { width: 16px; height: 16px; opacity: 0.8; flex-shrink: 0; }
     .side__dropdown a.is-active { background: var(--ink-900); color: var(--text); box-shadow: inset 2px 0 0 var(--accent); padding-left: 14px; }
 
-    .app-main { display: flex; flex-direction: column; min-width: 0; }
-    .app-topbar { padding: 18px 40px; border-bottom: 1px solid var(--hairline); position: sticky; top: 0; background: rgba(11, 15, 20, 0.85); backdrop-filter: blur(12px); z-index: 5; }
+    .app-main { display: flex; flex-direction: column; min-width: 0; height: 100vh; }
+    .app-topbar { flex-shrink: 0; padding: 18px 40px; border-bottom: 1px solid var(--hairline); position: sticky; top: 0; background: rgba(11, 15, 20, 0.85); backdrop-filter: blur(12px); z-index: 5; }
     .crumb { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; }
     .crumb b { color: var(--text); font-weight: 500; }
 
-    .app-content { padding: 40px; flex: 1; }
+    .app-content { padding: 40px; }
 
     /* Bandeau de statut Laravel session */
     .status-banner { padding: 14px 18px; border: 1px solid var(--hairline); border-radius: var(--r-md); font-size: 13px; margin-bottom: 24px; display: flex; gap: 10px; align-items: flex-start; }

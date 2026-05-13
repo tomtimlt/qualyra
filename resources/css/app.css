@@ -2,27 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
-  overflow-y: scroll;
+/* ═══════════════════════════════════════════════════════════
+   Qualyra — Hide native scrollbar on the scrollable container
+   .app-main is the scrollable area; we hide its native scrollbar
+   and render a custom one via Alpine.js.
+   ═══════════════════════════════════════════════════════════ */
+
+/* The scrollable container */
+.q-scroll {
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+  scrollbar-width: none;            /* Firefox */
+  -ms-overflow-style: none;         /* IE / legacy Edge */
 }
 
-/* Custom scrollbar to match Qualyra theme */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+.q-scroll::-webkit-scrollbar {
+  display: none;                    /* Chrome / Safari / Edge */
 }
-::-webkit-scrollbar-track {
-    background: rgba(11, 15, 20, 0.3);
-    border-radius: 4px;
+
+/* ═══════════════════════════════════════════════════════════
+   Qualyra — Custom Scrollbar UI
+   A floating pill-style track + thumb rendered via Alpine.
+   ═══════════════════════════════════════════════════════════ */
+
+.qs-track {
+  position: absolute;
+  top: 8px;
+  right: 4px;
+  bottom: 8px;
+  width: 6px;
+  border-radius: 999px;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
 }
-::-webkit-scrollbar-thumb {
-    background: #2E5FA0;
-    border-radius: 4px;
+
+.qs-track.is-visible {
+  opacity: 1;
+  pointer-events: auto;
 }
-::-webkit-scrollbar-thumb:hover {
-    background: #6E92C7;
+
+.qs-thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 40px;
+  border-radius: 999px;
+  background: rgba(46, 95, 160, 0.4);
+  cursor: grab;
+  transition: background 0.2s ease, transform 0.1s ease;
+  will-change: top, height;
 }
-* {
-    scrollbar-width: thin;
-    scrollbar-color: #2E5FA0 rgba(11, 15, 20, 0.3);
+
+.qs-thumb:hover {
+  background: rgba(46, 95, 160, 0.7);
+}
+
+.qs-track.is-dragging .qs-thumb {
+  background: #2E5FA0;
+  cursor: grabbing;
 }
