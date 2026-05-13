@@ -41,6 +41,10 @@ jobs:
       - name: Setup environment
         run: |
           cp .env.example .env
+          # Retire la ligne DB_DATABASE de .env.example qui pointe vers /app/database/...
+          # (chemin Docker absolu inadequat en CI). Laravel utilise alors le default
+          # database_path('database.sqlite') resolu relativement au workspace CI.
+          sed -i '/^DB_DATABASE=/d' .env
           php artisan key:generate
           touch database/database.sqlite
 
