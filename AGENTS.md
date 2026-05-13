@@ -1,107 +1,141 @@
-# Qualyra — Contexte pour agents IA
+# AGENTS.md — Guide universel pour assistants IA (Qualyra)
 
 > ⚠️ **Fichier réservé à la branche `dev`.** Ne pas merger vers `main`.
 
+> Fichier lu par : Claude Code, Cursor, Windsurf, Aider, Codex, Copilot, etc.
+> Si tu es une IA : lis ce fichier **EN ENTIER** avant toute modification.
+
 ---
 
-## Stack technique
+## 1. Identité du projet
 
-| Composant | Version |
-|---|---|
-| PHP | 8.4 |
-| Laravel | 13 |
-| Alpine.js | 3.15 |
-| Tailwind CSS | 3 |
-| Vite | 8 |
-| Base de données | SQLite (dev) |
-| Tests | Pest 4 |
-| PDF | Browsershot (Chrome headless) |
-| Paiement | Stripe |
+- **Nom** : Qualyra — audit conformité AI Act + RGPD pour PME françaises
+- **Stack** : Laravel 13 + PHP 8.3+ (testé 8.4) + Blade + Tailwind 3 + Alpine.js 3 + Vite 8
+- **Base de données** : SQLite
+- **Tests** : Pest 4 (102 tests, 290 assertions)
+- **Lint** : Laravel Pint
+- **PDF** : spatie/browsershot (Chrome headless)
+- **Paiement** : Stripe Checkout
+- **Solo dev**, vente one-shot ~1500€
+- **Branches** : `main` (prod) | `dev` (intégration)
 
-## Premiers pas
+## 2. Règle d'or : impact minimal
 
-```bash
-composer install
-npm install && npm run build
-cp .env.example .env && php artisan key:generate
-touch database/database.sqlite && php artisan migrate --seed
-php artisan serve
-# ou tout en un :
-composer run dev
-```
+Avant toute modification :
+1. Lis l'`AGENTS.md` du dossier que tu vas toucher (si existe)
+2. Identifie si tu touches un **HOT SPOT** (voir §4)
+3. Si HOT SPOT → applique le protocole §5
+4. Sinon → modifie **uniquement les fichiers nécessaires**, JAMAIS plus
 
-## Architecture du projet
+## 3. Carte du projet (où aller pour quoi)
 
-```
-app/
-├── Http/Controllers/    # CRUD usages, questionnaire, assessment, rapports, org
-├── Models/               # AiUsage, Assessment, Organization, Report, Response, User
-├── Policies/             # AiUsagePolicy (isolation tenant)
-├── Services/
-│   ├── AiActClassifier.php        # Moteur de classification AI Act (4 niveaux, 22 règles)
-│   ├── ReportContentBuilder.php    # Contenu rédactionnel du rapport PDF
-│   └── ReportSnapshotBuilder.php   # Snapshot figé (garantie légale)
-└── View/Components/      # Blade components
+| Intention | Dossier | Fichier clé | AGENTS.md scoped |
+|-----------|---------|-------------|------------------|
+| Modifier le moteur de classification | `app/Services/` | `AiActClassifier.php` | ✅ `app/Services/AGENTS.md` |
+| Modifier une règle AI Act | `config/` | `ai_act_rules.php` | ✅ `config/AGENTS.md` |
+| Modifier le questionnaire | `config/` | `questionnaire.php` | ✅ `config/AGENTS.md` |
+| Changer le template rapport | `config/` | `report_templates.php` | ✅ `config/AGENTS.md` |
+| Modifier le PDF | `resources/views/reports/` | `pdf.blade.php` | ✅ `resources/views/reports/AGENTS.md` |
+| Ajouter une route | `routes/web.php` + Controller | — | ❌ voir `docs/MAP.md` |
+| Modifier une vue | `resources/views/` | — | ❌ voir `docs/MAP.md` |
+| Ajouter un test | `tests/` | — | ❌ voir `docs/MAP.md` |
 
-config/
-├── ai_act_rules.php          # Matrice de décision (22 règles)
-├── questionnaire.php         # Questions dynamiques par type/domaine
-└── report_templates.php      # Templates du rapport
+## 4. Hot spots (impact large — toujours vérifier)
 
-resources/
-├── js/
-│   ├── app.js               # Entry point Vite (Alpine.start)
-│   ├── brain.js             # Canvas animation brain (home page)
-│   ├── bootstrap.js         # Axios bootstrap
-│   └── custom-scrollbar.js  # Alpine component scrollbar
-├── css/app.css              # Styles Tailwind + custom
-└── views/                   # Blade templates
-```
+| Fichier | Pourquoi sensible | Test associé |
+|---------|-------------------|-------------|
+| `app/Services/AiActClassifier.php` | Cœur du moteur de classification | `AiActClassifierMatriceTest` |
+| `config/ai_act_rules.php` | 22 règles réglementaires | Toute modif **doit** synchroniser `DemoSeeder` |
+| `config/questionnaire.php` | Questionnaire dynamique | Toute modif **doit** synchroniser `DemoSeeder` + `AiActClassifier` |
+| `config/report_templates.php` | Templates rapport PDF | Vérifier `resources/views/reports/pdf.blade.php` |
+| `database/seeders/DemoSeeder.php` | Démo client — DOIT refléter l'état du moteur | Voir `tests/Feature/Demo*` |
+| `app/Services/ReportContentBuilder.php` | Assemblage rapport | `ReportTest` |
+| `app/Services/ReportSnapshotBuilder.php` | Snapshot légal figé | Risque légal si modifié sans précaution |
+| `app/Policies/AiUsagePolicy.php` | Isolation tenant | Re-tester les 4 vecteurs IDOR |
+| `resources/views/reports/pdf.blade.php` | Template PDF standalone (Chrome) | Pas de variables CSS modernes |
 
-## Conventions de code
+## 5. Protocoles
 
-- **PHP** : `declare(strict_types=1)`, Form Requests pour validation, routes nommées
-- **Frontend** : Alpine `x-data`, Tailwind utilities, pas de composant JS lourd
-- **Tests** : Pest, pas PHPUnit direct (`php artisan test`)
+### 5.1 Modifier une règle AI Act
+
+1. Modifier `config/ai_act_rules.php` (ajouter/modifier la règle)
+2. Ajouter un cas correspondant dans `database/seeders/DemoSeeder.php`
+3. Ajouter un test dans `tests/Feature/AiActClassifierMatriceTest.php`
+4. Lancer : `./scripts/check-sync.sh` + `php artisan test --filter AiActClassifier`
+
+### 5.2 Ajouter une question questionnaire
+
+1. Modifier `config/questionnaire.php` (ajouter la question et ses dépendances)
+2. Mettre à jour `database/seeders/DemoSeeder.php` si nécessaire
+3. Vérifier que `AiActClassifier` utilise bien la nouvelle variable
+4. Lancer : `./scripts/check-sync.sh` + `php artisan test --filter Questionnaire`
+
+### 5.3 Changer le template PDF
+
+1. Modifier `resources/views/reports/pdf.blade.php`
+2. Si le contenu change, vérifier `app/Services/ReportContentBuilder.php`
+3. Lancer : `php artisan test --filter Report`
+4. **Attention** : le PDF est généré par Chrome headless — pas de `display: grid`, `gap`, `backdrop-filter`, `var()`, `aspect-ratio`. Utiliser table-based layout, polices system-only, images en base64.
+
+### 5.4 Ajouter une route / vue
+
+1. Ajouter la route dans `routes/web.php` (nommée, middleware `auth`)
+2. Créer le Controller (mince, Form Request, pas de validation inline)
+3. Créer la vue Blade (Tailwind utilities, Alpine si besoin)
+4. Ajouter un test Feature
+5. Lancer : `php artisan test`
+
+## 6. Interdictions strictes
+
+- ❌ Pas de Livewire, Inertia, packages exotiques
+- ❌ Pas de refactoring spontané ("tant qu'on y est…")
+- ❌ Pas de design custom (Tailwind UI / TallStackUI basiques OK)
+- ❌ Pas de validation inline dans les controllers (toujours Form Request)
+- ❌ Pas de mass assignment des FK (`organization_id` JAMAIS en `$fillable`)
+- ❌ Pas de query builder brut sauf justification écrite
+- ❌ Ne pas toucher : `.env`, `.env.example`, `composer.lock` sans demande
+- ❌ Ne pas commit : `node_modules/`, `vendor/`, `public/build/`
+
+## 7. Conventions
+
+- **PHP** : `declare(strict_types=1)` en haut de chaque fichier
 - **Commentaires** : en français
 - **Variables/méthodes** : en anglais (convention Laravel)
-- **DemoSeeder** : à vérifier systématiquement après modification de `config/questionnaire.php` ou `config/ai_act_rules.php`
+- **Models** : singulier (`User`, `AiUsage`, `Assessment`)
+- **Tables** : pluriel (`users`, `ai_usages`, `assessments`)
+- **Routes** : nommées (`route('usages.index')`)
+- **Controllers** : minces — la logique métier va dans `app/Services/`
+- **Validation** : Form Requests, pas de `$request->validate()` dans les controllers
+- **Tests** : Pest, pas PHPUnit direct
+- **Frontend** : Alpine `x-data`, Tailwind utilities, pas de composant JS lourd
 
-## Worktrees
+## 8. Avant chaque commit
 
+Exécuter dans l'ordre :
 ```bash
-# Projet principal
-cd ~/Documents/Projet/Code/ai-assistant           # main (port 8000)
-
-# Worktree dev
-git worktree add ../qualyra-dev dev                # dev (port 8001)
-
-# Worktree feature
-git worktree add ../qualyra-ma-feature feature/ma-feature  # feature (port 8002+)
+./scripts/lint.sh --test    # Pint (vérification sans auto-fix)
+./scripts/check-sync.sh     # Sync config ↔ seeder
+./scripts/test.sh           # Pest (102+ tests)
+npm run build               # Vite (assets)
 ```
 
-Chaque worktree a son propre `.env`, sa propre base SQLite, et son port dédié.
+Ou tout en un :
+```bash
+./scripts/precommit.sh
+```
 
-## Ce que les IA doivent faire
+## 9. Tags spécifiques par outil
 
-1. Lire `AGENTS.md` (ce fichier) pour le contexte projet
-2. Consulter les [Issues GitHub](https://github.com/tomtimlt/ai-assistant/issues) ouvertes
-3. Créer une branche depuis `dev` :
-   ```bash
-   git checkout dev && git checkout -b feature/ma-feature
-   git worktree add ../qualyra-ma-feature feature/ma-feature
-   ```
-4. Travailler, tester, commit, push
-5. Ouvrir une Pull Request vers `dev`
+- **Claude Code** : voir aussi `CLAUDE.md`
+- **Cursor** : voir aussi `.cursorrules`
+- **Windsurf** : voir aussi `.windsurfrules`
+- **GitHub Copilot** : voir aussi `.github/copilot-instructions.md`
 
-## Règles strictes
+## 10. Doute ?
 
-- Ne jamais modifier `.env`, `.env.example`, `composer.lock` sans demande explicite
-- Ne jamais commit `node_modules/`, `vendor/`, `public/build/`
-- Si une modification impacte `config/questionnaire.php` ou `config/ai_act_rules.php`, vérifier `DemoSeeder`
-- Avant d'ajouter un package (Composer ou npm), demander
-- Le design system Qualyra est dans `public/qualyra/` — ne pas le modifier
-
-## Changelog des décisions IA
-
-*Date — Décision — Auteur*
+Demande à l'humain avant d'agir si :
+- La modif touche un **hot spot** (§4)
+- Le scope ressemble à du **scope creep**
+- Tu n'es pas sûr de la **convention** (§7)
+- Tu veux ajouter un **package** Composer ou npm
+- Tu penses qu'une **modification structurelle** est nécessaire
