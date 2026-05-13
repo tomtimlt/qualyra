@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html, body {
+  overflow-y: scroll;
+}
+
+/* Custom scrollbar to match Qualyra theme */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(11, 15, 20, 0.3);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+    background: #2E5FA0;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #6E92C7;
+}
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #2E5FA0 rgba(11, 15, 20, 0.3);
+}
