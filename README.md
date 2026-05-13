@@ -230,6 +230,18 @@ php artisan test --filter="télécharge le PDF"
 - PHP : `declare(strict_types=1)` partout
 - Tests : Pest 4 avec helper functions (`userWithOrgAndUsage()`, `usageWithAnswers()`)
 
+## ✦ Pour les assistants IA
+
+Si vous êtes un agent IA (Claude Code, Cursor, Windsurf, Copilot, etc.) :
+
+1. **Lisez `/AGENTS.md`** en premier — c'est votre guide complet (contexte, hot spots, protocoles).
+2. Consultez `docs/MAP.md` pour la carte exhaustive du projet.
+3. Consultez `docs/AI_GUIDE.md` pour des exemples concrets de modifications.
+4. **Avant tout commit** : exécutez `./scripts/precommit.sh`.
+5. Pour un contexte ciblé par zone : `./scripts/ai-context.sh <zone>`.
+
+> ⚠️ `AGENTS.md` est **exclusif à la branche `dev`**. Ne pas merger vers `main`.
+
 ## ✦ Licence
 
 Projet propriétaire — Tous droits réservés
