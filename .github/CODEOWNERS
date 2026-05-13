@@ -1,0 +1,11 @@
+# Hot spots — review obligatoire
+/config/ai_act_rules.php       @tomtimlt
+/config/questionnaire.php      @tomtimlt
+/config/report_templates.php   @tomtimlt
+/app/Services/                 @tomtimlt
+/database/seeders/             @tomtimlt
+/app/Policies/                 @tomtimlt
+/resources/views/reports/      @tomtimlt
+
+# Default
+*                              @tomtimlt

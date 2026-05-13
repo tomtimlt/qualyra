@@ -1,0 +1,39 @@
+name: Bug Report
+description: Signaler un bug
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Décrivez le bug de façon concise
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Étapes de reproduction
+      description: Comment reproduire le bug ?
+      placeholder: |
+        1. Aller sur...
+        2. Cliquer sur...
+        3. Constater l'erreur
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportement attendu
+      description: Que devrait-il se passer ?
+  - type: input
+    id: env
+    attributes:
+      label: Environnement
+      description: OS, PHP, navigateur, etc.
+      placeholder: macOS 14.6 / PHP 8.4 / Chrome 130
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / erreurs
+      description: Copiez les messages d'erreur ou logs pertinents
+      render: shell
