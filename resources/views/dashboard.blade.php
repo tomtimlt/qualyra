@@ -96,7 +96,7 @@
         <div class="dashboard-onboard">
             <div class="dashboard-onboard__hero">
                 <div class="eyebrow eyebrow--accent">Étape 1 · Audit AI Act + RGPD</div>
-                <h1>Bienvenue, <em>{{ $firstName }}</em>.</h1>
+                <h1>Bienvenue, <em>{{ $firstName }}.</em></h1>
                 <p class="lead">
                     Avant de déclarer vos usages d'IA, créez la fiche de votre PME. Ces informations sont utilisées
                     uniquement pour qualifier le contexte de l'audit (taille, secteur, SIRET).
