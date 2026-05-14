@@ -10,7 +10,7 @@
 ## 1. Identité du projet
 
 - **Nom** : Qualyra — audit conformité AI Act + RGPD pour PME françaises
-- **Stack** : Laravel 13 + PHP 8.3+ (testé 8.4) + Blade + Tailwind 3 + Alpine.js 3 + Vite 8
+- **Stack** : Laravel 13 + PHP 8.3+ (testé 8.4) + Blade + Tailwind 4 (config CSS-first) + Alpine.js 3 + Vite 8
 - **Base de données** : SQLite
 - **Tests** : Pest 4 (102 tests, 290 assertions)
 - **Lint** : Laravel Pint

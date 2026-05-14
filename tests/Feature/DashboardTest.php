@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\AiUsage;
+use App\Models\Assessment;
 use App\Models\Organization;
 use App\Models\User;
 
@@ -45,4 +46,38 @@ it('n\'affiche jamais les usages d\'une autre organisation sur le dashboard', fu
 
     $response->assertOk();
     $response->assertDontSee('Usage secret de l\'autre PME');
+});
+
+it('passe la timeline 6 mois avec les 3 séries à la vue', function () {
+    $user = User::factory()->create();
+    $organization = Organization::factory()->for($user)->create();
+
+    $usage = AiUsage::factory()->for($organization)->create(['created_at' => now()]);
+    Assessment::factory()->for($usage)->create(['computed_at' => now()]);
+
+    $response = $this->actingAs($user)->get('/dashboard');
+
+    $response->assertOk();
+    $timeline = $response->viewData('activityTimeline');
+
+    expect($timeline)->toHaveKeys(['labels', 'usages', 'assessments', 'reports', 'hasData']);
+    expect($timeline['labels'])->toHaveCount(6);
+    expect($timeline['usages'][5])->toBe(1);
+    expect($timeline['assessments'][5])->toBe(1);
+    expect($timeline['hasData'])->toBeTrue();
+    $response->assertSee('id="chartActivity"', false);
+});
+
+it('isole la timeline d\'activité par tenant', function () {
+    $userA = User::factory()->create();
+    Organization::factory()->for($userA)->create();
+
+    $userB = User::factory()->create();
+    $orgB = Organization::factory()->for($userB)->create();
+    AiUsage::factory()->count(3)->for($orgB)->create(['created_at' => now()]);
+
+    $response = $this->actingAs($userA)->get('/dashboard');
+    $timeline = $response->viewData('activityTimeline');
+
+    expect(array_sum($timeline['usages']))->toBe(0);
 });

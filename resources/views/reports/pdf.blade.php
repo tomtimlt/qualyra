@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <title>Rapport AI Act + RGPD — {{ $report->snapshot['organization']['name'] ?? 'Rapport' }}</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
+
 @page { size: A4; margin: 0; }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -79,13 +81,13 @@ body {
 .eyebrow-l.accent { color: #1B3A6F; }
 
 h1.cover {
-    font-family: "Geist", system-ui, sans-serif;
-    font-size: 56px;
+    font-family: "Instrument Serif", Cambria, Georgia, serif;
+    font-size: 64px;
     line-height: 0.98;
     letter-spacing: -0.02em;
     color: #0B0F14;
     margin: 0 0 14px;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 h1.cover em { color: #1B3A6F; font-style: italic; }
@@ -127,13 +129,13 @@ h1.cover em { color: #1B3A6F; font-style: italic; }
 .section { margin-top: 48px; }
 
 .section h2 {
-    font-family: "Geist", system-ui, sans-serif;
-    font-size: 32px;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+    font-family: "Instrument Serif", Cambria, Georgia, serif;
+    font-size: 36px;
+    line-height: 1.02;
+    letter-spacing: -0.018em;
     margin: 10px 0 20px;
     color: #0B0F14;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 .section h3 {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Models\Assessment;
 use App\Models\User;
 use App\Services\AiActClassifier;
 use Illuminate\Database\Seeder;
@@ -51,7 +52,21 @@ class DemoSeeder extends Seeder
         $classifier = app(AiActClassifier::class);
 
         foreach ($this->usages() as $payload) {
+            // Calcul d'une date de création historique pour donner vie à la timeline.
+            // On répartit aléatoirement dans le mois (jour 1-27, heure ouvrée).
+            $monthsAgo = $payload['months_ago'] ?? 0;
+            $createdAt = now()
+                ->subMonths($monthsAgo)
+                ->startOfMonth()
+                ->addDays(rand(0, 27))
+                ->setTime(rand(9, 17), rand(0, 59));
+
             $usage = $organization->aiUsages()->create($payload['usage']);
+            // forceFill car created_at n'est pas dans $fillable (overridé en aveugle)
+            $usage->forceFill([
+                'created_at' => $createdAt,
+                'updated_at' => $createdAt,
+            ])->save();
 
             foreach ($payload['answers'] as $key => $value) {
                 $usage->responses()->create([
@@ -60,12 +75,56 @@ class DemoSeeder extends Seeder
                 ]);
             }
 
-            $classifier->persist($usage->fresh('responses'));
+            $assessment = $classifier->persist($usage->fresh('responses'));
+            // L'évaluation arrive quelques jours après la déclaration (réaliste).
+            $computedAt = $createdAt->copy()->addDays(rand(1, 6))->setTime(rand(9, 17), rand(0, 59));
+            $assessment->forceFill([
+                'computed_at' => $computedAt,
+                'created_at' => $computedAt,
+                'updated_at' => $computedAt,
+            ])->save();
+        }
+
+        // ── Rapports historiques (3 jalons) ──
+        $this->seedDemoReports($organization);
+    }
+
+    private function seedDemoReports(\App\Models\Organization $organization): void
+    {
+        $builder = app(\App\Services\ReportSnapshotBuilder::class);
+        // Snapshot calculé une fois (reflète l'état final — acceptable pour la démo).
+        $snapshot = $builder->build($organization);
+
+        $jalons = [
+            ['months_ago' => 3, 'paid' => true],
+            ['months_ago' => 1, 'paid' => true],
+            ['months_ago' => 0, 'paid' => false],
+        ];
+
+        foreach ($jalons as $jalon) {
+            $createdAt = now()
+                ->subMonths($jalon['months_ago'])
+                ->startOfMonth()
+                ->addDays(rand(10, 25))
+                ->setTime(rand(10, 16), rand(0, 59));
+
+            $report = $organization->reports()->create([
+                'snapshot' => $snapshot,
+                'stripe_session_id' => $jalon['paid']
+                    ? 'demo_session_'.uniqid()
+                    : null,
+                'paid_at' => $jalon['paid'] ? $createdAt->copy()->addHours(rand(1, 6)) : null,
+            ]);
+
+            $report->forceFill([
+                'created_at' => $createdAt,
+                'updated_at' => $createdAt,
+            ])->save();
         }
     }
 
     /**
-     * @return array<int, array{usage: array<string, string>, answers: array<string, string>}>
+     * @return array<int, array{usage: array<string, string>, answers: array<string, string>, months_ago: int}>
      */
     private function usages(): array
     {
@@ -99,6 +158,7 @@ class DemoSeeder extends Seeder
                     'bio_realtime' => 'yes',
                     'bio_consent' => 'no',
                 ],
+                'months_ago' => 0,
             ],
 
             // R-I-03 : Social scoring transversal (multi-domaines)
@@ -126,6 +186,7 @@ class DemoSeeder extends Seeder
                     'prediction_criminelle' => 'NON',
                     'rh_usage' => 'EVAL_PERFORMANCE',
                 ],
+                'months_ago' => 0,
             ],
 
             // =================================================================
@@ -157,6 +218,7 @@ class DemoSeeder extends Seeder
                     'prediction_criminelle' => 'NON',
                     'rh_usage' => 'TRI_CV',
                 ],
+                'months_ago' => 1,
             ],
 
             // R-H-03 : RH évaluation performance / surveillance salariés
@@ -184,6 +246,7 @@ class DemoSeeder extends Seeder
                     'prediction_criminelle' => 'NON',
                     'rh_usage' => 'EVAL_PERFORMANCE',
                 ],
+                'months_ago' => 1,
             ],
 
             // R-H-05 : Scoring crédit / solvabilité
@@ -210,6 +273,7 @@ class DemoSeeder extends Seeder
                     'scoring_portee' => 'CONTEXTUEL',
                     'prediction_criminelle' => 'NON',
                 ],
+                'months_ago' => 1,
             ],
 
             // R-H-08 : Décision médicale clinique (zone grise MDR)
@@ -237,6 +301,7 @@ class DemoSeeder extends Seeder
                     'prediction_criminelle' => 'NON',
                     'sante_finalite' => 'DECISION_MEDICALE',
                 ],
+                'months_ago' => 1,
             ],
 
             // R-H-01 : Biométrie contrôle d'accès (haut risque)
@@ -264,6 +329,7 @@ class DemoSeeder extends Seeder
                     'bio_realtime' => 'no',
                     'bio_consent' => 'yes',
                 ],
+                'months_ago' => 1,
             ],
 
             // R-H-04 : Évaluation académique
@@ -291,6 +357,7 @@ class DemoSeeder extends Seeder
                     'prediction_criminelle' => 'NON',
                     'educ_usage' => 'EVALUATION_ACADEMIQUE',
                 ],
+                'months_ago' => 1,
             ],
 
             // R-H-06 : Assurance santé
@@ -318,6 +385,7 @@ class DemoSeeder extends Seeder
                     'prediction_criminelle' => 'NON',
                     'sante_finalite' => 'ASSURANCE_RISQUE',
                 ],
+                'months_ago' => 1,
             ],
 
             // R-H-07 : Prestations essentielles
@@ -344,6 +412,7 @@ class DemoSeeder extends Seeder
                     'scoring_portee' => 'CONTEXTUEL',
                     'prediction_criminelle' => 'NON',
                 ],
+                'months_ago' => 1,
             ],
 
             // =================================================================
@@ -373,6 +442,7 @@ class DemoSeeder extends Seeder
                     'llm_output_published' => 'yes',
                     'interaction_directe' => 'OUI',
                 ],
+                'months_ago' => 3,
             ],
 
             // R-L-02 : Génération images publiées
@@ -399,6 +469,7 @@ class DemoSeeder extends Seeder
                     'techniques_subliminales' => 'NON',
                     'persuasion_psychologique' => 'NON',
                 ],
+                'months_ago' => 3,
             ],
 
             // R-L-03 : Deepfakes
@@ -426,6 +497,7 @@ class DemoSeeder extends Seeder
                     'persuasion_psychologique' => 'NON',
                     'educ_usage' => 'AUTRE',
                 ],
+                'months_ago' => 3,
             ],
 
             // R-L-06 : Texte généré publié
@@ -453,6 +525,7 @@ class DemoSeeder extends Seeder
                     'gen_disclosure' => 'sometimes',
                     'interaction_directe' => 'NON',
                 ],
+                'months_ago' => 3,
             ],
 
             // R-L-05 : Catégorisation biométrique sans attributs sensibles
@@ -480,6 +553,7 @@ class DemoSeeder extends Seeder
                     'bio_realtime' => 'no',
                     'bio_consent' => 'yes',
                 ],
+                'months_ago' => 2,
             ],
 
             // R-L-04 : Reconnaissance émotions hors RH/EDU
@@ -507,6 +581,7 @@ class DemoSeeder extends Seeder
                     'bio_realtime' => 'no',
                     'bio_consent' => 'yes',
                 ],
+                'months_ago' => 2,
             ],
 
             // R-L-01 : Chatbot RH (interaction directe candidats)
@@ -533,6 +608,7 @@ class DemoSeeder extends Seeder
                     'interaction_directe' => 'OUI',
                     'rh_usage' => 'REDACTION_OFFRES',
                 ],
+                'months_ago' => 2,
             ],
 
             // R-L-02 : Audio synthétique (podcast)
@@ -559,6 +635,7 @@ class DemoSeeder extends Seeder
                     'techniques_subliminales' => 'NON',
                     'persuasion_psychologique' => 'NON',
                 ],
+                'months_ago' => 3,
             ],
 
             // =================================================================
@@ -588,6 +665,7 @@ class DemoSeeder extends Seeder
                     'llm_output_published' => 'no',
                     'interaction_directe' => 'NON',
                 ],
+                'months_ago' => 5,
             ],
 
             // 2. ChatGPT propositions commerciales
@@ -613,6 +691,7 @@ class DemoSeeder extends Seeder
                     'llm_output_published' => 'no',
                     'interaction_directe' => 'NON',
                 ],
+                'months_ago' => 4,
             ],
 
             // 3. Notion AI résumés réunions
@@ -638,6 +717,7 @@ class DemoSeeder extends Seeder
                     'llm_output_published' => 'no',
                     'interaction_directe' => 'NON',
                 ],
+                'months_ago' => 4,
             ],
 
             // 4. OCR factures
@@ -659,6 +739,7 @@ class DemoSeeder extends Seeder
                     'impact_individual' => 'no',
                     'usage_prestations_essentielles' => 'NON',
                 ],
+                'months_ago' => 0,
             ],
 
             // 5. Auto-complétion Outlook
@@ -684,6 +765,7 @@ class DemoSeeder extends Seeder
                     'llm_output_published' => 'no',
                     'interaction_directe' => 'NON',
                 ],
+                'months_ago' => 5,
             ],
 
             // 6. Suggestions Teams
@@ -709,6 +791,7 @@ class DemoSeeder extends Seeder
                     'llm_output_published' => 'no',
                     'interaction_directe' => 'NON',
                 ],
+                'months_ago' => 4,
             ],
 
             // 7. Tagging tickets support
@@ -735,6 +818,7 @@ class DemoSeeder extends Seeder
                     'scoring_portee' => 'CONTEXTUEL',
                     'prediction_criminelle' => 'NON',
                 ],
+                'months_ago' => 2,
             ],
 
             // 8. Anti-spam
@@ -756,6 +840,7 @@ class DemoSeeder extends Seeder
                     'impact_individual' => 'no',
                     'usage_prestations_essentielles' => 'NON',
                 ],
+                'months_ago' => 2,
             ],
 
             // 9. Détection anomalies logs
@@ -782,6 +867,7 @@ class DemoSeeder extends Seeder
                     'scoring_portee' => 'CONTEXTUEL',
                     'prediction_criminelle' => 'NON',
                 ],
+                'months_ago' => 0,
             ],
 
             // 10. Auto-complétion BDD
@@ -807,6 +893,7 @@ class DemoSeeder extends Seeder
                     'llm_output_published' => 'no',
                     'interaction_directe' => 'NON',
                 ],
+                'months_ago' => 0,
             ],
 
             // 11. Scoring fournisseurs interne (PAS R-H-05 car pub=AUCUN)
@@ -833,6 +920,7 @@ class DemoSeeder extends Seeder
                     'scoring_portee' => 'CONTEXTUEL',
                     'prediction_criminelle' => 'NON',
                 ],
+                'months_ago' => 0,
             ],
 
             // 12. Visualisations RH internes (PAS R-L-02 car diff=INTERNE)
@@ -860,6 +948,7 @@ class DemoSeeder extends Seeder
                     'persuasion_psychologique' => 'NON',
                     'rh_usage' => 'REDACTION_OFFRES',
                 ],
+                'months_ago' => 0,
             ],
         ];
     }

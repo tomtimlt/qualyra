@@ -4,7 +4,7 @@
    (Filename kept for stable cascade across existing pages.)
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap');
 
 :root {
   /* ───── COLOR ───────────────────────────────────────────── */
@@ -72,15 +72,16 @@
   --accent-soft:  var(--qualyra-300);
 
   /* ───── TYPE ─────────────────────────────────────────────
-     One family. Geist throughout. Display is heavy + tight, body is regular. */
-  --font-display: "Geist", system-ui, sans-serif;
+     Cervus : Instrument Serif pour les moments éditoriaux (display/H1/H2),
+     Geist pour l'UI et le body, Geist Mono pour data/articles de loi. */
+  --font-display: "Instrument Serif", Cambria, Georgia, serif;
   --font-sans:    "Geist", system-ui, -apple-system, sans-serif;
   --font-mono:    "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
-  /* Type scale */
-  --t-display: 80px;
-  --t-h1:      56px;
-  --t-h2:      40px;
+  /* Type scale — tailles spécimen modérées */
+  --t-display: 96px;
+  --t-h1:      64px;
+  --t-h2:      44px;
   --t-h3:      28px;
   --t-h4:      22px;
   --t-h5:      17px;
@@ -122,14 +123,16 @@ body {
   font-feature-settings: "ss01", "cv11";
 }
 
-/* TYPE — pro display: heavy Geist, tight tracking, no italic editorial moves */
-.display, .h1, .h2, .h3, .h4, .h5 { margin: 0; font-family: var(--font-display); }
-.display { font-size: var(--t-display); font-weight: 600; line-height: 1.02; letter-spacing: -0.025em; }
-.h1      { font-size: var(--t-h1);      font-weight: 600; line-height: 1.05; letter-spacing: -0.022em; }
-.h2      { font-size: var(--t-h2);      font-weight: 600; line-height: 1.1;  letter-spacing: -0.02em; }
-.h3      { font-size: var(--t-h3);      font-weight: 600; line-height: 1.18; letter-spacing: -0.014em; }
-.h4      { font-size: var(--t-h4);      font-weight: 500; line-height: 1.25; letter-spacing: -0.008em; }
-.h5      { font-size: var(--t-h5);      font-weight: 500; line-height: 1.3; }
+/* TYPE — Cervus : Instrument Serif pour display/h1/h2, Geist pour h3/h4/h5 */
+.display, .h1, .h2 { margin: 0; font-family: var(--font-display); font-weight: 400; }
+.h3, .h4, .h5     { margin: 0; font-family: var(--font-sans); }
+
+.display { font-size: var(--t-display); line-height: 1.02; letter-spacing: -0.025em; }
+.h1      { font-size: var(--t-h1);      line-height: 1.02; letter-spacing: -0.02em; }
+.h2      { font-size: var(--t-h2);      line-height: 1.02; letter-spacing: -0.018em; }
+.h3      { font-size: var(--t-h3); font-weight: 500; line-height: 1.15; letter-spacing: -0.015em; }
+.h4      { font-size: var(--t-h4); font-weight: 500; line-height: 1.15; letter-spacing: -0.008em; }
+.h5      { font-size: var(--t-h5); font-weight: 500; line-height: 1.25; }
 
 .lead    { font-size: var(--t-lead); line-height: 1.55; color: var(--ink-200); font-weight: 400; }
 .muted   { color: var(--text-muted); }
@@ -146,8 +149,8 @@ body {
 }
 .eyebrow--accent { color: var(--accent-soft); }
 
-/* Drop italic editorial accents — keep a single weight bump instead */
-em { font-style: normal; color: var(--accent-soft); font-weight: 600; }
+/* Italique éditorial sur l'accent — signature Cervus */
+em { font-style: italic; color: var(--accent-soft); font-weight: 400; }
 
 /* ============================================================
    COMPONENTS

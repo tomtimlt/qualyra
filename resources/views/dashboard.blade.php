@@ -97,9 +97,21 @@
             ],
             'colors' => ['#9B2933', '#B5532A', '#A07626', '#3D6E54', '#475061'],
         ];
+        $domainColors = [
+            'RH' => '#2E5FA0', 'EDUCATION' => '#6E92C7', 'CREDIT' => '#9B2933',
+            'SANTE' => '#3D6E54', 'SECURITE' => '#B5532A', 'MARKETING' => '#A07626',
+            'PROD_INT' => '#5B4FA0', 'DEV_LOG' => '#2E8A7A', 'AUTRE' => '#7D8899',
+        ];
+        $domainHoverColors = [
+            'RH' => '#5680C2', 'EDUCATION' => '#8DB3D8', 'CREDIT' => '#B84D57',
+            'SANTE' => '#5E9176', 'SECURITE' => '#D07756', 'MARKETING' => '#C2984A',
+            'PROD_INT' => '#7C71B8', 'DEV_LOG' => '#51AC9C', 'AUTRE' => '#9DA5B0',
+        ];
         $chartDomainData = [
             'labels' => array_values(array_map(fn ($k) => $domainLabels[$k] ?? $k, array_keys($domainCounts))),
             'data' => array_values($domainCounts),
+            'colors' => array_values(array_map(fn ($k) => $domainColors[$k] ?? '#475061', array_keys($domainCounts))),
+            'hoverColors' => array_values(array_map(fn ($k) => $domainHoverColors[$k] ?? '#6E92C7', array_keys($domainCounts))),
         ];
     @endphp
 
@@ -236,6 +248,23 @@
                     </div>
                     <div class="chart-surface__body">
                         <div class="chart-canvas-wrap chart-canvas-wrap--bar"><canvas id="chartDomain" aria-label="Nombre d'usages par domaine"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        {{-- Timeline 6 mois --}}
+        @if ($activityTimeline['hasData'])
+            <div class="charts-row charts-row--full">
+                <div class="surface chart-surface">
+                    <div class="surface__head">
+                        <h3>Activité de l'organisation · 6 derniers mois</h3>
+                        <span class="pill">{{ array_sum($activityTimeline['usages']) + array_sum($activityTimeline['assessments']) + array_sum($activityTimeline['reports']) }} événement(s)</span>
+                    </div>
+                    <div class="chart-surface__body chart-surface__body--line">
+                        <div class="chart-canvas-wrap chart-canvas-wrap--line">
+                            <canvas id="chartActivity" aria-label="Évolution mensuelle de l'activité"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -543,10 +572,13 @@
 
         /* Charts */
         .charts-row { display: grid; grid-template-columns: 1fr 1.4fr; gap: 24px; margin-bottom: 32px; }
+        .charts-row--full { grid-template-columns: 1fr; }
         .chart-surface { display: flex; flex-direction: column; }
         .chart-surface__body { padding: 24px; flex: 1; display: flex; gap: 24px; align-items: stretch; min-height: 280px; }
+        .chart-surface__body--line { min-height: 320px; }
         .chart-canvas-wrap { flex: 1; min-width: 0; position: relative; max-width: 240px; }
         .chart-canvas-wrap--bar { max-width: none; }
+        .chart-canvas-wrap--line { max-width: none; height: 280px; }
         .chart-legend { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 180px; align-self: center; }
         .chart-legend li { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--ink-200); }
         .chart-legend .swatch { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
@@ -641,8 +673,8 @@
                             labels: domainData.labels,
                             datasets: [{
                                 data: domainData.data,
-                                backgroundColor: '#2E5FA0',
-                                hoverBackgroundColor: '#6E92C7',
+                                backgroundColor: domainData.colors,
+                                hoverBackgroundColor: domainData.hoverColors,
                                 borderRadius: 2,
                                 barThickness: 18,
                             }],
@@ -810,6 +842,57 @@
                         }],
                     });
                 }
+
+                // ---- Line chart : activité 6 mois ----
+                @if ($activityTimeline['hasData'])
+                const ctxActivity = document.getElementById('chartActivity');
+                const activityData = @json($activityTimeline);
+                if (ctxActivity) {
+                    new Chart(ctxActivity, {
+                        type: 'line',
+                        data: {
+                            labels: activityData.labels,
+                            datasets: [
+                                { label: 'Usages déclarés', data: activityData.usages,
+                                  borderColor: '#2E5FA0', backgroundColor: 'rgba(46, 95, 160, 0.12)',
+                                  tension: 0.35, fill: true, pointRadius: 3, pointHoverRadius: 5,
+                                  pointBackgroundColor: '#2E5FA0', borderWidth: 2 },
+                                { label: 'Évaluations', data: activityData.assessments,
+                                  borderColor: '#A07626', backgroundColor: 'rgba(160, 118, 38, 0.10)',
+                                  tension: 0.35, fill: false, pointRadius: 3, pointHoverRadius: 5,
+                                  pointBackgroundColor: '#A07626', borderWidth: 2 },
+                                { label: 'Rapports générés', data: activityData.reports,
+                                  borderColor: '#3D6E54', backgroundColor: 'rgba(61, 110, 84, 0.10)',
+                                  tension: 0.35, fill: false, pointRadius: 3, pointHoverRadius: 5,
+                                  pointBackgroundColor: '#3D6E54', borderWidth: 2 },
+                            ],
+                        },
+                        options: {
+                            responsive: true, maintainAspectRatio: false,
+                            interaction: { mode: 'index', intersect: false },
+                            plugins: {
+                                legend: { display: true, position: 'bottom',
+                                    labels: { color: '#ABB3C2', font: { family: 'Geist', size: 12 },
+                                              boxWidth: 10, boxHeight: 10, usePointStyle: true, padding: 16 } },
+                                tooltip: {
+                                    backgroundColor: '#0B0F14', borderColor: '#303845', borderWidth: 1,
+                                    titleColor: '#E8EBF0', bodyColor: '#ABB3C2', padding: 12,
+                                    titleFont: { family: 'Geist', size: 12, weight: '500' },
+                                    bodyFont: { family: 'Geist Mono', size: 11 },
+                                },
+                            },
+                            scales: {
+                                x: { ticks: { color: '#ABB3C2', font: { family: 'Geist Mono', size: 10 } },
+                                     grid: { display: false, drawBorder: false } },
+                                y: { beginAtZero: true,
+                                     ticks: { color: '#5B6478', font: { family: 'Geist Mono', size: 10 },
+                                              stepSize: 1, precision: 0 },
+                                     grid: { color: '#232A35', drawBorder: false } },
+                            },
+                        },
+                    });
+                }
+                @endif
 
                 // ---- Ajustement hauteur table = hauteur sidebar ----
                 function syncHeights() {
