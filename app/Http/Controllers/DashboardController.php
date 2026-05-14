@@ -27,7 +27,7 @@ class DashboardController extends Controller
         // ── Heatmap "domaine × niveau de risque" (score pondéré) ──
         $heatmapDomains = ['RH', 'EDUCATION', 'CREDIT', 'SANTE', 'SECURITE', 'MARKETING', 'PROD_INT', 'DEV_LOG', 'AUTRE'];
         $heatmapLevels = ['INACCEPTABLE', 'HAUT_RISQUE', 'RISQUE_LIMITE', 'RISQUE_MINIMAL'];
-        $heatmapWeights = ['INACCEPTABLE' => 4, 'HAUT_RISQUE' => 3, 'RISQUE_LIMITE' => 2, 'RISQUE_MINIMAL' => 1];
+        $heatmapWeights = ['INACCEPTABLE' => 1000, 'HAUT_RISQUE' => 100, 'RISQUE_LIMITE' => 10, 'RISQUE_MINIMAL' => 1];
 
         $flatUsages = [];
         $cells = [];
@@ -77,8 +77,8 @@ class DashboardController extends Controller
             foreach ($heatmapLevels as $lvl) {
                 $cell = $cells[$dom][$lvl];
                 $matrixData[] = [
-                    'x' => $lvl,
-                    'y' => $dom,
+                    'x' => $dom,
+                    'y' => $lvl,
                     'v' => $cell['score'],
                     'count' => $cell['count'],
                     'recent' => $cell['recent'],

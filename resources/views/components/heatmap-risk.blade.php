@@ -12,11 +12,17 @@
             <canvas id="chartHeatmap" aria-label="Heatmap domaine × niveau de risque"></canvas>
         </div>
 
-        {{-- Légende color scale --}}
+        {{-- Légende couleurs par niveau --}}
         <div class="heatmap-legend">
-            <span class="heatmap-legend__label">Faible</span>
-            <div class="heatmap-legend__bar"></div>
-            <span class="heatmap-legend__label">Élevé (score = nb × poids du niveau)</span>
+            <span class="heatmap-legend__chip" style="background: hsl(0, 65%, 45%);"></span>
+            <span class="heatmap-legend__txt">Inacceptable</span>
+            <span class="heatmap-legend__chip" style="background: hsl(25, 65%, 45%);"></span>
+            <span class="heatmap-legend__txt">Haut risque</span>
+            <span class="heatmap-legend__chip" style="background: hsl(75, 65%, 45%);"></span>
+            <span class="heatmap-legend__txt">Risque limité</span>
+            <span class="heatmap-legend__chip" style="background: hsl(130, 65%, 45%);"></span>
+            <span class="heatmap-legend__txt">Risque minimal</span>
+            <span class="heatmap-legend__note">Intensité = nombre d'usages (normalisé par colonne)</span>
         </div>
 
         {{-- Liste filtrable --}}
@@ -44,9 +50,10 @@
     .heatmap-canvas-wrap { position: relative; height: 380px; margin-bottom: 12px; }
     .heatmap-canvas-wrap canvas { max-width: 100%; }
 
-    .heatmap-legend { display: flex; align-items: center; gap: 12px; padding: 0 8px 16px; }
-    .heatmap-legend__label { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; }
-    .heatmap-legend__bar { flex: 1; height: 8px; border-radius: 4px; background: linear-gradient(to right, hsl(120, 65%, 55%), hsl(60, 65%, 50%), hsl(30, 65%, 45%), hsl(0, 65%, 40%)); }
+    .heatmap-legend { display: flex; align-items: center; gap: 6px; padding: 0 8px 16px; flex-wrap: wrap; }
+    .heatmap-legend__chip { display: inline-block; width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+    .heatmap-legend__txt { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; margin-right: 14px; }
+    .heatmap-legend__note { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); margin-left: auto; font-style: italic; text-transform: none; letter-spacing: 0; }
 
     .heatmap-list { margin-top: 16px; padding-top: 20px; border-top: 1px solid var(--hairline); }
     .heatmap-list__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13px; color: var(--text-muted); font-family: var(--font-mono); }
