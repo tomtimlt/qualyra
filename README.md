@@ -53,11 +53,10 @@
 
 **Qualyra** est une application web qui audite les usages d'IA d'une PME, les classe selon les 4 niveaux du **Règlement (UE) 2024/1689 (AI Act)**, croise avec les obligations **RGPD**, et génère un rapport PDF de conformité avec plan d'action chiffré.
 
-> **Modèle de vente** : one-shot ~1 500 €, sans abonnement ni SaaS.
 
 ### Cible
 
-PME de **20 à 150 personnes** sans DPO ni RSSI dédié : cabinets, agences, écoles privées, startups tech. Marché : France.
+PME de **20 à 500 personnes** sans DPO ni RSSI dédié : cabinets, agences, écoles privées, startups tech. Marché : France.
 
 ### Pourquoi maintenant
 
