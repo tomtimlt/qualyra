@@ -14,7 +14,7 @@
 <div class="guest__bg"></div>
 
 <div class="guest__shell" x-data="customScrollbar($el)" class="guest-scroll">
-    <a href="{{ route('dashboard') }}" class="guest__brand">
+    <a href="{{ route('home') }}" class="guest__brand">
         <img src="{{ asset('qualyra/brand/qualyra-mark-original.png') }}" alt="">
         <div class="brand-word">Qualyra<span class="dot">.</span></div>
     </a>
@@ -60,7 +60,7 @@
         display: none; /* WebKit */
     }
 
-    .guest__brand { display: flex; align-items: center; gap: 12px; text-decoration: none; justify-content: center; }
+    .guest__brand { display: flex; align-items: center; gap: 12px; text-decoration: none; justify-content: center; margin-bottom: 24px; }
     .guest__brand img { height: 36px; }
     .brand-word { font-family: var(--font-display); font-size: 28px; line-height: 1; letter-spacing: -0.01em; color: var(--text); }
     .brand-word .dot { color: var(--accent); }
