@@ -25,7 +25,6 @@
 
     <div class="guest__foot">
         <a href="{{ route('home') }}">← Retour à l'accueil</a>
-        <span>AI Act · RGPD · v0.1</span>
     </div>
 
     <!-- Custom scrollbar track + thumb -->
