@@ -190,8 +190,8 @@ npm run build                          # build Vite
 ## §11 — Setup initial (premier clone)
 
 ```bash
-git clone https://github.com/tomtimlt/ai-assistant.git
-cd ai-assistant
+git clone https://github.com/tomtimlt/qualyra.git
+cd qualyra
 git checkout dev
 
 # Installation

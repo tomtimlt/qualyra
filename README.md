@@ -30,10 +30,10 @@ Permettre aux PME de déclarer leurs outils d'IA, d'évaluer automatiquement leu
 
 ```bash
 # Builder l'image
-docker build -t ai-assistant .
+docker build -t qualyra .
 
 # Lancer le conteneur
-docker run -d --name ai-assistant -p 8000:8000 ai-assistant
+docker run -d --name qualyra -p 8000:8000 qualyra
 ```
 
 L'application est accessible sur **http://localhost:8000**.
