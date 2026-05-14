@@ -222,6 +222,9 @@
             </div>
         @endif
 
+        {{-- Heatmap domaine × niveau de risque --}}
+        <x-heatmap-risk :heatmap="$heatmap" />
+
         {{-- Deux colonnes : table d'usages + sidebar organisation --}}
         <div class="dashboard-cols">
             <div class="surface">
@@ -466,6 +469,7 @@
 
     @if ($aiUsages->count() > 0)
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js" defer></script>
         <script>
             window.addEventListener('DOMContentLoaded', () => {
                 const riskData = @json($chartRiskData);
@@ -572,6 +576,105 @@
                                 },
                                 y: {
                                     ticks: { color: '#ABB3C2', font: { family: 'Geist', size: 12 } },
+                                    grid: { display: false, drawBorder: false },
+                                },
+                            },
+                        },
+                    });
+                }
+
+                // ---- Heatmap matrix : domaine × niveau de risque ----
+                const ctxHeatmap = document.getElementById('chartHeatmap');
+                const heatmapData = @json($heatmap);
+                if (ctxHeatmap && heatmapData.allUsages.length > 0) {
+                    new Chart(ctxHeatmap, {
+                        type: 'matrix',
+                        data: {
+                            datasets: [{
+                                label: 'Score pondéré',
+                                data: heatmapData.matrix,
+                                backgroundColor(ctx) {
+                                    const v = ctx.raw?.v ?? 0;
+                                    if (heatmapData.maxScore === 0 || v === 0) return 'rgba(255, 255, 255, 0.04)';
+                                    const intensity = v / heatmapData.maxScore;
+                                    const hue = 120 - intensity * 120;
+                                    const lightness = 55 - intensity * 20;
+                                    return `hsl(${hue}, 65%, ${lightness}%)`;
+                                },
+                                borderColor: '#11161E',
+                                borderWidth: 2,
+                                width: ({ chart }) => (chart.chartArea || {}).width / heatmapData.levels.length - 2,
+                                height: ({ chart }) => (chart.chartArea || {}).height / heatmapData.domains.length - 2,
+                            }],
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            onClick: (event, activeElements, chart) => {
+                                if (activeElements.length === 0) return;
+                                const el = activeElements[0];
+                                const cell = chart.data.datasets[el.datasetIndex].data[el.index];
+                                window.dispatchEvent(new CustomEvent('heatmap:cell-click', {
+                                    detail: { domain: cell.y, level: cell.x },
+                                }));
+                            },
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    backgroundColor: '#0B0F14',
+                                    borderColor: '#303845',
+                                    borderWidth: 1,
+                                    titleColor: '#E8EBF0',
+                                    bodyColor: '#ABB3C2',
+                                    padding: 12,
+                                    titleFont: { family: 'Geist', size: 12, weight: '500' },
+                                    bodyFont: { family: 'Geist Mono', size: 11 },
+                                    callbacks: {
+                                        title: (items) => {
+                                            const r = items[0].raw;
+                                            const levelLabels = {
+                                                INACCEPTABLE: 'Inacceptable',
+                                                HAUT_RISQUE: 'Haut risque',
+                                                RISQUE_LIMITE: 'Risque limité',
+                                                RISQUE_MINIMAL: 'Risque minimal',
+                                            };
+                                            return `${r.y} – ${levelLabels[r.x] ?? r.x}`;
+                                        },
+                                        label: (item) => {
+                                            const r = item.raw;
+                                            const lines = [`${r.count} usage(s) · score ${r.v}`];
+                                            if (r.recent && r.recent.length > 0) {
+                                                lines.push(`Récents : ${r.recent.join(', ')}`);
+                                            }
+                                            return lines;
+                                        },
+                                    },
+                                },
+                            },
+                            scales: {
+                                x: {
+                                    type: 'category',
+                                    labels: heatmapData.levels,
+                                    position: 'top',
+                                    ticks: {
+                                        color: '#ABB3C2',
+                                        font: { family: 'Geist Mono', size: 10 },
+                                        callback(value, index) {
+                                            const labels = ['Inacceptable', 'Haut risque', 'Risque limité', 'Risque minimal'];
+                                            return labels[index] ?? this.getLabelForValue(value);
+                                        },
+                                    },
+                                    grid: { display: false, drawBorder: false },
+                                },
+                                y: {
+                                    type: 'category',
+                                    labels: heatmapData.domains,
+                                    offset: true,
+                                    reverse: true,
+                                    ticks: {
+                                        color: '#ABB3C2',
+                                        font: { family: 'Geist Mono', size: 11 },
+                                    },
                                     grid: { display: false, drawBorder: false },
                                 },
                             },
