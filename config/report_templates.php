@@ -76,13 +76,13 @@ return [
         // Si présence ≥1 INACCEPTABLE
         'priorite_inacceptable' => "Cesser immédiatement l'usage interdit déclaré ({usages_inacceptable_list}) — pratique prohibée par l'Article 5 de l'AI Act, applicable depuis le 2 février 2025.",
         // Si présence ≥1 HAUT_RISQUE (qu'il y ait ou non un INACCEPTABLE en plus)
-        'priorite_haut_risque' => "Mettre en place une supervision humaine significative et une AIPD documentée pour chaque système haut risque ({usages_haut_risque_list}), conformément aux Articles 26 §2 et 35 RGPD.",
+        'priorite_haut_risque' => 'Mettre en place une supervision humaine significative et une AIPD documentée pour chaque système haut risque ({usages_haut_risque_list}), conformément aux Articles 26 §2 et 35 RGPD.',
         // Si présence ≥1 RISQUE_LIMITE
-        'priorite_risque_limite' => "Déployer les mentions de transparence Article 50 (chatbot, contenus IA) sur les systèmes concernés ({usages_risque_limite_list}) avant le 2 août 2026.",
+        'priorite_risque_limite' => 'Déployer les mentions de transparence Article 50 (chatbot, contenus IA) sur les systèmes concernés ({usages_risque_limite_list}) avant le 2 août 2026.',
         // Toujours présent en bas de pile (P3 fallback)
         'priorite_charte_ia' => "Formaliser et diffuser une Charte d'usage interne de l'IA pour encadrer les pratiques des collaborateurs et neutraliser le « Shadow AI ».",
         // Fallback : présence d'usages mais aucun risque significatif
-        'priorite_registre' => "Maintenir un registre exhaustif des usages IA et la traçabilité RGPD des traitements de données personnelles.",
+        'priorite_registre' => 'Maintenir un registre exhaustif des usages IA et la traçabilité RGPD des traitements de données personnelles.',
     ],
 
     // =========================================================================
@@ -284,7 +284,7 @@ return [
     // 7. Encadré « Zones grises » (avec Digital Omnibus + DPF — version 2026)
     // =========================================================================
     'zones_grises' => [
-        'intro' => "Si la réglementation européenne fixe un cap ambitieux, la direction de {nom_pme} doit avoir conscience que le droit des nouvelles technologies navigue actuellement dans des « zones grises » nécessitant une veille stratégique attentive.",
+        'intro' => 'Si la réglementation européenne fixe un cap ambitieux, la direction de {nom_pme} doit avoir conscience que le droit des nouvelles technologies navigue actuellement dans des « zones grises » nécessitant une veille stratégique attentive.',
 
         'digital_omnibus' => "Premièrement, le calendrier de l'AI Act a failli être bouleversé. Le projet « Digital Omnibus », porté par la Commission Européenne, proposait de reporter la deadline d'application des systèmes d'IA à haut risque (Annexe III) du 2 août 2026 à décembre 2027, afin d'alléger la pression de mise en conformité sur les PME. Les négociations en trilogue ont échoué le 28 avril 2026 sans accord politique entre le Conseil et le Parlement européen. À la date de ce rapport, la date butoir du 2 août 2026 reste donc l'horizon réglementaire opposable. Espérer un report constitue un risque de gestion majeur.",
 

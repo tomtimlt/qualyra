@@ -26,9 +26,9 @@ class ReportContentBuilder
 {
     /**
      * @param  array<string, mixed>  $data  Données brutes (output de
-     *   ReportSnapshotBuilder::buildData) — voir contrat plus bas.
-     * @return array<string, mixed>  Contenu résolu, structure stable pour
-     *   les vues Blade.
+     *                                      ReportSnapshotBuilder::buildData) — voir contrat plus bas.
+     * @return array<string, mixed> Contenu résolu, structure stable pour
+     *                              les vues Blade.
      */
     public function build(array $data): array
     {

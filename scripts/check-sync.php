@@ -1,5 +1,10 @@
 #!/usr/bin/env php
 <?php
+
+declare(strict_types=1);
+
+use Illuminate\Contracts\Console\Kernel;
+
 /**
  * scripts/check-sync.php — Analyse statique config ↔ seeder
  *
@@ -8,13 +13,11 @@
  * Utilise les helpers Laravel (config, app) pour une analyse précise.
  */
 
-declare(strict_types=1);
-
 // Boot Laravel minimal pour accéder à config()
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 
-$app = require_once __DIR__ . '/../bootstrap/app.php';
-$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$app = require_once __DIR__.'/../bootstrap/app.php';
+$kernel = $app->make(Kernel::class);
 $kernel->bootstrap();
 
 // Extraire les IDs de règles depuis la config
@@ -34,8 +37,8 @@ foreach ($rules as $key => $rule) {
 }
 
 // Lire le DemoSeeder
-$seederPath = __DIR__ . '/../database/seeders/DemoSeeder.php';
-if (!file_exists($seederPath)) {
+$seederPath = __DIR__.'/../database/seeders/DemoSeeder.php';
+if (! file_exists($seederPath)) {
     echo "❌ DemoSeeder introuvable: $seederPath\n";
     exit(1);
 }
@@ -45,7 +48,7 @@ $seederContent = file_get_contents($seederPath);
 // Vérifier que chaque ID de règle est référencé dans le seeder
 $missing = [];
 foreach ($configIds as $id) {
-    if (!str_contains($seederContent, $id)) {
+    if (! str_contains($seederContent, $id)) {
         $missing[] = $id;
     }
 }
@@ -60,5 +63,5 @@ if (count($missing) > 0) {
     exit(1);
 }
 
-echo "✓ Synchronisation OK — " . count($configIds) . " IDs de règles vérifiés\n";
+echo '✓ Synchronisation OK — '.count($configIds)." IDs de règles vérifiés\n";
 exit(0);

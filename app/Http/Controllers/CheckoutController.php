@@ -9,7 +9,6 @@ use App\Services\ReportSnapshotBuilder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Stripe\Checkout\Session as StripeCheckoutSession;
 use Stripe\StripeClient;
 
 class CheckoutController extends Controller

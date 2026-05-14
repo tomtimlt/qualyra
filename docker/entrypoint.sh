@@ -38,18 +38,14 @@ mkdir -p database
 
 if [ ! -f database/database.sqlite ]; then
     touch database/database.sqlite
-    DB_FRESH=true
-else
-    DB_FRESH=false
 fi
 
 echo "→ Running migrations…"
 php artisan migrate --force --no-interaction
 
-if [ "$DB_FRESH" = true ]; then
-    echo "→ Seeding database…"
-    php artisan db:seed --force --no-interaction
-fi
+# Seed à chaque démarrage : DemoSeeder est idempotent
+echo "→ Seeding database (demo account)…"
+php artisan db:seed --force --no-interaction
 
 # ── Storage link ──────────────────────────────────────────
 php artisan storage:link 2>/dev/null || true

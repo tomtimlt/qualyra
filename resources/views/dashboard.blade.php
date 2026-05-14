@@ -67,6 +67,25 @@
         }
         arsort($domainCounts);
 
+        // Données pour le filtre Alpine du tableau des usages
+        $usageFilterData = $aiUsages->map(fn($u) => [
+            'id' => $u->id,
+            'name' => $u->name,
+            'type' => $u->type,
+            'domain_code' => $u->domain,
+            'niveau' => $u->latestAssessment?->niveau,
+            'status_label' => $u->latestAssessment
+                ? ($niveauLabels[$u->latestAssessment->niveau] ?? $u->latestAssessment->niveau)
+                : ($u->responses()->exists() ? 'À évaluer' : 'Questionnaire'),
+            'status_class' => $u->latestAssessment
+                ? ($niveauRiskClass[$u->latestAssessment->niveau] ?? 'none')
+                : 'none',
+            'computed_at' => $u->latestAssessment?->computed_at?->translatedFormat('d M') ?? '—',
+            'computed_at_ts' => $u->latestAssessment?->computed_at?->timestamp ?? 0,
+            'url' => route('usages.show', $u),
+        ])->values();
+        $domainList = $domainCounts;
+
         $chartRiskData = [
             'labels' => ['Inacceptable', 'Haut risque', 'Risque limité', 'Risque minimal', 'Non évalué'],
             'data' => [
@@ -222,81 +241,148 @@
             </div>
         @endif
 
+        {{-- Heatmap domaine × niveau de risque --}}
+        <x-heatmap-risk :heatmap="$heatmap" />
+
         {{-- Deux colonnes : table d'usages + sidebar organisation --}}
         <div class="dashboard-cols">
-            <div class="surface">
+            <div class="surface"
+                 x-data="{
+                    filterNiveau: '',
+                    filterDomaine: '',
+                    searchQuery: '',
+                    sortField: '',
+                    sortDir: 'asc',
+                    usages: @js($usageFilterData),
+                    domaines: @js($domainList),
+                    domainLabels: @js($domainLabels),
+                    nivLabels: @js($niveauLabels),
+                    nivClass: @js($niveauRiskClass),
+                    get filtered() {
+                        let f = this.usages;
+                        if (this.filterNiveau) f = f.filter(u => u.niveau === this.filterNiveau);
+                        if (this.filterDomaine) f = f.filter(u => u.domain_code === this.filterDomaine);
+                        if (this.searchQuery.trim()) {
+                            const q = this.searchQuery.trim().toLowerCase();
+                            f = f.filter(u => u.name.toLowerCase().includes(q) || u.type.toLowerCase().includes(q));
+                        }
+                        if (this.sortField) {
+                            const dir = this.sortDir === 'asc' ? 1 : -1;
+                            f = [...f].sort((a, b) => {
+                                let va = a[this.sortField], vb = b[this.sortField];
+                                if (this.sortField === 'niveau') {
+                                    const order = { INACCEPTABLE: 4, HAUT_RISQUE: 3, RISQUE_LIMITE: 2, RISQUE_MINIMAL: 1 };
+                                    va = order[va] ?? 0; vb = order[vb] ?? 0;
+                                }
+                                if (va < vb) return -1 * dir;
+                                if (va > vb) return 1 * dir;
+                                return 0;
+                            });
+                        }
+                        return f;
+                    },
+                    sortBy(field) {
+                        if (this.sortField === field) {
+                            if (this.sortDir === 'asc') this.sortDir = 'desc';
+                            else { this.sortField = ''; this.sortDir = 'asc'; }
+                        } else { this.sortField = field; this.sortDir = 'asc'; }
+                    },
+                    sortIndicator(field) {
+                        if (this.sortField !== field) return '';
+                        return this.sortDir === 'asc' ? ' ▲' : ' ▼';
+                    },
+                    resetF() { this.filterNiveau = ''; this.filterDomaine = ''; this.searchQuery = ''; this.sortField = ''; this.sortDir = 'asc'; },
+                 }">
                 <div class="surface__head">
                     <h3>Usages d'IA déclarés</h3>
                     <div class="surface__head-right">
-                        <span class="pill">Triés · récents</span>
+                        <input x-model="searchQuery" type="search" placeholder="Rechercher…" class="filter-search" aria-label="Rechercher un usage">
+                        <select x-model="filterNiveau" class="filter-select">
+                            <option value="">Niveau : Tous</option>
+                            <option value="INACCEPTABLE">Inacceptable</option>
+                            <option value="HAUT_RISQUE">Haut risque</option>
+                            <option value="RISQUE_LIMITE">Risque limité</option>
+                            <option value="RISQUE_MINIMAL">Risque minimal</option>
+                        </select>
+                        <select x-model="filterDomaine" class="filter-select">
+                            <option value="">Domaine : Tous</option>
+                            <template x-for="(count, code) in domaines" :key="code">
+                                <option :value="code" x-text="(domainLabels[code] || code) + ' (' + count + ')'"></option>
+                            </template>
+                        </select>
+                        <span class="pill" x-text="filtered.length + ' usage' + (filtered.length > 1 ? 's' : '')"></span>
+                        <button type="button" x-show="filterNiveau || filterDomaine || searchQuery" @click="resetF()" class="filter-reset" aria-label="Réinitialiser les filtres">×</button>
                     </div>
                 </div>
 
-                @if ($aiUsages->isEmpty())
-                    <div class="empty-state">
-                        <div class="eyebrow">Aucun usage</div>
-                        <p>
-                            Aucun usage d'IA n'est encore déclaré pour <b>{{ $organization->name }}</b>.
-                            Cliquez sur « Déclarer un usage » pour ajouter votre premier outil.
-                        </p>
-                        <a class="btn btn--accent btn--uiverse" href="{{ route('usages.create') }}">
-                            <div class="wrapper">
-                                <span>+ Déclarer un usage</span>
-                                <div class="circle circle-12"></div>
-                                <div class="circle circle-11"></div>
-                                <div class="circle circle-10"></div>
-                                <div class="circle circle-9"></div>
-                                <div class="circle circle-8"></div>
-                                <div class="circle circle-7"></div>
-                                <div class="circle circle-6"></div>
-                                <div class="circle circle-5"></div>
-                                <div class="circle circle-4"></div>
-                                <div class="circle circle-3"></div>
-                                <div class="circle circle-2"></div>
-                                <div class="circle circle-1"></div>
-                            </div>
-                        </a>
-                    </div>
-                @else
-                    <table class="tbl">
-                        <thead>
-                            <tr>
-                                <th style="width: 36px"></th>
-                                <th>Usage</th>
-                                <th>Domaine</th>
-                                <th>Niveau</th>
-                                <th style="width: 120px; text-align: right">Audité</th>
-                                <th style="width: 36px"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($aiUsages as $i => $usage)
-                                @php $a = $usage->latestAssessment; @endphp
-                                <tr onclick="window.location='{{ route('usages.show', $usage) }}'" style="cursor: pointer">
-                                    <td class="num">{{ str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT) }}</td>
-                                    <td>
-                                        <div class="cell-name">{{ $usage->name }}</div>
-                                        <div class="num cell-meta">{{ $usage->type }} · {{ $usage->domain }}</div>
-                                    </td>
-                                    <td>{{ $usage->domain }}</td>
-                                    <td>
-                                        @if ($a)
-                                            <span class="risk risk--{{ $niveauRiskClass[$a->niveau] }}"><span class="risk__dot"></span>{{ $niveauLabels[$a->niveau] }}</span>
-                                        @elseif ($usage->responses()->exists())
-                                            <span class="risk risk--none">À évaluer</span>
-                                        @else
-                                            <span class="risk risk--none">Questionnaire</span>
-                                        @endif
-                                    </td>
-                                    <td class="num" style="text-align: right">
-                                        {{ $a ? $a->computed_at->translatedFormat('d M') : '—' }}
-                                    </td>
-                                    <td class="arrow">›</td>
+                <div class="tbl-wrap">
+                    @if ($aiUsages->isEmpty())
+                        <div class="empty-state">
+                            <div class="eyebrow">Aucun usage</div>
+                            <p>
+                                Aucun usage d'IA n'est encore déclaré pour <b>{{ $organization->name }}</b>.
+                                Cliquez sur « Déclarer un usage » pour ajouter votre premier outil.
+                            </p>
+                            <a class="btn btn--accent btn--uiverse" href="{{ route('usages.create') }}">
+                                <div class="wrapper">
+                                    <span>+ Déclarer un usage</span>
+                                    <div class="circle circle-12"></div>
+                                    <div class="circle circle-11"></div>
+                                    <div class="circle circle-10"></div>
+                                    <div class="circle circle-9"></div>
+                                    <div class="circle circle-8"></div>
+                                    <div class="circle circle-7"></div>
+                                    <div class="circle circle-6"></div>
+                                    <div class="circle circle-5"></div>
+                                    <div class="circle circle-4"></div>
+                                    <div class="circle circle-3"></div>
+                                    <div class="circle circle-2"></div>
+                                    <div class="circle circle-1"></div>
+                                </div>
+                            </a>
+                        </div>
+                    @else
+                        <table class="tbl">
+                            <thead>
+                                <tr>
+                                    <th style="width: 36px"></th>
+                                    <th @click="sortBy('name')" class="sortable">Usage<span x-text="sortIndicator('name')"></span></th>
+                                    <th @click="sortBy('domain_code')" class="sortable">Domaine<span x-text="sortIndicator('domain_code')"></span></th>
+                                    <th @click="sortBy('niveau')" class="sortable">Niveau<span x-text="sortIndicator('niveau')"></span></th>
+                                    <th @click="sortBy('computed_at_ts')" class="sortable" style="width: 120px; text-align: right">Audité<span x-text="sortIndicator('computed_at_ts')"></span></th>
+                                    <th style="width: 36px"></th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                @endif
+                            </thead>
+                            <tbody>
+                                <template x-for="(u, i) in filtered" :key="u.id">
+                                    <tr @click="window.location = u.url" style="cursor: pointer">
+                                        <td class="num" x-text="String(i + 1).padStart(2, '0')"></td>
+                                        <td>
+                                            <div class="cell-name" x-text="u.name"></div>
+                                            <div class="num cell-meta" x-text="u.type + ' · ' + u.domain_code"></div>
+                                        </td>
+                                        <td x-text="u.domain_code"></td>
+                                        <td>
+                                            <span :class="'risk risk--' + u.status_class">
+                                                <span x-show="u.niveau" class="risk__dot"></span>
+                                                <span x-text="u.status_label"></span>
+                                            </span>
+                                        </td>
+                                        <td class="num" style="text-align: right" x-text="u.computed_at"></td>
+                                        <td class="arrow">›</td>
+                                    </tr>
+                                </template>
+                                <template x-if="filtered.length === 0 && usages.length > 0">
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; padding: 32px; color: var(--text-dim);">
+                                            Aucun usage ne correspond aux filtres.
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    @endif
+                </div>
             </div>
 
             <div class="dashboard-aside">
@@ -400,15 +486,31 @@
 
         /* Surface (cards) */
         .surface { border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--ink-950); overflow: hidden; }
+
+        /* Scrollable table dans la colonne de gauche */
+        .tbl-wrap { overflow-y: auto; }
+        .tbl-wrap::-webkit-scrollbar { width: 5px; }
+        .tbl-wrap::-webkit-scrollbar-track { background: transparent; }
+        .tbl-wrap::-webkit-scrollbar-thumb { background: var(--hairline-strong); border-radius: 3px; }
+        .tbl-wrap::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
         .surface__head { padding: 18px 24px; border-bottom: 1px solid var(--hairline); display: flex; justify-content: space-between; align-items: center; }
         .surface__head h3 { margin: 0; font-size: 15px; font-weight: 500; letter-spacing: -0.01em; color: var(--text); }
         .surface__head-right { display: flex; gap: 8px; }
         .pill { font-family: var(--font-mono); font-size: 10px; padding: 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); letter-spacing: 0.04em; }
+        .filter-select { font-family: var(--font-mono); font-size: 10px; padding: 4px 8px 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); background: var(--ink-950); letter-spacing: 0.04em; cursor: pointer; appearance: none; -webkit-appearance: none; }
+        .filter-select:hover { color: var(--text); border-color: var(--text); }
+        .filter-search { font-family: var(--font-mono); font-size: 10px; padding: 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); background: var(--ink-950); letter-spacing: 0.04em; width: 140px; outline: none; }
+        .filter-search:focus { color: var(--text); border-color: var(--accent); }
+        .filter-search::placeholder { color: var(--text-dim); }
+        .filter-reset { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 16px; line-height: 1; padding: 0 2px; }
+        .filter-reset:hover { color: var(--text); }
 
         /* Table */
         .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
         .tbl th, .tbl td { text-align: left; padding: 14px 24px; }
         .tbl thead th { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); font-weight: 500; }
+        .sortable { cursor: pointer; user-select: none; }
+        .sortable:hover { color: var(--text); }
         .tbl tbody tr { border-top: 1px solid var(--hairline); transition: background var(--d-fast); }
         .tbl tbody tr:hover { background: var(--ink-900); }
         .cell-name { font-weight: 500; color: var(--text); }
@@ -466,6 +568,7 @@
 
     @if ($aiUsages->count() > 0)
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js" defer></script>
         <script>
             window.addEventListener('DOMContentLoaded', () => {
                 const riskData = @json($chartRiskData);
@@ -578,6 +681,151 @@
                         },
                     });
                 }
+
+                // ---- Heatmap matrix : domaine × niveau de risque ----
+                const ctxHeatmap = document.getElementById('chartHeatmap');
+                const heatmapData = @json($heatmap);
+                if (ctxHeatmap && heatmapData.allUsages.length > 0) {
+                    new Chart(ctxHeatmap, {
+                        type: 'matrix',
+                        data: {
+                            datasets: [{
+                                label: 'Score pondéré',
+                                data: heatmapData.matrix,
+                                backgroundColor(ctx) {
+                                    const cell = ctx.raw;
+                                    if (!cell || cell.count === 0) return 'rgba(255, 255, 255, 0.04)';
+                                    // Teinte = niveau (rouge=INACC, orange=HAUT, jaune-vert=LIM, vert=MIN)
+                                    const HUES = { INACCEPTABLE: 0, HAUT_RISQUE: 25, RISQUE_LIMITE: 75, RISQUE_MINIMAL: 130 };
+                                    const hue = HUES[cell.y] ?? 200;
+                                    // Normalisation PAR LIGNE (niveau cell.y) : max des counts pour ce niveau
+                                    const maxInLevel = heatmapData.matrix
+                                        .filter(c => c.y === cell.y)
+                                        .reduce((m, c) => Math.max(m, c.count), 0) || 1;
+                                    const intensity = cell.count / maxInLevel; // 0..1
+                                    // Intensité 0 → couleur claire et peu saturée ; intensité 1 → foncée et saturée
+                                    const sat = 50 + intensity * 30;
+                                    const light = 62 - intensity * 30;
+                                    return `hsl(${hue}, ${sat}%, ${light}%)`;
+                                },
+                                borderColor: '#11161E',
+                                borderWidth: 2,
+                                width: ({ chart }) => (chart.chartArea || {}).width / heatmapData.domains.length - 2,
+                                height: ({ chart }) => (chart.chartArea || {}).height / heatmapData.levels.length - 2,
+                            }],
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            onClick: (event, activeElements, chart) => {
+                                if (activeElements.length === 0) return;
+                                const el = activeElements[0];
+                                const cell = chart.data.datasets[el.datasetIndex].data[el.index];
+                                window.dispatchEvent(new CustomEvent('heatmap:cell-click', {
+                                    detail: { domain: cell.x, level: cell.y },
+                                }));
+                            },
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    backgroundColor: '#0B0F14',
+                                    borderColor: '#303845',
+                                    borderWidth: 1,
+                                    titleColor: '#E8EBF0',
+                                    bodyColor: '#ABB3C2',
+                                    padding: 12,
+                                    titleFont: { family: 'Geist', size: 12, weight: '500' },
+                                    bodyFont: { family: 'Geist Mono', size: 11 },
+                                    callbacks: {
+                                        title: (items) => {
+                                            const r = items[0].raw;
+                                            const levelLabels = {
+                                                INACCEPTABLE: 'Inacceptable',
+                                                HAUT_RISQUE: 'Haut risque',
+                                                RISQUE_LIMITE: 'Risque limité',
+                                                RISQUE_MINIMAL: 'Risque minimal',
+                                            };
+                                            return `${r.x} – ${levelLabels[r.y] ?? r.y}`;
+                                        },
+                                        label: (item) => {
+                                            const r = item.raw;
+                                            const lines = [`${r.count} usage(s)`];
+                                            if (r.recent && r.recent.length > 0) {
+                                                lines.push(`Récents : ${r.recent.join(', ')}`);
+                                            }
+                                            return lines;
+                                        },
+                                    },
+                                },
+                            },
+                            scales: {
+                                x: {
+                                    type: 'category',
+                                    labels: heatmapData.domains,
+                                    position: 'bottom',
+                                    offset: true,
+                                    ticks: {
+                                        color: '#ABB3C2',
+                                        font: { family: 'Geist Mono', size: 11 },
+                                    },
+                                    grid: { display: false, drawBorder: false },
+                                },
+                                y: {
+                                    type: 'category',
+                                    labels: heatmapData.levels,
+                                    offset: true,
+                                    reverse: true,
+                                    ticks: {
+                                        color: '#ABB3C2',
+                                        font: { family: 'Geist Mono', size: 10 },
+                                        callback(value, index) {
+                                            const labels = ['Inacceptable', 'Haut risque', 'Risque limité', 'Risque minimal'];
+                                            return labels[index] ?? this.getLabelForValue(value);
+                                        },
+                                    },
+                                    grid: { display: false, drawBorder: false },
+                                },
+                            },
+                        },
+                        plugins: [{
+                            id: 'cellCounter',
+                            afterDatasetsDraw(chart) {
+                                const { ctx } = chart;
+                                const meta = chart.getDatasetMeta(0);
+                                meta.data.forEach((element, index) => {
+                                    const data = chart.data.datasets[0].data[index];
+                                    if (!data || data.count === 0) return;
+                                    const { x, y } = element.getProps(['x', 'y'], false);
+                                    ctx.save();
+                                    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+                                    ctx.font = '600 11px "Geist Mono", monospace';
+                                    ctx.textAlign = 'center';
+                                    ctx.textBaseline = 'middle';
+                                    ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+                                    ctx.shadowBlur = 2;
+                                    ctx.fillText(String(data.count), x, y);
+                                    ctx.restore();
+                                });
+                            },
+                        }],
+                    });
+                }
+
+                // ---- Ajustement hauteur table = hauteur sidebar ----
+                function syncHeights() {
+                    const aside = document.querySelector('.dashboard-aside');
+                    const wrap = document.querySelector('.tbl-wrap');
+                    const head = document.querySelector('.dashboard-cols .surface:first-child .surface__head');
+                    if (!aside || !wrap || !head) return;
+                    const gap = 24;
+                    let sideH = 0;
+                    aside.querySelectorAll(':scope > .surface').forEach(el => sideH += el.offsetHeight);
+                    sideH += (aside.children.length - 1) * gap;
+                    const headH = head.offsetHeight;
+                    wrap.style.maxHeight = Math.max(sideH - headH, 180) + 'px';
+                }
+                syncHeights();
+                window.addEventListener('resize', syncHeights);
             });
         </script>
     @endif

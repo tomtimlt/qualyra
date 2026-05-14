@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Assessment;
 use App\Models\AiUsage;
+use App\Models\Assessment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

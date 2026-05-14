@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 use App\Models\AiUsage;
 use App\Models\Organization;
+use App\Models\Report;
 use App\Models\User;
+use App\Services\ReportSnapshotBuilder;
 
 function userWithOrgAndUsage(): array
 {
@@ -144,7 +146,7 @@ it('renvoie 403 si un user accède à un report d\'une autre organisation', func
  * @param  array<string, string>  $responses
  * @param  array<string, mixed>|null  $assessmentOverride  ex: niveau, regle_id, alertes
  */
-function reportWithUsage(string $type, string $domain, array $responses = [], ?array $assessmentOverride = null): App\Models\Report
+function reportWithUsage(string $type, string $domain, array $responses = [], ?array $assessmentOverride = null): Report
 {
     $user = User::factory()->create();
     $organization = Organization::factory()->for($user)->create();
@@ -167,7 +169,7 @@ function reportWithUsage(string $type, string $domain, array $responses = [], ?a
         ], $assessmentOverride));
     }
 
-    $snapshot = app(App\Services\ReportSnapshotBuilder::class)->build($organization->fresh());
+    $snapshot = app(ReportSnapshotBuilder::class)->build($organization->fresh());
 
     return $organization->reports()->create([
         'snapshot' => $snapshot,
@@ -271,7 +273,7 @@ it('le snapshot reste figé même après modification des usages sous-jacents', 
     ]);
     $usage->responses()->create(['variable_key' => 'finality', 'variable_value' => 'OK']);
 
-    $snapshot = app(App\Services\ReportSnapshotBuilder::class)->build($organization->fresh());
+    $snapshot = app(ReportSnapshotBuilder::class)->build($organization->fresh());
     $report = $organization->reports()->create(['snapshot' => $snapshot, 'paid_at' => now()]);
 
     // Mutation post-génération : on change le nom et on supprime un usage.

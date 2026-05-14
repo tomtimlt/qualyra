@@ -83,7 +83,7 @@ return [
         'niveau' => 'INACCEPTABLE',
         'article' => 'Art. 5 §1 c)',
         'type_regle' => 'TEXTE_EXPLICITE',
-        'raison' => "Un système de notation sociale globale des individus sur plusieurs domaines de vie (social scoring), entraînant un traitement défavorable ou disproportionné, est interdit.",
+        'raison' => 'Un système de notation sociale globale des individus sur plusieurs domaines de vie (social scoring), entraînant un traitement défavorable ou disproportionné, est interdit.',
         'when' => [
             'ai_usage.type' => 'IA_SCORING',
             'response.scoring_portee' => 'GLOBAL_MULTI_DOMAINES',
@@ -135,7 +135,7 @@ return [
         'niveau' => 'INACCEPTABLE',
         'article' => 'Art. 5 §1 a)',
         'type_regle' => 'TEXTE_EXPLICITE',
-        'raison' => "Les techniques subliminales ou délibérément trompeuses altérant substantiellement le comportement et causant un préjudice sont interdites.",
+        'raison' => 'Les techniques subliminales ou délibérément trompeuses altérant substantiellement le comportement et causant un préjudice sont interdites.',
         'when' => [
             'response.techniques_subliminales' => 'OUI',
         ],
@@ -258,11 +258,11 @@ return [
         'niveau' => 'HAUT_RISQUE',
         'article' => 'Art. 6 §1 + Annexe I (interprétation, Art. 6 §2 par analogie)',
         'type_regle' => 'INTERPRETATION',
-        'raison' => "Les systèmes IA influençant des décisions médicales cliniques sont présumés haut risque. Vérifier le régime applicable (MDR 2017/745 ou IVDR 2017/746).",
+        'raison' => 'Les systèmes IA influençant des décisions médicales cliniques sont présumés haut risque. Vérifier le régime applicable (MDR 2017/745 ou IVDR 2017/746).',
         'alerte' => [
             'code' => 'flag_zone_grise_medical',
             'type' => 'FLAG_ZONE_GRISE',
-            'message' => "Usage médical clinique détecté. Peut relever de Art. 6 §1 + Annexe I (dispositif médical) applicable au 2 août 2027. Consulter un juriste.",
+            'message' => 'Usage médical clinique détecté. Peut relever de Art. 6 §1 + Annexe I (dispositif médical) applicable au 2 août 2027. Consulter un juriste.',
             'article' => 'Art. 6 §1 + Annexe I (MDR/IVDR)',
         ],
         'when' => [
@@ -307,7 +307,7 @@ return [
         'alerte' => [
             'code' => 'aggravation_pas_de_controle_humain',
             'type' => 'AGGRAVATION',
-            'message' => "Absence totale de contrôle humain sur un système haut risque. Art. 26 §2 exige un contrôle humain effectif par des personnes compétentes. Non-conformité caractérisée.",
+            'message' => 'Absence totale de contrôle humain sur un système haut risque. Art. 26 §2 exige un contrôle humain effectif par des personnes compétentes. Non-conformité caractérisée.',
             'article' => 'Art. 26 §2',
         ],
         'when' => [
@@ -339,7 +339,7 @@ return [
         'niveau' => 'RISQUE_LIMITE',
         'article' => 'Art. 50 §2',
         'type_regle' => 'TEXTE_EXPLICITE',
-        'raison' => "Les contenus synthétiques (images, sons, vidéos) générés par IA doivent être signalés comme tels avec un marquage lisible par machine (ex : standard C2PA).",
+        'raison' => 'Les contenus synthétiques (images, sons, vidéos) générés par IA doivent être signalés comme tels avec un marquage lisible par machine (ex : standard C2PA).',
         'when' => [
             'ai_usage.type' => 'IA_GEN',
             'response.gen_contenu' => '@in:IMAGE,AUDIO,VIDEO',
@@ -352,7 +352,7 @@ return [
         'niveau' => 'RISQUE_LIMITE',
         'article' => 'Art. 50 §4',
         'type_regle' => 'TEXTE_EXPLICITE',
-        'raison' => "Les hypertrucages (deepfakes) doivent être explicitement déclarés comme générés par IA lors de leur diffusion, sauf parodie ou satire clairement identifiée.",
+        'raison' => 'Les hypertrucages (deepfakes) doivent être explicitement déclarés comme générés par IA lors de leur diffusion, sauf parodie ou satire clairement identifiée.',
         'when' => [
             'ai_usage.type' => 'IA_GEN',
             'response.gen_contenu' => 'DEEPFAKE',
@@ -381,7 +381,7 @@ return [
         'niveau' => 'RISQUE_LIMITE',
         'article' => 'Art. 50 §3',
         'type_regle' => 'TEXTE_EXPLICITE',
-        'raison' => "Tout système de catégorisation biométrique doit informer les personnes concernées de son utilisation.",
+        'raison' => 'Tout système de catégorisation biométrique doit informer les personnes concernées de son utilisation.',
         'when' => [
             'ai_usage.type' => 'IA_BIO',
             'response.bio_type' => 'CATEGORISATION',
