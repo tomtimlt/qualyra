@@ -86,7 +86,7 @@ class AiActClassifier
             'niveau' => 'RISQUE_MINIMAL',
             'article' => 'N/A',
             'type_regle' => 'NA',
-            'raison' => "Aucune règle applicable (matrice incomplète) — dégradation par défaut.",
+            'raison' => 'Aucune règle applicable (matrice incomplète) — dégradation par défaut.',
         ];
 
         // Deuxième passe — alertes non classificatoires (FLAG_ZONE_GRISE,
