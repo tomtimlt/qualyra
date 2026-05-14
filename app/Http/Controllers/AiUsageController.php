@@ -44,7 +44,58 @@ class AiUsageController extends Controller implements HasMiddleware
 
         $aiUsages = $organization->aiUsages()->latest()->get();
 
-        return view('usages.index', compact('aiUsages'));
+        // Pré-charge l'évaluation la plus récente pour éviter N+1
+        foreach ($aiUsages as $usage) {
+            $usage->setRelation('latestAssessment', $usage->assessments()->latest('computed_at')->first());
+        }
+
+        $niveauLabels = [
+            'INACCEPTABLE' => 'Inacceptable',
+            'HAUT_RISQUE' => 'Haut risque',
+            'RISQUE_LIMITE' => 'Risque limité',
+            'RISQUE_MINIMAL' => 'Risque minimal',
+        ];
+        $niveauRiskClass = [
+            'INACCEPTABLE' => 'inacc',
+            'HAUT_RISQUE' => 'haut',
+            'RISQUE_LIMITE' => 'lim',
+            'RISQUE_MINIMAL' => 'min',
+        ];
+        $domainLabels = [
+            'RH' => 'Ressources humaines', 'EDUCATION' => 'Éducation', 'CREDIT' => 'Crédit',
+            'SANTE' => 'Santé', 'SECURITE' => 'Sécurité', 'MARKETING' => 'Marketing',
+            'PROD_INT' => 'Productivité interne', 'DEV_LOG' => 'Développement', 'AUTRE' => 'Autre',
+        ];
+        $domainCounts = [];
+        foreach ($aiUsages as $u) {
+            $key = $u->domain;
+            $domainCounts[$key] = ($domainCounts[$key] ?? 0) + 1;
+        }
+        arsort($domainCounts);
+
+        $usageFilterData = $aiUsages->map(fn($u) => [
+            'id' => $u->id,
+            'name' => $u->name,
+            'type' => $u->type,
+            'domain_code' => $u->domain,
+            'description' => $u->description,
+            'niveau' => $u->latestAssessment?->niveau,
+            'status_label' => $u->latestAssessment
+                ? ($niveauLabels[$u->latestAssessment->niveau] ?? $u->latestAssessment->niveau)
+                : 'Non évalué',
+            'status_class' => $u->latestAssessment
+                ? ($niveauRiskClass[$u->latestAssessment->niveau] ?? 'none')
+                : 'none',
+            'has_questionnaire' => $u->responses()->exists(),
+            'url_show' => route('usages.show', $u),
+            'url_edit' => route('usages.edit', $u),
+            'url_destroy' => route('usages.destroy', $u),
+        ])->values();
+
+        return view('usages.index', compact(
+            'aiUsages', 'niveauLabels', 'niveauRiskClass',
+            'domainLabels', 'domainCounts', 'usageFilterData',
+        ));
     }
 
     public function create(Request $request): View|RedirectResponse
