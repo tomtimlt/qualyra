@@ -39,11 +39,14 @@ Deux fichiers décrivent le projet à différents niveaux de granularité :
 
 ```bash
 git status                          # où suis-je ?
-git branch                          # branche courante
+git branch --show-current           # branche courante
 git log --oneline -5                # 5 derniers commits
 php artisan test                    # les tests passent-ils ?
 npm run build                       # le build passe ?
 ```
+
+> ⚠️ **Tu DOIS être sur `dev`.** Si `git branch --show-current` ne retourne pas `dev` :
+> `git checkout dev && git pull origin dev` **avant toute modification** (sauf demande explicite du user de travailler sur une autre branche).
 
 ---
 
@@ -147,7 +150,7 @@ npm run build                          # build Vite
 
 1. ❌ **Pas de Livewire, Inertia, packages exotiques** — Blade + Alpine seulement
 2. ❌ **Pas de refactoring spontané** — ne pas modifier ce qui n'est pas demandé
-3. ❌ **Pas de design custom** — Tailwind UI / TallStackUI basiques uniquement
+3. ❌ **Pas de design custom dans les NOUVEAUX écrans** — Tailwind UI / TallStackUI basiques uniquement. Exceptions existantes assumées : pages `guest.blade.php` (auth) et `home.blade.php` ont du CSS custom dans `<style>` — ne pas refactoriser sans demande explicite.
 4. ❌ **Pas de validation inline** — toujours une Form Request
 5. ❌ **Pas de FK en fillable** — `organization_id` JAMAIS dans `$fillable`
 6. ❌ **Pas de query builder brut** — Eloquent seulement, sauf justification
@@ -205,6 +208,30 @@ php artisan serve           # http://localhost:8000
 # ou tout en un :
 composer run dev            # serve + queue + logs + vite
 ```
+
+---
+
+## §11 bis — Setup / workflow avec Docker (alternative au §11)
+
+Si tu travailles via Docker plutôt qu'en `php artisan serve` direct :
+
+```bash
+docker compose up -d                                    # bind mount actif via docker-compose.yml
+docker exec ai-assistant php artisan test               # tests dans le conteneur
+docker exec ai-assistant php artisan optimize:clear     # vider tous les caches Laravel
+```
+
+**⚠️ Vérifications à faire en début de session si quelque chose semble figé après une modif :**
+
+```bash
+docker ps --format "table {{.Names}}\t{{.Image}}"           # quel conteneur tourne ?
+docker inspect <nom> --format '{{json .Mounts}}'            # bind mount présent ?
+```
+
+- Si `Mounts: []` ou aucun `Source:` pointant vers le repo local → **le code dans le conteneur est figé à l'image**. Tes modifs sur l'host ne se propagent PAS. Solutions :
+  - **Recommandé** : recréer le conteneur via `docker compose up -d` (qui monte `.:/app`).
+  - **Bricolage rapide** : `docker cp <fichier> <conteneur>:/app/<chemin>` à chaque modif, puis `docker exec <conteneur> php artisan optimize:clear`.
+- Après modif d'une vue Blade, si rien ne change dans le navigateur : `docker exec <nom> php artisan optimize:clear` puis **Ctrl+Shift+R** (sur Docker Desktop Windows + WSL2 le cache des vues compilées de Laravel ne se rafraîchit pas toujours).
 
 ---
 
