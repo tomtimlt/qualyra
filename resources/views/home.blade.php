@@ -184,7 +184,7 @@
 
 <style>
     html, body{
-        background: #001;
+        background: var(--bg);
         overflow-x: hidden;
     }
 
@@ -205,7 +205,7 @@
         50% { opacity: 1; }
     }
 
-    .home__hero { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; min-height: 70vh; padding: 96px 0 80px; border-bottom: 1px solid var(--hairline); position: relative; }
+    .home__hero { display: grid; grid-template-columns: 1fr 1.4fr; gap: 64px; align-items: center; min-height: 70vh; padding: 96px 0 80px; border-bottom: 1px solid var(--hairline); position: relative; }
     .home__hero-glow { position: absolute; top: 0; left: -10vw; right: -10vw; bottom: 0; background: radial-gradient(ellipse 60% 80% at 70% 50%, rgba(46, 95, 160, 0.06) 0%, transparent 60%); pointer-events: none; z-index: -1; }
     .home__hero-grid { display: contents; }
     .home__hero h1 { font-family: var(--font-display); font-size: 132px; line-height: 0.95; letter-spacing: -0.025em; margin: 24px 0 0; color: var(--text); }
@@ -219,12 +219,10 @@
     .home__hero-mark { display: flex; flex-direction: column; align-items: center; gap: 24px; position: relative; z-index: 1; }
 
     #canvas{
-        display: inline-block;
-        position: relative;
-        top: 50%;
-        transform: translateY(-50%);
-        max-width: 100%;
-        max-height: 100%;
+        width: 100%;
+        height: auto;
+        max-width: 800px;
+        aspect-ratio: 1920 / 1000;
     }
 
     /* PRINCIPLES */
@@ -244,7 +242,7 @@
     /* METHOD */
     .home__method { margin: 80px 0; }
     .method-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .method-step { border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--ink-950); padding: 32px 28px; display: flex; flex-direction: column; gap: 14px; min-height: 240px; }
+    .method-step { border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--surface); padding: 32px 28px; display: flex; flex-direction: column; gap: 14px; min-height: 240px; }
     .method-step__num { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; color: var(--accent-soft); }
     .method-step__t { font-family: var(--font-display); font-size: 26px; line-height: 1.1; letter-spacing: -0.015em; color: var(--text); margin-top: auto; }
     .method-step__d { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
@@ -252,7 +250,7 @@
     /* WHY */
     .home__why { margin: 80px 0; }
     .why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .why-card { border: 1px solid var(--hairline); border-radius: var(--r-md); padding: 32px 28px; background: var(--ink-950); position: relative; overflow: hidden; }
+    .why-card { border: 1px solid var(--hairline); border-radius: var(--r-md); padding: 32px 28px; background: var(--surface); position: relative; overflow: hidden; }
     .why-card--ember { border-color: var(--risk-haut); background: var(--risk-haut-bg); }
     .why-card__num { font-family: var(--font-display); font-size: 44px; line-height: 1; letter-spacing: -0.02em; color: var(--text); margin-bottom: 8px; }
     .why-card--ember .why-card__num { color: var(--risk-haut); }
@@ -261,7 +259,7 @@
 
     /* CTA */
     .home__cta { margin: 80px 0 40px; }
-    .home__cta-card { border: 1px solid var(--hairline); border-radius: var(--r-md); padding: 48px 56px; display: flex; align-items: center; justify-content: space-between; gap: 32px; background: radial-gradient(ellipse at 90% 20%, rgba(46, 95, 160, 0.08) 0%, transparent 60%), var(--ink-950); }
+    .home__cta-card { border: 1px solid var(--hairline); border-radius: var(--r-md); padding: 48px 56px; display: flex; align-items: center; justify-content: space-between; gap: 32px; background: radial-gradient(ellipse at 90% 20%, color-mix(in oklab, var(--accent) 8%, transparent) 0%, transparent 60%), var(--surface); }
     .home__cta-title { font-family: var(--font-display); font-size: 48px; line-height: 1.05; letter-spacing: -0.02em; color: var(--text); }
     .home__cta-title em { color: var(--accent); font-style: italic; }
     .home__cta-sub { color: var(--text-muted); font-size: 14px; margin-top: 8px; max-width: 50ch; }

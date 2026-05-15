@@ -72,7 +72,7 @@
         .form-page__head h1 em { color: var(--accent); font-style: italic; }
         .form-page__head .lead { margin-top: 16px; max-width: 60ch; }
 
-        .form-card { border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--ink-950); padding: 32px; display: flex; flex-direction: column; gap: 24px; }
+        .form-card { border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--surface); padding: 32px; display: flex; flex-direction: column; gap: 24px; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .help { font-size: 11px; color: var(--text-dim); margin-top: 6px; line-height: 1.5; }
 

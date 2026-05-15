@@ -25,77 +25,6 @@ class DashboardController extends Controller
             ? $organization->aiUsages()->latest()->get()
             : collect();
 
-        // ── Heatmap "domaine × niveau de risque" (score pondéré) ──
-        $heatmapDomains = ['RH', 'EDUCATION', 'CREDIT', 'SANTE', 'SECURITE', 'MARKETING', 'PROD_INT', 'DEV_LOG', 'AUTRE'];
-        $heatmapLevels = ['INACCEPTABLE', 'HAUT_RISQUE', 'RISQUE_LIMITE', 'RISQUE_MINIMAL'];
-        $heatmapWeights = ['INACCEPTABLE' => 1000, 'HAUT_RISQUE' => 100, 'RISQUE_LIMITE' => 10, 'RISQUE_MINIMAL' => 1];
-
-        $flatUsages = [];
-        $cells = [];
-
-        foreach ($heatmapDomains as $dom) {
-            $cells[$dom] = [];
-            foreach ($heatmapLevels as $lvl) {
-                $cells[$dom][$lvl] = ['count' => 0, 'score' => 0, 'recent' => []];
-            }
-        }
-
-        foreach ($aiUsages as $usage) {
-            $latestAssessment = $usage->assessments()->latest('computed_at')->first();
-            $niveau = $latestAssessment?->niveau;
-            $domain = $usage->domain;
-
-            if (! in_array($niveau, $heatmapLevels, true) || ! in_array($domain, $heatmapDomains, true)) {
-                continue;
-            }
-
-            $cells[$domain][$niveau]['count']++;
-            $cells[$domain][$niveau]['score'] = $cells[$domain][$niveau]['count'] * $heatmapWeights[$niveau];
-
-            if (count($cells[$domain][$niveau]['recent']) < 3) {
-                $cells[$domain][$niveau]['recent'][] = $usage->name;
-            }
-
-            $flatUsages[] = [
-                'id' => $usage->id,
-                'name' => $usage->name,
-                'domain' => $domain,
-                'niveau' => $niveau,
-            ];
-        }
-
-        $maxScore = 0;
-        foreach ($cells as $row) {
-            foreach ($row as $cell) {
-                if ($cell['score'] > $maxScore) {
-                    $maxScore = $cell['score'];
-                }
-            }
-        }
-
-        $matrixData = [];
-        foreach ($heatmapDomains as $dom) {
-            foreach ($heatmapLevels as $lvl) {
-                $cell = $cells[$dom][$lvl];
-                $matrixData[] = [
-                    'x' => $dom,
-                    'y' => $lvl,
-                    'v' => $cell['score'],
-                    'count' => $cell['count'],
-                    'recent' => $cell['recent'],
-                ];
-            }
-        }
-
-        $heatmap = [
-            'domains' => $heatmapDomains,
-            'levels' => $heatmapLevels,
-            'weights' => $heatmapWeights,
-            'maxScore' => $maxScore,
-            'matrix' => $matrixData,
-            'allUsages' => $flatUsages,
-        ];
-
         // ── Timeline 6 mois : usages déclarés, évaluations, rapports ──
         $timelineLabels = [];
         $timelineKeys = [];
@@ -165,7 +94,6 @@ class DashboardController extends Controller
         return view('dashboard', [
             'organization' => $organization,
             'aiUsages' => $aiUsages,
-            'heatmap' => $heatmap,
             'activityTimeline' => $activityTimeline,
         ]);
     }

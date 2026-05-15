@@ -31,7 +31,7 @@
 @once
 <style>
     .dropdown { position: relative; display: inline-block; }
-    .dropdown__panel { position: absolute; z-index: 50; margin-top: 8px; background: var(--ink-950); border: 1px solid var(--hairline); border-radius: var(--r-sm); box-shadow: var(--shadow-2); padding: 4px 0; min-width: 192px; transform-origin: top right; }
+    .dropdown__panel { position: absolute; z-index: 50; margin-top: 8px; background: var(--surface); border: 1px solid var(--hairline); border-radius: var(--r-sm); box-shadow: var(--shadow-2); padding: 4px 0; min-width: 192px; transform-origin: top right; }
     .dropdown__panel.is-right { right: 0; transform-origin: top right; }
     .dropdown__panel.is-left { left: 0; transform-origin: top left; }
     .dropdown__panel.is-top { left: 50%; transform: translateX(-50%); transform-origin: top center; }

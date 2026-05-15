@@ -270,9 +270,6 @@
             </div>
         @endif
 
-        {{-- Heatmap domaine × niveau de risque --}}
-        <x-heatmap-risk :heatmap="$heatmap" />
-
         {{-- Deux colonnes : table d'usages + sidebar organisation --}}
         <div class="dashboard-cols">
             <div class="surface"
@@ -417,6 +414,19 @@
             <div class="dashboard-aside">
                 <div class="surface">
                     <div class="surface__head">
+                        <h3>Vision</h3>
+                    </div>
+                    <div class="vision-quick">
+                        <a href="{{ route('vision') }}" class="vision-quick__link">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            Cartographie des risques
+                            <span class="vision-quick__arrow">›</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="surface">
+                    <div class="surface__head">
                         <h3>Organisation</h3>
                     </div>
                     <div class="org-block">
@@ -491,10 +501,10 @@
         .dashboard-head__actions .btn { text-decoration: none; }
 
         /* BAND */
-        .band { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr; border: 1px solid var(--hairline); border-radius: var(--r-md); overflow: hidden; background: var(--ink-950); margin-bottom: 32px; }
+        .band { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr; border: 1px solid var(--hairline); border-radius: var(--r-md); overflow: hidden; background: var(--surface); margin-bottom: 32px; }
         .band__cell { padding: 24px 28px; border-right: 1px solid var(--hairline); display: flex; flex-direction: column; gap: 6px; min-height: 132px; }
         .band__cell:last-child { border-right: none; }
-        .band__cell--hero { background: linear-gradient(135deg, var(--ink-900) 0%, var(--ink-1000) 100%); }
+        .band__cell--hero { background: linear-gradient(135deg, var(--surface-2) 0%, var(--bg) 100%); }
         .band__num { font-family: var(--font-display); font-size: 56px; line-height: 1; letter-spacing: -0.02em; color: var(--text); }
         .band__num--haut  { color: var(--risk-haut); }
         .band__num--lim   { color: var(--risk-lim); }
@@ -514,7 +524,7 @@
         .dashboard-aside { display: flex; flex-direction: column; gap: 24px; }
 
         /* Surface (cards) */
-        .surface { border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--ink-950); overflow: hidden; }
+        .surface { border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--surface); overflow: hidden; }
 
         /* Scrollable table dans la colonne de gauche */
         .tbl-wrap { overflow-y: auto; }
@@ -526,9 +536,9 @@
         .surface__head h3 { margin: 0; font-size: 15px; font-weight: 500; letter-spacing: -0.01em; color: var(--text); }
         .surface__head-right { display: flex; gap: 8px; }
         .pill { font-family: var(--font-mono); font-size: 10px; padding: 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); letter-spacing: 0.04em; }
-        .filter-select { font-family: var(--font-mono); font-size: 10px; padding: 4px 8px 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); background: var(--ink-950); letter-spacing: 0.04em; cursor: pointer; appearance: none; -webkit-appearance: none; }
+        .filter-select { font-family: var(--font-mono); font-size: 10px; padding: 4px 8px 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); background: var(--surface); letter-spacing: 0.04em; cursor: pointer; appearance: none; -webkit-appearance: none; }
         .filter-select:hover { color: var(--text); border-color: var(--text); }
-        .filter-search { font-family: var(--font-mono); font-size: 10px; padding: 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); background: var(--ink-950); letter-spacing: 0.04em; width: 140px; outline: none; }
+        .filter-search { font-family: var(--font-mono); font-size: 10px; padding: 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); background: var(--surface); letter-spacing: 0.04em; width: 140px; outline: none; }
         .filter-search:focus { color: var(--text); border-color: var(--accent); }
         .filter-search::placeholder { color: var(--text-dim); }
         .filter-reset { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 16px; line-height: 1; padding: 0 2px; }
@@ -541,7 +551,7 @@
         .sortable { cursor: pointer; user-select: none; }
         .sortable:hover { color: var(--text); }
         .tbl tbody tr { border-top: 1px solid var(--hairline); transition: background var(--d-fast); }
-        .tbl tbody tr:hover { background: var(--ink-900); }
+        .tbl tbody tr:hover { background: var(--surface-2); }
         .cell-name { font-weight: 500; color: var(--text); }
         .cell-meta { margin-top: 2px; }
         .tbl .num { font-family: var(--font-mono); color: var(--text-dim); font-size: 12px; }
@@ -563,8 +573,16 @@
         .kv dt { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin: 0; }
         .kv dd { margin: 0; color: var(--text); font-weight: 500; }
 
+        /* Vision quick link */
+        .vision-quick { padding: 16px 24px; }
+        .vision-quick__link { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-size: 13px; font-weight: 500; padding: 10px 14px; border: 1px solid var(--hairline); border-radius: var(--r-sm); transition: all var(--d-fast); }
+        .vision-quick__link:hover { border-color: var(--accent); background: var(--surface-2); }
+        .vision-quick__link svg { color: var(--accent); flex-shrink: 0; }
+        .vision-quick__arrow { margin-left: auto; color: var(--text-dim); font-size: 16px; }
+        .vision-quick__link:hover .vision-quick__arrow { color: var(--text); }
+
         /* CTA surface */
-        .cta-surface { padding: 24px; background: radial-gradient(ellipse at 90% 20%, rgba(46, 95, 160, 0.08) 0%, transparent 50%), var(--ink-950); }
+        .cta-surface { padding: 24px; background: radial-gradient(ellipse at 90% 20%, color-mix(in oklab, var(--accent) 8%, transparent) 0%, transparent 50%), var(--surface); }
         .cta-surface__title { font-family: var(--font-display); font-size: 22px; line-height: 1.2; letter-spacing: -0.01em; color: var(--text); margin-top: 12px; margin-bottom: 8px; }
         .cta-surface__title em { color: var(--accent); font-style: italic; }
         .cta-surface__sub { color: var(--text-muted); font-size: 13px; line-height: 1.55; }
@@ -580,7 +598,7 @@
         .chart-canvas-wrap--bar { max-width: none; }
         .chart-canvas-wrap--line { max-width: none; height: 280px; }
         .chart-legend { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 180px; align-self: center; }
-        .chart-legend li { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--ink-200); }
+        .chart-legend li { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text); }
         .chart-legend .swatch { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
         .chart-legend .label { flex: 1; }
         .chart-legend .count { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.04em; }
@@ -600,7 +618,6 @@
 
     @if ($aiUsages->count() > 0)
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js" defer></script>
         <script>
             window.addEventListener('DOMContentLoaded', () => {
                 const riskData = @json($chartRiskData);
@@ -711,135 +728,6 @@
                                 },
                             },
                         },
-                    });
-                }
-
-                // ---- Heatmap matrix : domaine × niveau de risque ----
-                const ctxHeatmap = document.getElementById('chartHeatmap');
-                const heatmapData = @json($heatmap);
-                if (ctxHeatmap && heatmapData.allUsages.length > 0) {
-                    new Chart(ctxHeatmap, {
-                        type: 'matrix',
-                        data: {
-                            datasets: [{
-                                label: 'Score pondéré',
-                                data: heatmapData.matrix,
-                                backgroundColor(ctx) {
-                                    const cell = ctx.raw;
-                                    if (!cell || cell.count === 0) return 'rgba(255, 255, 255, 0.04)';
-                                    // Teinte = niveau (rouge=INACC, orange=HAUT, jaune-vert=LIM, vert=MIN)
-                                    const HUES = { INACCEPTABLE: 0, HAUT_RISQUE: 25, RISQUE_LIMITE: 75, RISQUE_MINIMAL: 130 };
-                                    const hue = HUES[cell.y] ?? 200;
-                                    // Normalisation PAR LIGNE (niveau cell.y) : max des counts pour ce niveau
-                                    const maxInLevel = heatmapData.matrix
-                                        .filter(c => c.y === cell.y)
-                                        .reduce((m, c) => Math.max(m, c.count), 0) || 1;
-                                    const intensity = cell.count / maxInLevel; // 0..1
-                                    // Intensité 0 → couleur claire et peu saturée ; intensité 1 → foncée et saturée
-                                    const sat = 50 + intensity * 30;
-                                    const light = 62 - intensity * 30;
-                                    return `hsl(${hue}, ${sat}%, ${light}%)`;
-                                },
-                                borderColor: '#11161E',
-                                borderWidth: 2,
-                                width: ({ chart }) => (chart.chartArea || {}).width / heatmapData.domains.length - 2,
-                                height: ({ chart }) => (chart.chartArea || {}).height / heatmapData.levels.length - 2,
-                            }],
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            onClick: (event, activeElements, chart) => {
-                                if (activeElements.length === 0) return;
-                                const el = activeElements[0];
-                                const cell = chart.data.datasets[el.datasetIndex].data[el.index];
-                                window.dispatchEvent(new CustomEvent('heatmap:cell-click', {
-                                    detail: { domain: cell.x, level: cell.y },
-                                }));
-                            },
-                            plugins: {
-                                legend: { display: false },
-                                tooltip: {
-                                    backgroundColor: '#0B0F14',
-                                    borderColor: '#303845',
-                                    borderWidth: 1,
-                                    titleColor: '#E8EBF0',
-                                    bodyColor: '#ABB3C2',
-                                    padding: 12,
-                                    titleFont: { family: 'Geist', size: 12, weight: '500' },
-                                    bodyFont: { family: 'Geist Mono', size: 11 },
-                                    callbacks: {
-                                        title: (items) => {
-                                            const r = items[0].raw;
-                                            const levelLabels = {
-                                                INACCEPTABLE: 'Inacceptable',
-                                                HAUT_RISQUE: 'Haut risque',
-                                                RISQUE_LIMITE: 'Risque limité',
-                                                RISQUE_MINIMAL: 'Risque minimal',
-                                            };
-                                            return `${r.x} – ${levelLabels[r.y] ?? r.y}`;
-                                        },
-                                        label: (item) => {
-                                            const r = item.raw;
-                                            const lines = [`${r.count} usage(s)`];
-                                            if (r.recent && r.recent.length > 0) {
-                                                lines.push(`Récents : ${r.recent.join(', ')}`);
-                                            }
-                                            return lines;
-                                        },
-                                    },
-                                },
-                            },
-                            scales: {
-                                x: {
-                                    type: 'category',
-                                    labels: heatmapData.domains,
-                                    position: 'bottom',
-                                    offset: true,
-                                    ticks: {
-                                        color: '#ABB3C2',
-                                        font: { family: 'Geist Mono', size: 11 },
-                                    },
-                                    grid: { display: false, drawBorder: false },
-                                },
-                                y: {
-                                    type: 'category',
-                                    labels: heatmapData.levels,
-                                    offset: true,
-                                    reverse: true,
-                                    ticks: {
-                                        color: '#ABB3C2',
-                                        font: { family: 'Geist Mono', size: 10 },
-                                        callback(value, index) {
-                                            const labels = ['Inacceptable', 'Haut risque', 'Risque limité', 'Risque minimal'];
-                                            return labels[index] ?? this.getLabelForValue(value);
-                                        },
-                                    },
-                                    grid: { display: false, drawBorder: false },
-                                },
-                            },
-                        },
-                        plugins: [{
-                            id: 'cellCounter',
-                            afterDatasetsDraw(chart) {
-                                const { ctx } = chart;
-                                const meta = chart.getDatasetMeta(0);
-                                meta.data.forEach((element, index) => {
-                                    const data = chart.data.datasets[0].data[index];
-                                    if (!data || data.count === 0) return;
-                                    const { x, y } = element.getProps(['x', 'y'], false);
-                                    ctx.save();
-                                    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-                                    ctx.font = '600 11px "Geist Mono", monospace';
-                                    ctx.textAlign = 'center';
-                                    ctx.textBaseline = 'middle';
-                                    ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-                                    ctx.shadowBlur = 2;
-                                    ctx.fillText(String(data.count), x, y);
-                                    ctx.restore();
-                                });
-                            },
-                        }],
                     });
                 }
 

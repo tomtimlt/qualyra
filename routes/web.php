@@ -8,6 +8,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\VisionController;
 use App\Http\Controllers\QuestionnaireController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
@@ -21,9 +22,13 @@ Route::middleware(['auth'])->group(function () {
     // Tableau de bord (page d'atterrissage post-login)
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
+    // Vision — cartographie des risques (heatmap)
+    Route::get('/vision', VisionController::class)->name('vision');
+
     // Profil utilisateur (Breeze)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile/theme', [ProfileController::class, 'updateTheme'])->name('profile.theme');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Organisation rattachée au compte (1 user = 1 PME)

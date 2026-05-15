@@ -286,7 +286,7 @@
     <style>
         /* The whole report sheet sits on bone parchment within the dark app shell */
         .report-paper { display: flex; flex-direction: column; gap: 16px; }
-        .report-paper__topbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--ink-950); }
+        .report-paper__topbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--surface); }
         .report-paper__topbar-left { display: flex; align-items: center; gap: 16px; }
         .report-paper__topbar .meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.06em; }
         .report-paper__topbar .meta b { color: var(--text); font-weight: 500; }

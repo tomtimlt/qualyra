@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@php
+    $themePref = auth()->user()?->theme_preference ?? 'system';
+@endphp
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+      @if (in_array($themePref, ['light', 'dark'])) data-theme="{{ $themePref }}" @endif>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,6 +11,19 @@
     <title>{{ $title ?? 'Qualyra' }}</title>
     <link rel="icon" type="image/png" href="{{ asset('qualyra/brand/qualyra-mark-original.png') }}">
     <link rel="stylesheet" href="{{ asset('qualyra/css/qualyra.css') }}">
+    <script>
+    (function() {
+      var html = document.documentElement;
+      if (html.hasAttribute('data-theme')) return;
+      var stored = localStorage.getItem('qualyra-theme');
+      if (stored === 'light' || stored === 'dark') {
+        html.setAttribute('data-theme', stored);
+      } else {
+        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        html.setAttribute('data-theme', prefersLight ? 'light' : 'dark');
+      }
+    })();
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="guest">
@@ -40,8 +57,8 @@
 </div>
 
 <style>
-    body.guest { background: var(--ink-1000); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; position: relative; overflow-x: hidden; height: 100vh; overflow: hidden; }
-    .guest__bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(46, 95, 160, 0.08) 0%, transparent 70%); }
+    body.guest { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; position: relative; overflow-x: hidden; height: 100vh; overflow: hidden; }
+    .guest__bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; background: radial-gradient(ellipse 80% 60% at 50% 30%, color-mix(in oklab, var(--accent) 8%, transparent) 0%, transparent 70%); }
 
     .guest-scroll {
         position: relative;
@@ -64,7 +81,7 @@
     .brand-word { font-family: var(--font-display); font-size: 28px; line-height: 1; letter-spacing: -0.01em; color: var(--text); }
     .brand-word .dot { color: var(--accent); }
 
-    .guest__card { background: var(--ink-950); border: 1px solid var(--hairline); border-radius: var(--r-md); padding: 40px 36px; }
+    .guest__card { background: var(--surface); border: 1px solid var(--hairline); border-radius: var(--r-md); padding: 40px 36px; }
     .guest__card h1 { font-family: var(--font-display); font-size: 28px; line-height: 1.1; letter-spacing: -0.015em; margin: 0 0 8px; color: var(--text); }
     .guest__card p.lead { color: var(--text-muted); font-size: 14px; margin: 0 0 28px; }
 
