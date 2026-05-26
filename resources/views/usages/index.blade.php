@@ -200,7 +200,7 @@
         .surface__head h3 { margin: 0; font-size: 15px; font-weight: 500; letter-spacing: -0.01em; color: var(--text); }
         .surface__head-right { display: flex; gap: 8px; flex-wrap: wrap; }
 
-        .pill { font-family: var(--font-mono); font-size: 10px; padding: 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); letter-spacing: 0.04em; }
+        .pill { font-family: var(--font-mono); font-size: 10px; padding: 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); display: inline-flex; align-items: center; justify-content: center; line-height: 1; }
         .filter-select { font-family: var(--font-mono); font-size: 10px; padding: 4px 8px 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); background: var(--surface); letter-spacing: 0.04em; cursor: pointer; appearance: none; -webkit-appearance: none; }
         .filter-select:hover { color: var(--text); border-color: var(--text); }
         .filter-search { font-family: var(--font-mono); font-size: 10px; padding: 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); background: var(--surface); letter-spacing: 0.04em; width: 160px; outline: none; }

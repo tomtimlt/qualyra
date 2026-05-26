@@ -45,6 +45,14 @@
     .sankey-legend__head { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); }
     .sankey-legend__item { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); letter-spacing: 0.02em; }
     .sankey-legend__hint { font-size: 11px; color: var(--text-dim); font-style: italic; margin-left: auto; max-width: 360px; line-height: 1.5; }
+
+    /* Pastilles de la légende (définies localement : graph-network absent de /vision) */
+    .sankey-legend .risk-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+    .sankey-legend .risk-dot--inacc { background: var(--risk-inacc); }
+    .sankey-legend .risk-dot--haut  { background: var(--risk-haut); }
+    .sankey-legend .risk-dot--lim   { background: var(--risk-lim); }
+    .sankey-legend .risk-dot--min   { background: var(--risk-min); }
+    .sankey-legend .risk-dot--none  { background: var(--risk-none); }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
@@ -55,6 +63,7 @@
             sankey,
             _svg: null,
             _tooltip: null,
+            _raf: null,
 
             init() {
                 const startWhenReady = () => {
@@ -165,6 +174,79 @@
                     .delay((d, i) => d.source.layer * 200 + i * 8)
                     .duration(400)
                     .attr('stroke-opacity', 0.5);
+
+                // ── Flux animés : un paquet « 010101010 » qui circule le long de chaque lien ──
+                const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                const flowPathGen = d3.sankeyLinkHorizontal();
+                const FLOW_TOKEN = '010101010';
+
+                links.forEach((d, i) => { d._fid = 'sankey-flow-path-' + i; });
+
+                defs.selectAll('path.sankey-flow-def')
+                    .data(links)
+                    .join('path')
+                    .attr('class', 'sankey-flow-def')
+                    .attr('id', d => d._fid)
+                    .attr('d', flowPathGen)
+                    .attr('fill', 'none');
+
+                const flowTexts = svg.append('g')
+                    .attr('class', 'sankey-flows')
+                    .attr('pointer-events', 'none')
+                    .selectAll('text')
+                    .data(links)
+                    .join('text')
+                    .attr('fill', d => self.riskColors[d.niveau] || '#475061')
+                    .attr('font-family', 'Geist Mono, ui-monospace, monospace')
+                    .attr('font-weight', '600')
+                    .attr('font-size', d => {
+                        d._fs = Math.max(Math.min(d.width * 0.55, 13), 7);
+                        return d._fs + 'px';
+                    })
+                    .attr('opacity', 0)
+                    .each(function (d) {
+                        const path = document.getElementById(d._fid);
+                        d._len = path ? path.getTotalLength() : 0;
+                        d._strW = FLOW_TOKEN.length * d._fs * 0.6;   // largeur approx. du paquet
+                        d._off = Math.random() * (d._len + d._strW) - d._strW; // départ décalé
+                        const tp = document.createElementNS('http://www.w3.org/2000/svg', 'textPath');
+                        tp.setAttribute('href', '#' + d._fid);
+                        tp.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + d._fid);
+                        tp.setAttribute('startOffset', d._off.toFixed(1));
+                        tp.textContent = FLOW_TOKEN;
+                        this.appendChild(tp);
+                        d._tp = tp;
+                    });
+
+                flowTexts.transition()
+                    .delay((d) => d.source.layer * 200 + 150)
+                    .duration(500)
+                    .attr('opacity', 0.9);
+
+                if (this._raf) cancelAnimationFrame(this._raf);
+                this._raf = null;
+                if (!reduceMotion) {
+                    const speed = 70; // px/s, sens source → cible
+                    let last = 0;
+                    let active = true;
+                    const tick = (now) => {
+                        if (!last) last = now;
+                        const dt = Math.min((now - last) / 1000, 0.05);
+                        last = now;
+                        if (active && !document.hidden) {
+                            flowTexts.each(function (d) {
+                                d._off += speed * dt;
+                                if (d._off > d._len) d._off = -d._strW; // sorti à droite → repart à gauche
+                                if (d._tp) d._tp.setAttribute('startOffset', d._off.toFixed(1));
+                            });
+                        }
+                        this._raf = requestAnimationFrame(tick);
+                    };
+                    window.addEventListener('vision:view-change', (e) => {
+                        active = !e.detail || e.detail.view === 'sankey';
+                    });
+                    this._raf = requestAnimationFrame(tick);
+                }
 
                 // Nodes
                 const nodeGroup = svg.append('g')

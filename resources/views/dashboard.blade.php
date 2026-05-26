@@ -535,7 +535,7 @@
         .surface__head { padding: 18px 24px; border-bottom: 1px solid var(--hairline); display: flex; justify-content: space-between; align-items: center; }
         .surface__head h3 { margin: 0; font-size: 15px; font-weight: 500; letter-spacing: -0.01em; color: var(--text); }
         .surface__head-right { display: flex; gap: 8px; }
-        .pill { font-family: var(--font-mono); font-size: 10px; padding: 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); letter-spacing: 0.04em; }
+        .pill { font-family: var(--font-mono); font-size: 10px; padding: 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); display: inline-flex; align-items: center; justify-content: center; line-height: 1; }
         .filter-select { font-family: var(--font-mono); font-size: 10px; padding: 4px 8px 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); background: var(--surface); letter-spacing: 0.04em; cursor: pointer; appearance: none; -webkit-appearance: none; }
         .filter-select:hover { color: var(--text); border-color: var(--text); }
         .filter-search { font-family: var(--font-mono); font-size: 10px; padding: 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); background: var(--surface); letter-spacing: 0.04em; width: 140px; outline: none; }
@@ -619,7 +619,67 @@
     @if ($aiUsages->count() > 0)
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
         <script>
+            function cssVar(name) {
+                return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+            }
+
+            function readThemeColors() {
+                return {
+                    surface: cssVar('--surface'),
+                    hairline: cssVar('--hairline'),
+                    hairlineStrong: cssVar('--hairline-strong'),
+                    text: cssVar('--text'),
+                };
+            }
+
+            function makeTooltipOpts(c) {
+                return {
+                    backgroundColor: c.surface,
+                    borderColor: c.hairlineStrong,
+                    borderWidth: 1,
+                    titleColor: c.text,
+                    bodyColor: c.text,
+                    padding: 12,
+                    titleFont: { family: 'Geist', size: 12, weight: '500' },
+                    bodyFont: { family: 'Geist Mono', size: 11 },
+                };
+            }
+
+            function updateChartColors(charts, c) {
+                charts.forEach(chart => {
+                    const opts = chart.options;
+                    const tooltip = opts.plugins?.tooltip;
+                    if (tooltip) {
+                        tooltip.backgroundColor = c.surface;
+                        tooltip.borderColor = c.hairlineStrong;
+                        tooltip.titleColor = c.text;
+                        tooltip.bodyColor = c.text;
+                    }
+                    if (chart.config.type === 'doughnut') {
+                        chart.data.datasets[0].borderColor = c.surface;
+                    }
+                    if (chart.config.type === 'bar') {
+                        opts.scales.x.ticks.color = c.text;
+                        opts.scales.x.grid.color = c.hairline;
+                        opts.scales.y.ticks.color = c.text;
+                    }
+                    if (chart.config.type === 'line') {
+                        opts.scales.x.ticks.color = c.text;
+                        opts.scales.y.ticks.color = c.text;
+                        opts.scales.y.grid.color = c.hairline;
+                        if (opts.plugins?.legend?.labels) {
+                            opts.plugins.legend.labels.color = c.text;
+                        }
+                    }
+                    chart.update();
+                });
+            }
+
             window.addEventListener('DOMContentLoaded', () => {
+                let c = readThemeColors();
+                const tooltipOpts = makeTooltipOpts(c);
+                const charts = [];
+
                 const riskData = @json($chartRiskData);
                 const domainData = @json($chartDomainData);
                 const total = riskData.data.reduce((a, b) => a + b, 0);
@@ -627,14 +687,14 @@
                 // ---- Donut: répartition des risques ----
                 const ctxRisk = document.getElementById('chartRisk');
                 if (ctxRisk && total > 0) {
-                    new Chart(ctxRisk, {
+                    charts.push(new Chart(ctxRisk, {
                         type: 'doughnut',
                         data: {
                             labels: riskData.labels,
                             datasets: [{
                                 data: riskData.data,
                                 backgroundColor: riskData.colors,
-                                borderColor: '#11161E',
+                                borderColor: c.surface,
                                 borderWidth: 2,
                                 hoverOffset: 8,
                             }],
@@ -646,14 +706,7 @@
                             plugins: {
                                 legend: { display: false },
                                 tooltip: {
-                                    backgroundColor: '#0B0F14',
-                                    borderColor: '#303845',
-                                    borderWidth: 1,
-                                    titleColor: '#E8EBF0',
-                                    bodyColor: '#ABB3C2',
-                                    padding: 12,
-                                    titleFont: { family: 'Geist', size: 12, weight: '500' },
-                                    bodyFont: { family: 'Geist Mono', size: 11 },
+                                    ...tooltipOpts,
                                     callbacks: {
                                         label: (ctx) => {
                                             const v = ctx.parsed;
@@ -664,9 +717,8 @@
                                 },
                             },
                         },
-                    });
+                    }));
 
-                    // Légende custom (lisible et alignée au design)
                     const legend = document.getElementById('legendRisk');
                     if (legend) {
                         legend.innerHTML = riskData.labels.map((label, i) => {
@@ -684,7 +736,7 @@
                 // ---- Bar horizontale: usages par domaine ----
                 const ctxDomain = document.getElementById('chartDomain');
                 if (ctxDomain && domainData.data.length > 0) {
-                    new Chart(ctxDomain, {
+                    charts.push(new Chart(ctxDomain, {
                         type: 'bar',
                         data: {
                             labels: domainData.labels,
@@ -703,14 +755,7 @@
                             plugins: {
                                 legend: { display: false },
                                 tooltip: {
-                                    backgroundColor: '#0B0F14',
-                                    borderColor: '#303845',
-                                    borderWidth: 1,
-                                    titleColor: '#E8EBF0',
-                                    bodyColor: '#ABB3C2',
-                                    padding: 12,
-                                    titleFont: { family: 'Geist', size: 12, weight: '500' },
-                                    bodyFont: { family: 'Geist Mono', size: 11 },
+                                    ...tooltipOpts,
                                     callbacks: {
                                         label: (ctx) => `${ctx.parsed.x} usage${ctx.parsed.x > 1 ? 's' : ''}`,
                                     },
@@ -719,16 +764,16 @@
                             scales: {
                                 x: {
                                     beginAtZero: true,
-                                    ticks: { color: '#5B6478', font: { family: 'Geist Mono', size: 10 }, stepSize: 1 },
-                                    grid: { color: '#232A35', drawBorder: false },
+                                    ticks: { color: c.text, font: { family: 'Geist Mono', size: 10 }, stepSize: 1 },
+                                    grid: { color: c.hairline, drawBorder: false },
                                 },
                                 y: {
-                                    ticks: { color: '#ABB3C2', font: { family: 'Geist', size: 12 } },
+                                    ticks: { color: c.text, font: { family: 'Geist', size: 12 } },
                                     grid: { display: false, drawBorder: false },
                                 },
                             },
                         },
-                    });
+                    }));
                 }
 
                 // ---- Line chart : activité 6 mois ----
@@ -736,7 +781,7 @@
                 const ctxActivity = document.getElementById('chartActivity');
                 const activityData = @json($activityTimeline);
                 if (ctxActivity) {
-                    new Chart(ctxActivity, {
+                    charts.push(new Chart(ctxActivity, {
                         type: 'line',
                         data: {
                             labels: activityData.labels,
@@ -760,27 +805,31 @@
                             interaction: { mode: 'index', intersect: false },
                             plugins: {
                                 legend: { display: true, position: 'bottom',
-                                    labels: { color: '#ABB3C2', font: { family: 'Geist', size: 12 },
+                                    labels: { color: c.text, font: { family: 'Geist', size: 12 },
                                               boxWidth: 10, boxHeight: 10, usePointStyle: true, padding: 16 } },
-                                tooltip: {
-                                    backgroundColor: '#0B0F14', borderColor: '#303845', borderWidth: 1,
-                                    titleColor: '#E8EBF0', bodyColor: '#ABB3C2', padding: 12,
-                                    titleFont: { family: 'Geist', size: 12, weight: '500' },
-                                    bodyFont: { family: 'Geist Mono', size: 11 },
-                                },
+                                tooltip: tooltipOpts,
                             },
                             scales: {
-                                x: { ticks: { color: '#ABB3C2', font: { family: 'Geist Mono', size: 10 } },
+                                x: { ticks: { color: c.text, font: { family: 'Geist Mono', size: 10 } },
                                      grid: { display: false, drawBorder: false } },
                                 y: { beginAtZero: true,
-                                     ticks: { color: '#5B6478', font: { family: 'Geist Mono', size: 10 },
+                                     ticks: { color: c.text, font: { family: 'Geist Mono', size: 10 },
                                               stepSize: 1, precision: 0 },
-                                     grid: { color: '#232A35', drawBorder: false } },
+                                     grid: { color: c.hairline, drawBorder: false } },
                             },
                         },
-                    });
+                    }));
                 }
                 @endif
+
+                // ---- Theme change observer ----
+                new MutationObserver(() => {
+                    c = readThemeColors();
+                    updateChartColors(charts, c);
+                }).observe(document.documentElement, {
+                    attributes: true,
+                    attributeFilter: ['data-theme'],
+                });
 
                 // ---- Ajustement hauteur table = hauteur sidebar ----
                 function syncHeights() {

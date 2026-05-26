@@ -99,11 +99,40 @@
         }));
     });
 
+    function cssVar(name) {
+        return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    function updateMatrixColors(chart) {
+        const c = {
+            surface: cssVar('--surface'),
+            hairlineStrong: cssVar('--hairline-strong'),
+            text: cssVar('--text'),
+        };
+        const opts = chart.options;
+        opts.scales.x.ticks.color = c.text;
+        opts.scales.y.ticks.color = c.text;
+        const tooltip = opts.plugins.tooltip;
+        if (tooltip) {
+            tooltip.backgroundColor = c.surface;
+            tooltip.borderColor = c.hairlineStrong;
+            tooltip.titleColor = c.text;
+            tooltip.bodyColor = c.text;
+        }
+        chart.update();
+    }
+
     (function initMatrix() {
         if (typeof Chart === 'undefined' || typeof Chart.registry === 'undefined' || !Chart.registry.getController('matrix')) {
             setTimeout(initMatrix, 100);
             return;
         }
+
+        const c = {
+            surface: cssVar('--surface'),
+            hairlineStrong: cssVar('--hairline-strong'),
+            text: cssVar('--text'),
+        };
 
         const ctx = document.getElementById('chartMatrix');
         const matrixData = @js($matrix);
@@ -126,7 +155,7 @@
 
         const levelOrder = ['INACCEPTABLE', 'HAUT_RISQUE', 'RISQUE_LIMITE', 'RISQUE_MINIMAL', 'NON_EVAL'];
 
-        new Chart(ctx, {
+        const chart = new Chart(ctx, {
             type: 'matrix',
             data: {
                 datasets: [{
@@ -163,11 +192,11 @@
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: '#0B0F14',
-                        borderColor: '#303845',
+                        backgroundColor: c.surface,
+                        borderColor: c.hairlineStrong,
                         borderWidth: 1,
-                        titleColor: '#E8EBF0',
-                        bodyColor: '#ABB3C2',
+                        titleColor: c.text,
+                        bodyColor: c.text,
                         padding: 12,
                         titleFont: { family: 'Geist', size: 12, weight: '500' },
                         bodyFont: { family: 'Geist Mono', size: 11 },
@@ -206,7 +235,7 @@
                         position: 'bottom',
                         offset: true,
                         ticks: {
-                            color: '#ABB3C2',
+                            color: c.text,
                             font: { family: 'Geist Mono', size: 10 },
                             maxRotation: 30,
                             callback(value, index) {
@@ -222,7 +251,7 @@
                         offset: true,
                         reverse: true,
                         ticks: {
-                            color: '#ABB3C2',
+                            color: c.text,
                             font: { family: 'Geist', size: 11 },
                             callback(value, index) {
                                 const code = matrixData.domains[index];
@@ -257,5 +286,8 @@
                 },
             }],
         });
+
+        new MutationObserver(() => updateMatrixColors(chart))
+            .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     })();
 </script>

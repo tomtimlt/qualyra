@@ -40,7 +40,6 @@
                 </div>
                 <div class="home__hero-meta">
                     <span><b>4</b> niveaux de risque</span>
-                    <span><b>+100</b> usages d'IA référencés</span>
                 </div>
             </div>
             <div class="home__hero-mark">
