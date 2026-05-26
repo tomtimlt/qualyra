@@ -33,7 +33,7 @@
         </div>
     @else
         <div class="vision-head" x-data="{
-                view: localStorage.getItem('qualyra-vision-view') || 'matrix',
+                view: localStorage.getItem('qualyra-vision-view') || 'sankey',
                 setView(v) { this.view = v; localStorage.setItem('qualyra-vision-view', v); window.dispatchEvent(new CustomEvent('vision:view-change', { detail: { view: v } })); },
             }" x-init="window.dispatchEvent(new CustomEvent('vision:view-change', { detail: { view: view } }))">
             <div>
@@ -59,11 +59,18 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14"><path d="M3 3h18v4H3zM3 10h14v4H3zM3 17h8v4H3z"/></svg>
                     Sankey
                 </button>
+                <button type="button" role="tab"
+                        :class="{ 'is-active': view === 'heatmap' }"
+                        :aria-selected="view === 'heatmap'"
+                        @click="setView('heatmap')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7" opacity="0.5"/><circle cx="12" cy="12" r="10.5" opacity="0.25"/></svg>
+                    Heatmap
+                </button>
             </div>
         </div>
 
         <div class="vision-views"
-             x-data="{ view: localStorage.getItem('qualyra-vision-view') || 'matrix' }"
+             x-data="{ view: localStorage.getItem('qualyra-vision-view') || 'sankey' }"
              :class="`is-${view}`"
              @vision:view-change.window="view = $event.detail.view">
             <div class="vision-view vision-view--matrix">
@@ -71,6 +78,9 @@
             </div>
             <div class="vision-view vision-view--sankey">
                 <x-graph-sankey :sankey="$sankey" />
+            </div>
+            <div class="vision-view vision-view--heatmap">
+                <x-graph-heatmap :matrix="$matrix" />
             </div>
         </div>
     @endif
@@ -101,15 +111,18 @@
         .vision-tabs button.is-active { background: var(--accent); color: #fff; }
         .vision-tabs button svg { opacity: 0.95; }
 
-        /* Vue switcher : all rendered, inactive hidden via position absolute + visibility */
+        /* Vue switcher : toutes rendues, seule l'active en flux (généralisé N vues) */
         .vision-views { position: relative; }
-        .vision-view { transition: opacity var(--d-base) var(--ease-out); }
-        .vision-views.is-matrix .vision-view--sankey,
-        .vision-views.is-sankey .vision-view--matrix {
+        .vision-view {
             position: absolute; top: 0; left: 0; right: 0;
-            visibility: hidden;
-            opacity: 0;
-            pointer-events: none;
+            visibility: hidden; opacity: 0; pointer-events: none;
+            transition: opacity var(--d-base) var(--ease-out);
+        }
+        .vision-views.is-matrix .vision-view--matrix,
+        .vision-views.is-sankey .vision-view--sankey,
+        .vision-views.is-heatmap .vision-view--heatmap {
+            position: relative;
+            visibility: visible; opacity: 1; pointer-events: auto;
         }
     </style>
 
