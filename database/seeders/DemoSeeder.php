@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\Assessment;
+use App\Models\AiVendor;
+use App\Models\Organization;
 use App\Models\User;
 use App\Services\AiActClassifier;
+use App\Services\ReportSnapshotBuilder;
 use Illuminate\Database\Seeder;
 
 /*
@@ -49,6 +51,12 @@ class DemoSeeder extends Seeder
             'sector' => 'Conseil & services aux entreprises',
         ]);
 
+        // ── Fournisseurs IA démo (chaîne d'approvisionnement) ──
+        // Quatre profils contractuels distincts pour illustrer les règles
+        // R-VENDOR-TRANSFERT-RGPD, R-VENDOR-ART47, R-VENDOR-DPA-ART28,
+        // R-VENDOR-MULTITENANT dans le rapport démo.
+        $vendors = $this->seedVendors($organization);
+
         $classifier = app(AiActClassifier::class);
 
         foreach ($this->usages() as $payload) {
@@ -67,6 +75,12 @@ class DemoSeeder extends Seeder
                 'created_at' => $createdAt,
                 'updated_at' => $createdAt,
             ])->save();
+
+            // Rattachement vendor par défaut selon le type d'IA (démo).
+            $vendorKey = $this->pickVendorKey($payload['usage']['type'], $vendors);
+            if ($vendorKey !== null) {
+                $usage->vendor()->associate($vendors[$vendorKey])->save();
+            }
 
             foreach ($payload['answers'] as $key => $value) {
                 $usage->responses()->create([
@@ -89,9 +103,77 @@ class DemoSeeder extends Seeder
         $this->seedDemoReports($organization);
     }
 
-    private function seedDemoReports(\App\Models\Organization $organization): void
+    /**
+     * Crée 4 fournisseurs IA démo avec profils contractuels distincts.
+     *
+     * @return array<string, AiVendor>
+     */
+    private function seedVendors(Organization $organization): array
     {
-        $builder = app(\App\Services\ReportSnapshotBuilder::class);
+        return [
+            // Hors UE sans CCT ni Art 47 ni DPA : déclenche les 3 alertes
+            // R-VENDOR-TRANSFERT-RGPD, R-VENDOR-ART47, R-VENDOR-DPA-ART28.
+            'openai' => $organization->aiVendors()->create([
+                'name' => 'OpenAI',
+                'type_contractuel' => 'API_PUBLIC',
+                'pays_hebergement' => 'US',
+                'hors_ue' => true,
+                'declaration_conformite_art47' => false,
+                'dpa_art28_signe' => false,
+                'cct_signees' => false,
+                'notes' => 'Compte enterprise — DPA à régulariser.',
+            ]),
+            // Hors UE mais CCT + DPA signés, Art 47 manquant : seul R-VENDOR-ART47 si haut risque.
+            'anthropic' => $organization->aiVendors()->create([
+                'name' => 'Anthropic',
+                'type_contractuel' => 'API_PUBLIC',
+                'pays_hebergement' => 'US',
+                'hors_ue' => true,
+                'declaration_conformite_art47' => false,
+                'dpa_art28_signe' => true,
+                'cct_signees' => true,
+            ]),
+            // UE complet : ne déclenche aucune alerte vendor.
+            'mistral' => $organization->aiVendors()->create([
+                'name' => 'Mistral AI',
+                'type_contractuel' => 'SAAS',
+                'pays_hebergement' => 'FR',
+                'hors_ue' => false,
+                'declaration_conformite_art47' => true,
+                'dpa_art28_signe' => true,
+                'cct_signees' => null,
+            ]),
+            // Solution interne : pas d'enjeu transfert, mais Art 47 N/A.
+            'interne' => $organization->aiVendors()->create([
+                'name' => 'Solution interne — Data Lab',
+                'type_contractuel' => 'INTERNE',
+                'pays_hebergement' => 'FR',
+                'hors_ue' => false,
+                'declaration_conformite_art47' => true,
+                'dpa_art28_signe' => true,
+                'cct_signees' => null,
+            ]),
+        ];
+    }
+
+    /**
+     * Sélectionne un vendor par défaut selon le type d'IA (démo réaliste).
+     *
+     * @param  array<string, AiVendor>  $vendors
+     */
+    private function pickVendorKey(string $type, array $vendors): ?string
+    {
+        return match ($type) {
+            'LLM_GEN' => 'openai',
+            'IA_GEN' => 'mistral',
+            'IA_SCORING', 'IA_BIO' => 'interne',
+            default => 'anthropic',
+        };
+    }
+
+    private function seedDemoReports(Organization $organization): void
+    {
+        $builder = app(ReportSnapshotBuilder::class);
         // Snapshot calculé une fois (reflète l'état final — acceptable pour la démo).
         $snapshot = $builder->build($organization);
 

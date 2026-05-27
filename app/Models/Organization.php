@@ -40,6 +40,11 @@ class Organization extends Model
         return $this->hasMany(AiUsage::class);
     }
 
+    public function aiVendors(): HasMany
+    {
+        return $this->hasMany(AiVendor::class);
+    }
+
     public function reports(): HasMany
     {
         return $this->hasMany(Report::class);

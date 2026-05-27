@@ -3,14 +3,15 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\AiUsageController;
+use App\Http\Controllers\AiVendorController;
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\VisionController;
 use App\Http\Controllers\QuestionnaireController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\VisionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -41,6 +42,11 @@ Route::middleware(['auth'])->group(function () {
     // CRUD des usages d'IA déclarés par l'organisation
     Route::resource('usages', AiUsageController::class)->parameters([
         'usages' => 'aiUsage',
+    ]);
+
+    // CRUD des fournisseurs IA (vendors) rattachés à l'organisation
+    Route::resource('vendors', AiVendorController::class)->parameters([
+        'vendors' => 'aiVendor',
     ]);
 
     // Questionnaire AI Act rattaché à un usage IA (1 questionnaire par usage)
