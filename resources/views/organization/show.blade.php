@@ -98,7 +98,7 @@
         .org-page__sub b { color: var(--text); font-weight: 500; }
         .org-page__head .btn { text-decoration: none; }
 
-        .surface { border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--ink-950); overflow: hidden; }
+        .surface { border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--surface); overflow: hidden; }
         .surface__head { padding: 18px 24px; border-bottom: 1px solid var(--hairline); }
         .surface__head h3 { margin: 0; font-size: 15px; font-weight: 500; letter-spacing: -0.01em; color: var(--text); }
         .surface__body { padding: 28px; }

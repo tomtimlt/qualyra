@@ -31,7 +31,7 @@ it('crée une organisation valide et la rattache au user courant', function () {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)->post('/organization', [
-        'name' => 'Ma PME SAS',
+        'name' => 'Mon Organisation SAS',
         'siret' => '12345678901234',
         'size' => '20-49',
         'sector' => 'Industrie',
@@ -41,7 +41,7 @@ it('crée une organisation valide et la rattache au user courant', function () {
 
     $this->assertDatabaseHas('organizations', [
         'user_id' => $user->id,
-        'name' => 'Ma PME SAS',
+        'name' => 'Mon Organisation SAS',
         'siret' => '12345678901234',
         'size' => '20-49',
         'sector' => 'Industrie',

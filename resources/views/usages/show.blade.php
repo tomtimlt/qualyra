@@ -176,7 +176,7 @@
         .usage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .usage-grid__wide { grid-column: span 2; }
 
-        .surface { border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--ink-950); overflow: hidden; display: flex; flex-direction: column; }
+        .surface { border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--surface); overflow: hidden; display: flex; flex-direction: column; }
         .surface__head { padding: 18px 24px; border-bottom: 1px solid var(--hairline); display: flex; justify-content: space-between; align-items: center; }
         .surface__head h3 { margin: 0; font-size: 15px; font-weight: 500; letter-spacing: -0.01em; color: var(--text); }
         .surface__body { padding: 24px; flex: 1; display: flex; flex-direction: column; gap: 16px; }
@@ -190,7 +190,7 @@
         .kv-wide { grid-column: span 2; border-bottom: none !important; padding-bottom: 0; }
         .kv-grid dt { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin: 0 0 6px; }
         .kv-grid dd { margin: 0; color: var(--text); font-size: 14px; }
-        .kv-prose { white-space: pre-line; line-height: 1.6; color: var(--ink-200); }
+        .kv-prose { white-space: pre-line; line-height: 1.6; color: var(--text); }
 
         /* Assessment card */
         .assessment-card { display: flex; gap: 0; border: 1px solid; border-radius: var(--r-md); overflow: hidden; }
@@ -200,7 +200,7 @@
         .assessment-card__num { font-family: var(--font-display); font-size: 56px; line-height: 1; letter-spacing: -0.02em; }
         .assessment-card__title { font-family: var(--font-display); font-size: 22px; line-height: 1; letter-spacing: -0.015em; color: var(--text); }
         .assessment-card__article { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--text-dim); margin-top: 6px; text-transform: uppercase; }
-        .assessment-card__reason { font-size: 14px; line-height: 1.6; color: var(--ink-200); margin: 0; }
+        .assessment-card__reason { font-size: 14px; line-height: 1.6; color: var(--text); margin: 0; }
         .assessment-card__foot { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; color: var(--text-dim); }
 
         .assessment-card--inacc { border-color: var(--risk-inacc); background: var(--risk-inacc-bg); }
@@ -217,9 +217,9 @@
         .assessment-card--min .assessment-card__num { color: var(--risk-min); }
 
         .alertes__list { display: flex; flex-direction: column; gap: 8px; }
-        .alerte { padding: 12px 16px; border: 1px solid var(--hairline); border-left: 3px solid var(--risk-lim); border-radius: var(--r-sm); background: var(--ink-1000); display: flex; gap: 12px; align-items: flex-start; }
+        .alerte { padding: 12px 16px; border: 1px solid var(--hairline); border-left: 3px solid var(--risk-lim); border-radius: var(--r-sm); background: var(--bg); display: flex; gap: 12px; align-items: flex-start; }
         .alerte__code { font-family: var(--font-mono); font-size: 11px; color: var(--risk-lim); letter-spacing: 0.06em; text-transform: uppercase; flex-shrink: 0; min-width: 120px; }
-        .alerte__msg { font-size: 13px; color: var(--ink-200); line-height: 1.55; }
+        .alerte__msg { font-size: 13px; color: var(--text); line-height: 1.55; }
 
         @media (max-width: 960px) {
             .usage-grid { grid-template-columns: 1fr; }

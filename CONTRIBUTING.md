@@ -3,8 +3,8 @@
 ## Premiers pas
 
 ```bash
-git clone https://github.com/tomtimlt/ai-assistant.git
-cd ai-assistant
+git clone https://github.com/tomtimlt/qualyra.git
+cd qualyra
 ./scripts/setup.sh
 ```
 

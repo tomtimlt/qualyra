@@ -15,14 +15,13 @@
   <a href="https://laravel.com"><img alt="Laravel" src="https://img.shields.io/badge/Laravel-13-FF2D20?style=flat-square&logo=laravel&logoColor=white"></a>
   <a href="https://tailwindcss.com"><img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind-3-38B2AC?style=flat-square&logo=tailwindcss&logoColor=white"></a>
   <a href="https://pestphp.com"><img alt="Pest" src="https://img.shields.io/badge/tests-Pest_4-8b5cf6?style=flat-square"></a>
-  <a href="https://github.com/tomtimlt/ai-assistant/actions/workflows/tests.yml"><img alt="CI" src="https://github.com/tomtimlt/ai-assistant/actions/workflows/tests.yml/badge.svg?branch=dev"></a>
+  <a href="https://github.com/tomtimlt/qualyra/actions/workflows/tests.yml"><img alt="CI" src="https://github.com/tomtimlt/qualyra/actions/workflows/tests.yml/badge.svg?branch=dev"></a>
   <a href="#licence"><img alt="License" src="https://img.shields.io/badge/license-Propri%C3%A9taire-red?style=flat-square"></a>
 </p>
 
 <p align="center">
   <a href="#démarrage-rapide">Démarrage rapide</a> ·
   <a href="docs/ARCHITECTURE.md">Architecture</a> ·
-  <a href="AGENTS.md">Pour les IA</a> ·
   <a href="CONTRIBUTING.md">Contribuer</a> ·
   <a href="SECURITY.md">Sécurité</a> ·
   <a href="CHANGELOG.md">Changelog</a>
@@ -43,7 +42,6 @@
 - [Tests](#tests)
 - [Sécurité](#sécurité)
 - [Documentation](#documentation)
-- [Assistants IA](#assistants-ia)
 - [Contribution](#contribution)
 - [Licence](#licence)
 
@@ -209,7 +207,7 @@ resources/views/
 └── questionnaire/         # Formulaire dynamique
 ```
 
-Plus de détails : [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · [`docs/MAP.md`](docs/MAP.md) · [`docs/DB_SCHEMA.md`](docs/DB_SCHEMA.md).
+Plus de détails : [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · [`docs/DB_SCHEMA.md`](docs/DB_SCHEMA.md).
 
 ---
 
@@ -253,30 +251,13 @@ Signalement de vulnérabilité : voir [`SECURITY.md`](SECURITY.md).
 
 | Fichier | Public | Description |
 |---------|--------|-------------|
-| [`START_HERE.md`](START_HERE.md) | Tous | Checklist de démarrage d'une session (IA ou humain) |
-| [`AGENTS.md`](AGENTS.md) | IA | Guide universel multi-IA (Claude Code, Cursor, Windsurf, Copilot…) |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | Devs | Workflow Git, conventions de commit, checklist PR |
 | [`SECURITY.md`](SECURITY.md) | Tous | Politique de signalement de vulnérabilités |
 | [`CHANGELOG.md`](CHANGELOG.md) | Tous | Historique des versions (format Keep a Changelog) |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Devs | Architecture détaillée et décisions techniques |
-| [`docs/MAP.md`](docs/MAP.md) | IA / Devs | Carte exhaustive du projet (intention → fichiers) |
-| [`docs/AI_GUIDE.md`](docs/AI_GUIDE.md) | IA | Exemples concrets de modifications, anti-patterns |
 | [`docs/DB_SCHEMA.md`](docs/DB_SCHEMA.md) | Devs | Schéma de base de données |
 | [`docs/Guide de Conformité AI Act.md`](docs/Guide%20de%20Conformité%20AI%20Act.md) | Métier | Référentiel AI Act exhaustif |
 | [`docs/Matrices et Référentiels d'Audit.md`](docs/Matrices%20et%20Référentiels%20d'Audit.md) | Métier | Matrices opérationnelles d'audit |
-
----
-
-## Assistants IA
-
-Le projet est conçu pour être édité par des assistants IA (Claude Code, Cursor, Windsurf, GitHub Copilot, Aider, Codex). **Si vous êtes un agent IA :**
-
-1. Lisez d'abord [`START_HERE.md`](START_HERE.md) — checklist de démarrage en 3 min
-2. Puis [`AGENTS.md`](AGENTS.md) — règles, hot spots, conventions
-3. Avant tout commit : `./scripts/precommit.sh` (lint + sync-check + tests + build)
-4. Pour un contexte ciblé par zone de travail : `./scripts/ai-context.sh <zone>`
-
-Le projet ajoute des fichiers de configuration pour chaque IA : [`CLAUDE.md`](CLAUDE.md), [`.cursorrules`](.cursorrules), [`.windsurfrules`](.windsurfrules), [`.github/copilot-instructions.md`](.github/copilot-instructions.md), [`.aider.conf.yml`](.aider.conf.yml).
 
 ---
 
@@ -284,7 +265,7 @@ Le projet ajoute des fichiers de configuration pour chaque IA : [`CLAUDE.md`](CL
 
 Projet en développement solo pour l'instant — les contributions externes ne sont pas ouvertes.
 
-Pour signaler un bug ou proposer une amélioration, ouvrez une [Issue](https://github.com/tomtimlt/ai-assistant/issues) en utilisant les templates `bug_report` ou `feature_request`.
+Pour signaler un bug ou proposer une amélioration, ouvrez une [Issue](https://github.com/tomtimlt/qualyra/issues) en utilisant les templates `bug_report` ou `feature_request`.
 
 Conventions de code, workflow Git et conventions de commit : [`CONTRIBUTING.md`](CONTRIBUTING.md).
 

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Rapport AI Act + RGPD — {{ $report->snapshot['organization']['name'] ?? 'Rapport' }}</title>
+@include('reports.pdf-fonts')
 <style>
 @page { size: A4; margin: 0; }
 
@@ -79,13 +80,13 @@ body {
 .eyebrow-l.accent { color: #1B3A6F; }
 
 h1.cover {
-    font-family: "Geist", system-ui, sans-serif;
-    font-size: 56px;
+    font-family: "Instrument Serif", Cambria, Georgia, serif;
+    font-size: 64px;
     line-height: 0.98;
     letter-spacing: -0.02em;
     color: #0B0F14;
     margin: 0 0 14px;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 h1.cover em { color: #1B3A6F; font-style: italic; }
@@ -127,13 +128,13 @@ h1.cover em { color: #1B3A6F; font-style: italic; }
 .section { margin-top: 48px; }
 
 .section h2 {
-    font-family: "Geist", system-ui, sans-serif;
-    font-size: 32px;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+    font-family: "Instrument Serif", Cambria, Georgia, serif;
+    font-size: 36px;
+    line-height: 1.02;
+    letter-spacing: -0.018em;
     margin: 10px 0 20px;
     color: #0B0F14;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 .section h3 {
@@ -404,6 +405,14 @@ h1.cover em { color: #1B3A6F; font-style: italic; }
 .grey__t { font-family: "Geist Mono", ui-monospace, monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: #0B0F14; text-transform: uppercase; }
 .grey__c { font-size: 12px; line-height: 1.6; color: #5A5746; margin-top: 4px; max-width: 64ch; }
 
+.timeline-table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 12px; }
+.timeline-table thead th { text-align: left; padding: 8px 10px; border-bottom: 1px solid #C9C3B2; font-family: "Geist Mono", ui-monospace, monospace; font-size: 9px; letter-spacing: 0.08em; color: #8A8674; text-transform: uppercase; font-weight: 500; }
+.timeline-table tbody td { padding: 10px; border-bottom: 1px solid #E5E0D0; color: #0B0F14; }
+.timeline-table tbody tr:last-child td { border-bottom: none; }
+.timeline-transitions { padding-left: 16px; margin-top: 6px; font-size: 12px; color: #5A5746; line-height: 1.7; }
+.timeline-transitions li { margin-bottom: 4px; }
+.timeline-transitions b { color: #0B0F14; font-weight: 500; }
+
 .empty-state { padding: 40px 24px; text-align: center; color: #5A5746; font-size: 12px; }
 
 .report__foot {
@@ -470,7 +479,7 @@ h1.cover em { color: #1B3A6F; font-style: italic; }
     <h1 class="cover">Audit de conformité,<br><em>au {{ \Illuminate\Support\Str::lower($meta['date_audit']) }}.</em></h1>
     <p class="cover-sub">{{ $content['synthese_executive']['header'] ?? '' }}</p>
     <div class="cover-meta">
-        <div><span>PME</span><b>{{ $meta['nom_pme'] }}</b></div>
+        <div><span>ORGANISATION</span><b>{{ $meta['nom_pme'] }}</b></div>
         @if (! empty($meta['size']))
             <div><span>EFFECTIF</span><b>{{ $meta['size'] }} salariés</b></div>
         @endif
@@ -660,9 +669,121 @@ h1.cover em { color: #1B3A6F; font-style: italic; }
     </div>
 </div>
 
-{{-- Section 7 — Disclaimer --}}
+{{-- Section 7 — Chaîne d'approvisionnement --}}
+@php
+    $vendorsByUsage = collect($snapshot['usages'] ?? [])
+        ->filter(fn ($u) => ! empty($u['vendor']))
+        ->groupBy(fn ($u) => $u['vendor']['id']);
+    $vendorStatusLabels = [
+        'complet' => 'Conforme',
+        'partiel' => 'Partiel',
+        'manquant' => 'Manquant',
+    ];
+    $vendorStatusClass = [
+        'complet' => 'min',
+        'partiel' => 'lim',
+        'manquant' => 'inacc',
+    ];
+@endphp
+@if ($vendorsByUsage->isNotEmpty())
 <div class="report-page page-break">
-    <div class="eyebrow-l">07 · Avertissement</div>
+    <div class="eyebrow-l">07 · Chaîne d'approvisionnement</div>
+    <h2>Vos fournisseurs IA.</h2>
+    <p class="muted-prose">
+        Pour chaque fournisseur IA rattaché à vos usages, nous vérifions trois engagements contractuels : déclaration de conformité Art. 47 AI Act, contrat de sous-traitance Art. 28 RGPD, et clauses contractuelles types si l'hébergement est hors UE.
+    </p>
+
+    @foreach ($vendorsByUsage as $vendorId => $vendorUsages)
+        @php
+            $v = $vendorUsages->first()['vendor'];
+            $compliance = $v['compliance'];
+            $cls = $vendorStatusClass[$compliance['status']] ?? 'none';
+        @endphp
+        <div class="usage" style="margin-top: 14px">
+            <div class="usage__head">
+                <div>
+                    <div class="usage__title">{{ $v['name'] }}</div>
+                    <div class="usage__meta">{{ $v['type_contractuel'] }}{{ $v['pays_hebergement'] ? ' · '.$v['pays_hebergement'] : '' }}{{ $v['hors_ue'] ? ' · HORS UE' : '' }} · {{ $vendorUsages->count() }} usage{{ $vendorUsages->count() > 1 ? 's' : '' }}</div>
+                </div>
+                <span class="report-badge report-badge--{{ $cls }}"><span class="dot"></span>{{ $vendorStatusLabels[$compliance['status']] ?? $compliance['status'] }}</span>
+            </div>
+            @if (! empty($compliance['gaps']))
+                <div class="obligation">
+                    <div class="obligation__t">Points à régulariser</div>
+                    <ul class="obligation__c" style="padding-left: 16px; margin: 4px 0 0">
+                        @foreach ($compliance['gaps'] as $gap)
+                            <li>{{ $gap }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+        </div>
+    @endforeach
+</div>
+@endif
+
+{{-- Section 8 — Évolution dans le temps --}}
+@php
+    $timeline = $snapshot['timeline_prospective'] ?? [];
+    $horizonLabels = [
+        'now' => "Aujourd'hui",
+        'plus_1y' => 'Dans 1 an',
+        'plus_2y' => 'Dans 2 ans',
+    ];
+@endphp
+@if (! empty($timeline))
+<div class="report-page page-break">
+    <div class="eyebrow-l">08 · Évolution de la conformité</div>
+    <h2>Calendrier d'application.</h2>
+    <p class="muted-prose">
+        Le Règlement UE 2024/1689 entre en vigueur par paliers. Le tableau ci-dessous projette le niveau de risque de vos usages déclarés à trois horizons, en filtrant les règles non encore opposables à chaque date.
+    </p>
+
+    <table class="timeline-table">
+        <thead>
+            <tr>
+                <th>Horizon</th>
+                <th>Date</th>
+                <th>Inacceptable</th>
+                <th>Haut risque</th>
+                <th>Risque limité</th>
+                <th>Risque minimal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($timeline as $snap)
+                <tr>
+                    <td>{{ $horizonLabels[$snap['label']] ?? $snap['label'] }}</td>
+                    <td>{{ \Illuminate\Support\Carbon::parse($snap['date'])->translatedFormat('d M Y') }}</td>
+                    <td>{{ $snap['counts']['INACCEPTABLE'] ?? 0 }}</td>
+                    <td>{{ $snap['counts']['HAUT_RISQUE'] ?? 0 }}</td>
+                    <td>{{ $snap['counts']['RISQUE_LIMITE'] ?? 0 }}</td>
+                    <td>{{ $snap['counts']['RISQUE_MINIMAL'] ?? 0 }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    @php
+        $allTransitions = collect($timeline)
+            ->flatMap(fn ($snap) => collect($snap['transitions'] ?? [])->map(
+                fn ($t) => array_merge($t, ['horizon' => $horizonLabels[$snap['label']] ?? $snap['label']])
+            ));
+    @endphp
+    @if ($allTransitions->isNotEmpty())
+        <h3 style="margin-top: 20px">Usages basculant à un niveau supérieur</h3>
+        <ul class="timeline-transitions">
+            @foreach ($allTransitions as $t)
+                <li><b>{{ $t['name'] }}</b> — {{ $t['horizon'] }} : {{ $labels[$t['from']] ?? $t['from'] }} → {{ $labels[$t['to']] ?? $t['to'] }} ({{ $t['regle_id'] }})</li>
+            @endforeach
+        </ul>
+    @endif
+</div>
+@endif
+
+{{-- Section 9 — Disclaimer --}}
+<div class="report-page page-break">
+    <div class="eyebrow-l">09 · Avertissement</div>
     <h2>Limites de l'audit.</h2>
     @foreach (['exclusion_responsabilite', 'peremption_normative', 'recommandation_assistance'] as $key)
         <h3 style="margin-top: 20px">{{ $content['disclaimer'][$key]['titre'] }}</h3>

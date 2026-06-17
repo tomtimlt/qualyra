@@ -97,9 +97,21 @@
             ],
             'colors' => ['#9B2933', '#B5532A', '#A07626', '#3D6E54', '#475061'],
         ];
+        $domainColors = [
+            'RH' => '#2E5FA0', 'EDUCATION' => '#6E92C7', 'CREDIT' => '#9B2933',
+            'SANTE' => '#3D6E54', 'SECURITE' => '#B5532A', 'MARKETING' => '#A07626',
+            'PROD_INT' => '#5B4FA0', 'DEV_LOG' => '#2E8A7A', 'AUTRE' => '#7D8899',
+        ];
+        $domainHoverColors = [
+            'RH' => '#5680C2', 'EDUCATION' => '#8DB3D8', 'CREDIT' => '#B84D57',
+            'SANTE' => '#5E9176', 'SECURITE' => '#D07756', 'MARKETING' => '#C2984A',
+            'PROD_INT' => '#7C71B8', 'DEV_LOG' => '#51AC9C', 'AUTRE' => '#9DA5B0',
+        ];
         $chartDomainData = [
             'labels' => array_values(array_map(fn ($k) => $domainLabels[$k] ?? $k, array_keys($domainCounts))),
             'data' => array_values($domainCounts),
+            'colors' => array_values(array_map(fn ($k) => $domainColors[$k] ?? '#475061', array_keys($domainCounts))),
+            'hoverColors' => array_values(array_map(fn ($k) => $domainHoverColors[$k] ?? '#6E92C7', array_keys($domainCounts))),
         ];
     @endphp
 
@@ -117,7 +129,7 @@
                 <div class="eyebrow eyebrow--accent">Étape 1 · Audit AI Act + RGPD</div>
                 <h1>Bienvenue, <em>{{ $firstName }}.</em></h1>
                 <p class="lead">
-                    Avant de déclarer vos usages d'IA, créez la fiche de votre PME. Ces informations sont utilisées
+                    Avant de déclarer vos usages d'IA, créez la fiche de votre organisation. Ces informations sont utilisées
                     uniquement pour qualifier le contexte de l'audit (taille, secteur, SIRET).
                 </p>
                 <div style="margin-top: 32px; display: flex; gap: 12px;">
@@ -241,8 +253,22 @@
             </div>
         @endif
 
-        {{-- Heatmap domaine × niveau de risque --}}
-        <x-heatmap-risk :heatmap="$heatmap" />
+        {{-- Timeline 6 mois --}}
+        @if ($activityTimeline['hasData'])
+            <div class="charts-row charts-row--full">
+                <div class="surface chart-surface">
+                    <div class="surface__head">
+                        <h3>Activité de l'organisation · 6 derniers mois</h3>
+                        <span class="pill">{{ array_sum($activityTimeline['usages']) + array_sum($activityTimeline['assessments']) + array_sum($activityTimeline['reports']) }} événement(s)</span>
+                    </div>
+                    <div class="chart-surface__body chart-surface__body--line">
+                        <div class="chart-canvas-wrap chart-canvas-wrap--line">
+                            <canvas id="chartActivity" aria-label="Évolution mensuelle de l'activité"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
 
         {{-- Deux colonnes : table d'usages + sidebar organisation --}}
         <div class="dashboard-cols">
@@ -388,6 +414,19 @@
             <div class="dashboard-aside">
                 <div class="surface">
                     <div class="surface__head">
+                        <h3>Vision</h3>
+                    </div>
+                    <div class="vision-quick">
+                        <a href="{{ route('vision') }}" class="vision-quick__link">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            Cartographie des risques
+                            <span class="vision-quick__arrow">›</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="surface">
+                    <div class="surface__head">
                         <h3>Organisation</h3>
                     </div>
                     <div class="org-block">
@@ -462,10 +501,10 @@
         .dashboard-head__actions .btn { text-decoration: none; }
 
         /* BAND */
-        .band { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr; border: 1px solid var(--hairline); border-radius: var(--r-md); overflow: hidden; background: var(--ink-950); margin-bottom: 32px; }
+        .band { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr; border: 1px solid var(--hairline); border-radius: var(--r-md); overflow: hidden; background: var(--surface); margin-bottom: 32px; }
         .band__cell { padding: 24px 28px; border-right: 1px solid var(--hairline); display: flex; flex-direction: column; gap: 6px; min-height: 132px; }
         .band__cell:last-child { border-right: none; }
-        .band__cell--hero { background: linear-gradient(135deg, var(--ink-900) 0%, var(--ink-1000) 100%); }
+        .band__cell--hero { background: linear-gradient(135deg, var(--surface-2) 0%, var(--bg) 100%); }
         .band__num { font-family: var(--font-display); font-size: 56px; line-height: 1; letter-spacing: -0.02em; color: var(--text); }
         .band__num--haut  { color: var(--risk-haut); }
         .band__num--lim   { color: var(--risk-lim); }
@@ -485,7 +524,7 @@
         .dashboard-aside { display: flex; flex-direction: column; gap: 24px; }
 
         /* Surface (cards) */
-        .surface { border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--ink-950); overflow: hidden; }
+        .surface { border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--surface); overflow: hidden; }
 
         /* Scrollable table dans la colonne de gauche */
         .tbl-wrap { overflow-y: auto; }
@@ -496,10 +535,10 @@
         .surface__head { padding: 18px 24px; border-bottom: 1px solid var(--hairline); display: flex; justify-content: space-between; align-items: center; }
         .surface__head h3 { margin: 0; font-size: 15px; font-weight: 500; letter-spacing: -0.01em; color: var(--text); }
         .surface__head-right { display: flex; gap: 8px; }
-        .pill { font-family: var(--font-mono); font-size: 10px; padding: 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); letter-spacing: 0.04em; }
-        .filter-select { font-family: var(--font-mono); font-size: 10px; padding: 4px 8px 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); background: var(--ink-950); letter-spacing: 0.04em; cursor: pointer; appearance: none; -webkit-appearance: none; }
+        .pill { font-family: var(--font-mono); font-size: 10px; padding: 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); display: inline-flex; align-items: center; justify-content: center; line-height: 1; }
+        .filter-select { font-family: var(--font-mono); font-size: 10px; padding: 4px 8px 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); background: var(--surface); letter-spacing: 0.04em; cursor: pointer; appearance: none; -webkit-appearance: none; }
         .filter-select:hover { color: var(--text); border-color: var(--text); }
-        .filter-search { font-family: var(--font-mono); font-size: 10px; padding: 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); background: var(--ink-950); letter-spacing: 0.04em; width: 140px; outline: none; }
+        .filter-search { font-family: var(--font-mono); font-size: 10px; padding: 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); background: var(--surface); letter-spacing: 0.04em; width: 140px; outline: none; }
         .filter-search:focus { color: var(--text); border-color: var(--accent); }
         .filter-search::placeholder { color: var(--text-dim); }
         .filter-reset { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 16px; line-height: 1; padding: 0 2px; }
@@ -512,7 +551,7 @@
         .sortable { cursor: pointer; user-select: none; }
         .sortable:hover { color: var(--text); }
         .tbl tbody tr { border-top: 1px solid var(--hairline); transition: background var(--d-fast); }
-        .tbl tbody tr:hover { background: var(--ink-900); }
+        .tbl tbody tr:hover { background: var(--surface-2); }
         .cell-name { font-weight: 500; color: var(--text); }
         .cell-meta { margin-top: 2px; }
         .tbl .num { font-family: var(--font-mono); color: var(--text-dim); font-size: 12px; }
@@ -534,8 +573,16 @@
         .kv dt { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin: 0; }
         .kv dd { margin: 0; color: var(--text); font-weight: 500; }
 
+        /* Vision quick link */
+        .vision-quick { padding: 16px 24px; }
+        .vision-quick__link { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-size: 13px; font-weight: 500; padding: 10px 14px; border: 1px solid var(--hairline); border-radius: var(--r-sm); transition: all var(--d-fast); }
+        .vision-quick__link:hover { border-color: var(--accent); background: var(--surface-2); }
+        .vision-quick__link svg { color: var(--accent); flex-shrink: 0; }
+        .vision-quick__arrow { margin-left: auto; color: var(--text-dim); font-size: 16px; }
+        .vision-quick__link:hover .vision-quick__arrow { color: var(--text); }
+
         /* CTA surface */
-        .cta-surface { padding: 24px; background: radial-gradient(ellipse at 90% 20%, rgba(46, 95, 160, 0.08) 0%, transparent 50%), var(--ink-950); }
+        .cta-surface { padding: 24px; background: radial-gradient(ellipse at 90% 20%, color-mix(in oklab, var(--accent) 8%, transparent) 0%, transparent 50%), var(--surface); }
         .cta-surface__title { font-family: var(--font-display); font-size: 22px; line-height: 1.2; letter-spacing: -0.01em; color: var(--text); margin-top: 12px; margin-bottom: 8px; }
         .cta-surface__title em { color: var(--accent); font-style: italic; }
         .cta-surface__sub { color: var(--text-muted); font-size: 13px; line-height: 1.55; }
@@ -543,12 +590,15 @@
 
         /* Charts */
         .charts-row { display: grid; grid-template-columns: 1fr 1.4fr; gap: 24px; margin-bottom: 32px; }
+        .charts-row--full { grid-template-columns: 1fr; }
         .chart-surface { display: flex; flex-direction: column; }
         .chart-surface__body { padding: 24px; flex: 1; display: flex; gap: 24px; align-items: stretch; min-height: 280px; }
+        .chart-surface__body--line { min-height: 320px; }
         .chart-canvas-wrap { flex: 1; min-width: 0; position: relative; max-width: 240px; }
         .chart-canvas-wrap--bar { max-width: none; }
+        .chart-canvas-wrap--line { max-width: none; height: 280px; }
         .chart-legend { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 180px; align-self: center; }
-        .chart-legend li { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--ink-200); }
+        .chart-legend li { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text); }
         .chart-legend .swatch { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
         .chart-legend .label { flex: 1; }
         .chart-legend .count { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.04em; }
@@ -567,10 +617,68 @@
     </style>
 
     @if ($aiUsages->count() > 0)
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js" defer></script>
         <script>
+            function cssVar(name) {
+                return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+            }
+
+            function readThemeColors() {
+                return {
+                    surface: cssVar('--surface'),
+                    hairline: cssVar('--hairline'),
+                    hairlineStrong: cssVar('--hairline-strong'),
+                    text: cssVar('--text'),
+                };
+            }
+
+            function makeTooltipOpts(c) {
+                return {
+                    backgroundColor: c.surface,
+                    borderColor: c.hairlineStrong,
+                    borderWidth: 1,
+                    titleColor: c.text,
+                    bodyColor: c.text,
+                    padding: 12,
+                    titleFont: { family: 'Geist', size: 12, weight: '500' },
+                    bodyFont: { family: 'Geist Mono', size: 11 },
+                };
+            }
+
+            function updateChartColors(charts, c) {
+                charts.forEach(chart => {
+                    const opts = chart.options;
+                    const tooltip = opts.plugins?.tooltip;
+                    if (tooltip) {
+                        tooltip.backgroundColor = c.surface;
+                        tooltip.borderColor = c.hairlineStrong;
+                        tooltip.titleColor = c.text;
+                        tooltip.bodyColor = c.text;
+                    }
+                    if (chart.config.type === 'doughnut') {
+                        chart.data.datasets[0].borderColor = c.surface;
+                    }
+                    if (chart.config.type === 'bar') {
+                        opts.scales.x.ticks.color = c.text;
+                        opts.scales.x.grid.color = c.hairline;
+                        opts.scales.y.ticks.color = c.text;
+                    }
+                    if (chart.config.type === 'line') {
+                        opts.scales.x.ticks.color = c.text;
+                        opts.scales.y.ticks.color = c.text;
+                        opts.scales.y.grid.color = c.hairline;
+                        if (opts.plugins?.legend?.labels) {
+                            opts.plugins.legend.labels.color = c.text;
+                        }
+                    }
+                    chart.update();
+                });
+            }
+
             window.addEventListener('DOMContentLoaded', () => {
+                let c = readThemeColors();
+                const tooltipOpts = makeTooltipOpts(c);
+                const charts = [];
+
                 const riskData = @json($chartRiskData);
                 const domainData = @json($chartDomainData);
                 const total = riskData.data.reduce((a, b) => a + b, 0);
@@ -578,14 +686,14 @@
                 // ---- Donut: répartition des risques ----
                 const ctxRisk = document.getElementById('chartRisk');
                 if (ctxRisk && total > 0) {
-                    new Chart(ctxRisk, {
+                    charts.push(new Chart(ctxRisk, {
                         type: 'doughnut',
                         data: {
                             labels: riskData.labels,
                             datasets: [{
                                 data: riskData.data,
                                 backgroundColor: riskData.colors,
-                                borderColor: '#11161E',
+                                borderColor: c.surface,
                                 borderWidth: 2,
                                 hoverOffset: 8,
                             }],
@@ -597,14 +705,7 @@
                             plugins: {
                                 legend: { display: false },
                                 tooltip: {
-                                    backgroundColor: '#0B0F14',
-                                    borderColor: '#303845',
-                                    borderWidth: 1,
-                                    titleColor: '#E8EBF0',
-                                    bodyColor: '#ABB3C2',
-                                    padding: 12,
-                                    titleFont: { family: 'Geist', size: 12, weight: '500' },
-                                    bodyFont: { family: 'Geist Mono', size: 11 },
+                                    ...tooltipOpts,
                                     callbacks: {
                                         label: (ctx) => {
                                             const v = ctx.parsed;
@@ -615,9 +716,8 @@
                                 },
                             },
                         },
-                    });
+                    }));
 
-                    // Légende custom (lisible et alignée au design)
                     const legend = document.getElementById('legendRisk');
                     if (legend) {
                         legend.innerHTML = riskData.labels.map((label, i) => {
@@ -635,14 +735,14 @@
                 // ---- Bar horizontale: usages par domaine ----
                 const ctxDomain = document.getElementById('chartDomain');
                 if (ctxDomain && domainData.data.length > 0) {
-                    new Chart(ctxDomain, {
+                    charts.push(new Chart(ctxDomain, {
                         type: 'bar',
                         data: {
                             labels: domainData.labels,
                             datasets: [{
                                 data: domainData.data,
-                                backgroundColor: '#2E5FA0',
-                                hoverBackgroundColor: '#6E92C7',
+                                backgroundColor: domainData.colors,
+                                hoverBackgroundColor: domainData.hoverColors,
                                 borderRadius: 2,
                                 barThickness: 18,
                             }],
@@ -654,14 +754,7 @@
                             plugins: {
                                 legend: { display: false },
                                 tooltip: {
-                                    backgroundColor: '#0B0F14',
-                                    borderColor: '#303845',
-                                    borderWidth: 1,
-                                    titleColor: '#E8EBF0',
-                                    bodyColor: '#ABB3C2',
-                                    padding: 12,
-                                    titleFont: { family: 'Geist', size: 12, weight: '500' },
-                                    bodyFont: { family: 'Geist Mono', size: 11 },
+                                    ...tooltipOpts,
                                     callbacks: {
                                         label: (ctx) => `${ctx.parsed.x} usage${ctx.parsed.x > 1 ? 's' : ''}`,
                                     },
@@ -670,146 +763,72 @@
                             scales: {
                                 x: {
                                     beginAtZero: true,
-                                    ticks: { color: '#5B6478', font: { family: 'Geist Mono', size: 10 }, stepSize: 1 },
-                                    grid: { color: '#232A35', drawBorder: false },
+                                    ticks: { color: c.text, font: { family: 'Geist Mono', size: 10 }, stepSize: 1 },
+                                    grid: { color: c.hairline, drawBorder: false },
                                 },
                                 y: {
-                                    ticks: { color: '#ABB3C2', font: { family: 'Geist', size: 12 } },
+                                    ticks: { color: c.text, font: { family: 'Geist', size: 12 } },
                                     grid: { display: false, drawBorder: false },
                                 },
                             },
                         },
-                    });
+                    }));
                 }
 
-                // ---- Heatmap matrix : domaine × niveau de risque ----
-                const ctxHeatmap = document.getElementById('chartHeatmap');
-                const heatmapData = @json($heatmap);
-                if (ctxHeatmap && heatmapData.allUsages.length > 0) {
-                    new Chart(ctxHeatmap, {
-                        type: 'matrix',
+                // ---- Line chart : activité 6 mois ----
+                @if ($activityTimeline['hasData'])
+                const ctxActivity = document.getElementById('chartActivity');
+                const activityData = @json($activityTimeline);
+                if (ctxActivity) {
+                    charts.push(new Chart(ctxActivity, {
+                        type: 'line',
                         data: {
-                            datasets: [{
-                                label: 'Score pondéré',
-                                data: heatmapData.matrix,
-                                backgroundColor(ctx) {
-                                    const cell = ctx.raw;
-                                    if (!cell || cell.count === 0) return 'rgba(255, 255, 255, 0.04)';
-                                    // Teinte = niveau (rouge=INACC, orange=HAUT, jaune-vert=LIM, vert=MIN)
-                                    const HUES = { INACCEPTABLE: 0, HAUT_RISQUE: 25, RISQUE_LIMITE: 75, RISQUE_MINIMAL: 130 };
-                                    const hue = HUES[cell.y] ?? 200;
-                                    // Normalisation PAR LIGNE (niveau cell.y) : max des counts pour ce niveau
-                                    const maxInLevel = heatmapData.matrix
-                                        .filter(c => c.y === cell.y)
-                                        .reduce((m, c) => Math.max(m, c.count), 0) || 1;
-                                    const intensity = cell.count / maxInLevel; // 0..1
-                                    // Intensité 0 → couleur claire et peu saturée ; intensité 1 → foncée et saturée
-                                    const sat = 50 + intensity * 30;
-                                    const light = 62 - intensity * 30;
-                                    return `hsl(${hue}, ${sat}%, ${light}%)`;
-                                },
-                                borderColor: '#11161E',
-                                borderWidth: 2,
-                                width: ({ chart }) => (chart.chartArea || {}).width / heatmapData.domains.length - 2,
-                                height: ({ chart }) => (chart.chartArea || {}).height / heatmapData.levels.length - 2,
-                            }],
+                            labels: activityData.labels,
+                            datasets: [
+                                { label: 'Usages déclarés', data: activityData.usages,
+                                  borderColor: '#2E5FA0', backgroundColor: 'rgba(46, 95, 160, 0.12)',
+                                  tension: 0.35, fill: true, pointRadius: 3, pointHoverRadius: 5,
+                                  pointBackgroundColor: '#2E5FA0', borderWidth: 2 },
+                                { label: 'Évaluations', data: activityData.assessments,
+                                  borderColor: '#A07626', backgroundColor: 'rgba(160, 118, 38, 0.10)',
+                                  tension: 0.35, fill: false, pointRadius: 3, pointHoverRadius: 5,
+                                  pointBackgroundColor: '#A07626', borderWidth: 2 },
+                                { label: 'Rapports générés', data: activityData.reports,
+                                  borderColor: '#3D6E54', backgroundColor: 'rgba(61, 110, 84, 0.10)',
+                                  tension: 0.35, fill: false, pointRadius: 3, pointHoverRadius: 5,
+                                  pointBackgroundColor: '#3D6E54', borderWidth: 2 },
+                            ],
                         },
                         options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            onClick: (event, activeElements, chart) => {
-                                if (activeElements.length === 0) return;
-                                const el = activeElements[0];
-                                const cell = chart.data.datasets[el.datasetIndex].data[el.index];
-                                window.dispatchEvent(new CustomEvent('heatmap:cell-click', {
-                                    detail: { domain: cell.x, level: cell.y },
-                                }));
-                            },
+                            responsive: true, maintainAspectRatio: false,
+                            interaction: { mode: 'index', intersect: false },
                             plugins: {
-                                legend: { display: false },
-                                tooltip: {
-                                    backgroundColor: '#0B0F14',
-                                    borderColor: '#303845',
-                                    borderWidth: 1,
-                                    titleColor: '#E8EBF0',
-                                    bodyColor: '#ABB3C2',
-                                    padding: 12,
-                                    titleFont: { family: 'Geist', size: 12, weight: '500' },
-                                    bodyFont: { family: 'Geist Mono', size: 11 },
-                                    callbacks: {
-                                        title: (items) => {
-                                            const r = items[0].raw;
-                                            const levelLabels = {
-                                                INACCEPTABLE: 'Inacceptable',
-                                                HAUT_RISQUE: 'Haut risque',
-                                                RISQUE_LIMITE: 'Risque limité',
-                                                RISQUE_MINIMAL: 'Risque minimal',
-                                            };
-                                            return `${r.x} – ${levelLabels[r.y] ?? r.y}`;
-                                        },
-                                        label: (item) => {
-                                            const r = item.raw;
-                                            const lines = [`${r.count} usage(s)`];
-                                            if (r.recent && r.recent.length > 0) {
-                                                lines.push(`Récents : ${r.recent.join(', ')}`);
-                                            }
-                                            return lines;
-                                        },
-                                    },
-                                },
+                                legend: { display: true, position: 'bottom',
+                                    labels: { color: c.text, font: { family: 'Geist', size: 12 },
+                                              boxWidth: 10, boxHeight: 10, usePointStyle: true, padding: 16 } },
+                                tooltip: tooltipOpts,
                             },
                             scales: {
-                                x: {
-                                    type: 'category',
-                                    labels: heatmapData.domains,
-                                    position: 'bottom',
-                                    offset: true,
-                                    ticks: {
-                                        color: '#ABB3C2',
-                                        font: { family: 'Geist Mono', size: 11 },
-                                    },
-                                    grid: { display: false, drawBorder: false },
-                                },
-                                y: {
-                                    type: 'category',
-                                    labels: heatmapData.levels,
-                                    offset: true,
-                                    reverse: true,
-                                    ticks: {
-                                        color: '#ABB3C2',
-                                        font: { family: 'Geist Mono', size: 10 },
-                                        callback(value, index) {
-                                            const labels = ['Inacceptable', 'Haut risque', 'Risque limité', 'Risque minimal'];
-                                            return labels[index] ?? this.getLabelForValue(value);
-                                        },
-                                    },
-                                    grid: { display: false, drawBorder: false },
-                                },
+                                x: { ticks: { color: c.text, font: { family: 'Geist Mono', size: 10 } },
+                                     grid: { display: false, drawBorder: false } },
+                                y: { beginAtZero: true,
+                                     ticks: { color: c.text, font: { family: 'Geist Mono', size: 10 },
+                                              stepSize: 1, precision: 0 },
+                                     grid: { color: c.hairline, drawBorder: false } },
                             },
                         },
-                        plugins: [{
-                            id: 'cellCounter',
-                            afterDatasetsDraw(chart) {
-                                const { ctx } = chart;
-                                const meta = chart.getDatasetMeta(0);
-                                meta.data.forEach((element, index) => {
-                                    const data = chart.data.datasets[0].data[index];
-                                    if (!data || data.count === 0) return;
-                                    const { x, y } = element.getProps(['x', 'y'], false);
-                                    ctx.save();
-                                    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-                                    ctx.font = '600 11px "Geist Mono", monospace';
-                                    ctx.textAlign = 'center';
-                                    ctx.textBaseline = 'middle';
-                                    ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-                                    ctx.shadowBlur = 2;
-                                    ctx.fillText(String(data.count), x, y);
-                                    ctx.restore();
-                                });
-                            },
-                        }],
-                    });
+                    }));
                 }
+                @endif
+
+                // ---- Theme change observer ----
+                new MutationObserver(() => {
+                    c = readThemeColors();
+                    updateChartColors(charts, c);
+                }).observe(document.documentElement, {
+                    attributes: true,
+                    attributeFilter: ['data-theme'],
+                });
 
                 // ---- Ajustement hauteur table = hauteur sidebar ----
                 function syncHeights() {

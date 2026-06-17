@@ -11,7 +11,7 @@ class StoreOrganizationRequest extends FormRequest
 {
     /**
      * L'utilisateur doit être authentifié et ne pas déjà avoir
-     * d'organisation rattachée à son compte (1 user = 1 PME).
+     * d'organisation rattachée à son compte (1 user = 1 organisation).
      */
     public function authorize(): bool
     {
@@ -30,7 +30,7 @@ class StoreOrganizationRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             // Format SIRET français + unicité : un même SIRET ne peut pas
-            // être déclaré par deux PME différentes (cohérence métier).
+            // être déclaré par deux organisations différentes (cohérence métier).
             'siret' => ['nullable', 'string', 'regex:/^[0-9]{14}$/', Rule::unique('organizations', 'siret')],
             'size' => ['required', Rule::in(['1-19', '20-49', '50-149', '150+'])],
             'sector' => ['nullable', 'string', 'max:255'],

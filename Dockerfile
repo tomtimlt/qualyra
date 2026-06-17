@@ -43,6 +43,8 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-d
 # Install Node dependencies and build frontend
 RUN npm install --no-audit --no-fund \
     && touch node_modules/.installed \
+    && node scripts/download-fonts.js \
+    && node scripts/generate-pdf-fonts.js \
     && npm run build
 
 # Ensure writable directories & clean storage symlink (entrypoint recreates it)

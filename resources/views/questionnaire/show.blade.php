@@ -102,7 +102,7 @@
 
         .quest-form { display: flex; flex-direction: column; gap: 32px; }
 
-        .quest-block { padding: 24px 28px; border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--ink-950); display: flex; flex-direction: column; gap: 16px; }
+        .quest-block { padding: 24px 28px; border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--surface); display: flex; flex-direction: column; gap: 16px; }
         .quest-block__head { display: flex; flex-direction: column; gap: 4px; }
         .quest-block__head .label { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 0; line-height: 1.4; }
         .quest-block__head .help { font-size: 12px; color: var(--text-dim); margin: 0; line-height: 1.55; }
@@ -111,11 +111,11 @@
         .quest-block .textarea { min-height: 88px; }
 
         .check-list { display: flex; flex-direction: column; gap: 8px; }
-        .check-row { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border: 1px solid var(--hairline); border-radius: var(--r-sm); background: var(--ink-1000); cursor: pointer; transition: all var(--d-fast) var(--ease-out); }
-        .check-row:hover { border-color: var(--ink-500); }
+        .check-row { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border: 1px solid var(--hairline); border-radius: var(--r-sm); background: var(--bg); cursor: pointer; transition: all var(--d-fast) var(--ease-out); }
+        .check-row:hover { border-color: var(--text-dim); }
         .check-row.is-on { border-color: var(--accent); background: rgba(46, 95, 160, 0.06); }
         .check-row input { position: absolute; opacity: 0; pointer-events: none; }
-        .check-row__dot, .check-row__box { width: 16px; height: 16px; border: 1px solid var(--ink-500); flex-shrink: 0; margin-top: 1px; position: relative; transition: all var(--d-fast); }
+        .check-row__dot, .check-row__box { width: 16px; height: 16px; border: 1px solid var(--text-dim); flex-shrink: 0; margin-top: 1px; position: relative; transition: all var(--d-fast); }
         .check-row__dot { border-radius: 50%; }
         .check-row__box { border-radius: 2px; }
         .check-row.is-on .check-row__dot, .check-row.is-on .check-row__box { border-color: var(--accent); }

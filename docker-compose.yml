@@ -1,8 +1,8 @@
 services:
   app:
     build: .
-    image: ai-assistant
-    container_name: ai-assistant
+    image: qualyra
+    container_name: qualyra
     ports:
       - "8000:8000"
     volumes:

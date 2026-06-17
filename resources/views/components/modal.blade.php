@@ -76,7 +76,7 @@
 @once
 <style>
     .modal { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: 24px; overflow-y: auto; }
-    .modal__backdrop { position: absolute; inset: 0; background: rgba(11, 15, 20, 0.85); backdrop-filter: blur(6px); }
-    .modal__panel { position: relative; width: 100%; background: var(--ink-950); border: 1px solid var(--hairline); border-radius: var(--r-md); overflow: hidden; box-shadow: var(--shadow-3); }
+    .modal__backdrop { position: absolute; inset: 0; background: color-mix(in oklab, var(--bg) 80%, transparent); backdrop-filter: blur(6px); }
+    .modal__panel { position: relative; width: 100%; background: var(--surface); border: 1px solid var(--hairline); border-radius: var(--r-md); overflow: hidden; box-shadow: var(--shadow-3); }
 </style>
 @endonce

@@ -7,6 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Organization extends Model
@@ -30,14 +31,33 @@ class Organization extends Model
         'size' => 'string',
     ];
 
+    /**
+     * Créateur de l'organisation (trace historique). N'est PLUS utilisé pour
+     * l'autorisation : la source de vérité est le pivot organization_user.
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Membres de l'organisation avec leur rôle (owner / member / auditor).
+     */
+    public function members(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class)
+            ->withPivot('role')
+            ->withTimestamps();
+    }
+
     public function aiUsages(): HasMany
     {
         return $this->hasMany(AiUsage::class);
+    }
+
+    public function aiVendors(): HasMany
+    {
+        return $this->hasMany(AiVendor::class);
     }
 
     public function reports(): HasMany

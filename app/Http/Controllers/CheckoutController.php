@@ -29,7 +29,7 @@ class CheckoutController extends Controller
             return redirect()->route('organization.create');
         }
 
-        // Empêche la génération d'un rapport vide (toutes les PME ont au moins
+        // Empêche la génération d'un rapport vide (toutes les organisations ont au moins
         // déclaré un usage avant d'arriver sur le checkout via l'UI, mais on garde
         // un filet en cas d'appel direct).
         if ($organization->aiUsages()->count() === 0) {

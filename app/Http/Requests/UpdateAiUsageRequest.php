@@ -26,11 +26,18 @@ class UpdateAiUsageRequest extends FormRequest
      */
     public function rules(): array
     {
+        $organizationId = $this->user()?->organization?->id;
+
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:5000'],
             'type' => ['required', Rule::in(['LLM_GEN', 'IA_GEN', 'IA_SCORING', 'IA_BIO', 'AUTRE'])],
             'domain' => ['required', Rule::in(['RH', 'EDUCATION', 'CREDIT', 'SANTE', 'SECURITE', 'MARKETING', 'PROD_INT', 'DEV_LOG', 'AUTRE'])],
+            'ai_vendor_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('ai_vendors', 'id')->where('organization_id', $organizationId),
+            ],
         ];
     }
 

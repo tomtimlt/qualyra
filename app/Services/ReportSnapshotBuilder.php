@@ -8,7 +8,11 @@ use App\Models\Organization;
 
 class ReportSnapshotBuilder
 {
-    public function __construct(private ReportContentBuilder $contentBuilder) {}
+    public function __construct(
+        private ReportContentBuilder $contentBuilder,
+        private ComplianceTimelineBuilder $timelineBuilder,
+        private VendorComplianceEvaluator $vendorEvaluator,
+    ) {}
 
     /**
      * Construit un snapshot figé de l'état de conformité d'une organisation
@@ -41,11 +45,13 @@ class ReportSnapshotBuilder
     {
         $organization->load([
             'aiUsages.responses',
+            'aiUsages.vendor',
             'aiUsages.assessments' => fn ($q) => $q->latest('computed_at')->limit(1),
         ]);
 
         $usages = $organization->aiUsages->map(function ($usage) {
             $assessment = $usage->assessments->first();
+            $vendor = $usage->vendor;
 
             return [
                 'id' => $usage->id,
@@ -56,6 +62,19 @@ class ReportSnapshotBuilder
                 'responses' => $usage->responses
                     ->pluck('variable_value', 'variable_key')
                     ->toArray(),
+                'vendor' => $vendor ? array_merge(
+                    [
+                        'id' => $vendor->id,
+                        'name' => $vendor->name,
+                        'type_contractuel' => $vendor->type_contractuel,
+                        'pays_hebergement' => $vendor->pays_hebergement,
+                        'hors_ue' => (bool) $vendor->hors_ue,
+                        'declaration_conformite_art47' => (bool) $vendor->declaration_conformite_art47,
+                        'dpa_art28_signe' => (bool) $vendor->dpa_art28_signe,
+                        'cct_signees' => $vendor->cct_signees,
+                    ],
+                    ['compliance' => $this->vendorEvaluator->evaluate($vendor)],
+                ) : null,
                 'assessment' => $assessment ? [
                     'niveau' => $assessment->niveau,
                     'regle_id' => $assessment->regle_id,
@@ -78,6 +97,7 @@ class ReportSnapshotBuilder
             ],
             'usages' => $usages,
             'summary' => $this->summarize($usages),
+            'timeline_prospective' => $this->timelineBuilder->build($organization),
         ];
     }
 

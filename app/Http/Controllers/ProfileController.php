@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Http\Response;
 
 class ProfileController extends Controller
 {
@@ -56,5 +57,19 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    /**
+     * Update the user's theme preference (light / dark / system).
+     */
+    public function updateTheme(Request $request): Response
+    {
+        $validated = $request->validate([
+            'theme' => ['required', 'in:light,dark,system'],
+        ]);
+
+        $request->user()->update(['theme_preference' => $validated['theme']]);
+
+        return response()->noContent();
     }
 }

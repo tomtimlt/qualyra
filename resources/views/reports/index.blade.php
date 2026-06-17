@@ -105,12 +105,12 @@
         .page-head__sub { color: var(--text-muted); font-size: 14px; margin-top: 12px; max-width: 64ch; }
         .page-head__sub b { color: var(--text); font-weight: 500; }
 
-        .surface { border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--ink-950); overflow: hidden; }
+        .surface { border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--surface); overflow: hidden; }
         .surface__head { padding: 18px 24px; border-bottom: 1px solid var(--hairline); display: flex; justify-content: space-between; align-items: center; }
         .surface__head h3 { margin: 0; font-size: 15px; font-weight: 500; letter-spacing: -0.01em; color: var(--text); }
         .pill { font-family: var(--font-mono); font-size: 10px; padding: 4px 10px; border: 1px solid var(--hairline-strong); border-radius: var(--r-pill); color: var(--text-muted); letter-spacing: 0.04em; }
 
-        .surface--cta { padding: 32px; display: flex; align-items: center; justify-content: space-between; gap: 32px; background: radial-gradient(ellipse at 90% 20%, rgba(46, 95, 160, 0.08) 0%, transparent 50%), var(--ink-950); }
+        .surface--cta { padding: 32px; display: flex; align-items: center; justify-content: space-between; gap: 32px; background: radial-gradient(ellipse at 90% 20%, color-mix(in oklab, var(--accent) 8%, transparent) 0%, transparent 50%), var(--surface); }
         .cta-title { font-family: var(--font-display); font-size: 28px; line-height: 1.1; letter-spacing: -0.015em; color: var(--text); margin: 8px 0; max-width: 28ch; }
         .cta-title em { color: var(--accent); font-style: italic; }
         .cta-sub { color: var(--text-muted); font-size: 13px; max-width: 60ch; line-height: 1.55; }
@@ -120,7 +120,7 @@
         .tbl thead th { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); font-weight: 500; border-bottom: 1px solid var(--hairline); }
         .tbl tbody tr { border-bottom: 1px solid var(--hairline); transition: background var(--d-fast); }
         .tbl tbody tr:last-child { border-bottom: none; }
-        .tbl tbody tr:hover { background: var(--ink-900); }
+        .tbl tbody tr:hover { background: var(--surface-2); }
         .cell-link { color: var(--text); font-weight: 500; text-decoration: none; }
         .cell-link:hover { color: var(--accent-soft); }
         .tbl .num { font-family: var(--font-mono); color: var(--text-dim); font-size: 12px; }

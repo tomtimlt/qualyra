@@ -36,6 +36,16 @@ class AiUsage extends Model
         return $this->belongsTo(Organization::class);
     }
 
+    /**
+     * Fournisseur IA optionnel. ai_vendor_id volontairement hors $fillable :
+     * l'assignation doit passer par $usage->vendor()->associate($vendor) après
+     * vérification que le vendor appartient à la même organisation.
+     */
+    public function vendor(): BelongsTo
+    {
+        return $this->belongsTo(AiVendor::class, 'ai_vendor_id');
+    }
+
     public function responses(): HasMany
     {
         return $this->hasMany(Response::class);

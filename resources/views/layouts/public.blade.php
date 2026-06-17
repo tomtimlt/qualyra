@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@php
+    $themePref = auth()->user()?->theme_preference ?? 'system';
+@endphp
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+      @if (in_array($themePref, ['light', 'dark'])) data-theme="{{ $themePref }}" @endif>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,6 +11,19 @@
     <title>{{ $title ?? 'Qualyra · Audit AI Act + RGPD' }}</title>
     <link rel="icon" type="image/png" href="{{ asset('qualyra/brand/qualyra-mark-original.png') }}">
     <link rel="stylesheet" href="{{ asset('qualyra/css/qualyra.css') }}">
+    <script>
+    (function() {
+      var html = document.documentElement;
+      if (html.hasAttribute('data-theme')) return;
+      var stored = localStorage.getItem('qualyra-theme');
+      if (stored === 'light' || stored === 'dark') {
+        html.setAttribute('data-theme', stored);
+      } else {
+        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        html.setAttribute('data-theme', prefersLight ? 'light' : 'dark');
+      }
+    })();
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="public">
@@ -18,6 +35,7 @@
       <span class="brand-word">Qualyra<span class="dot">.</span></span>
     </a>
     <nav class="public__nav">
+      <x-theme-toggle />
       @auth
         <a href="{{ route('dashboard') }}">Tableau de bord</a>
         <form method="POST" action="{{ route('logout') }}" style="margin:0;display:inline">
@@ -55,16 +73,16 @@
 
   <footer class="public__foot">
     <div class="public__foot-inner">
-      <span>QUALYRA · <b>v0.1</b> · CONFIDENTIEL</span>
+      <span>QUALYRA</span>
       <span>© {{ date('Y') }} · {{ config('app.name', 'Qualyra') }}</span>
     </div>
   </footer>
 </div>
 
 <style>
-  body.public { background: var(--ink-1000); color: var(--text); margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+  body.public { background: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
-  .public__bar { flex-shrink: 0; position: sticky; top: 0; z-index: 10; backdrop-filter: blur(12px); background: rgba(11, 15, 20, 0.85); border-bottom: 1px solid var(--hairline); }
+  .public__bar { flex-shrink: 0; position: sticky; top: 0; z-index: 10; backdrop-filter: blur(12px); background: color-mix(in oklab, var(--bg) 85%, transparent); border-bottom: 1px solid var(--hairline); }
   .public__bar-inner { max-width: 1280px; margin: 0 auto; padding: 12px 40px; display: flex; align-items: center; justify-content: space-between; gap: 32px; }
   .public__brand { display: flex; align-items: center; gap: 0; text-decoration: none; }
   .public__brand img { height: 64px; margin-right: -5px; }

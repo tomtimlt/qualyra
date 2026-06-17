@@ -32,3 +32,17 @@ cervus-handoff/
 scripts/*.log
 .cache/
 *.local.md
+
+# Assistants / agents (doc & config internes — gardés en local, hors dépôt)
+.claude/
+.codex/
+CLAUDE.md
+AGENTS.md
+START_HERE.md
+docs/MAP.md
+docs/AI_GUIDE.md
+.cursorrules
+.windsurfrules
+.aider.conf.yml
+.github/copilot-instructions.md
+scripts/ai-context.sh

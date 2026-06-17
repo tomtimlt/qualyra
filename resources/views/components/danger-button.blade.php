@@ -5,6 +5,6 @@
 @once
 <style>
     .btn--danger { background: var(--risk-inacc); color: #fff; border-color: var(--risk-inacc); }
-    .btn--danger:hover { background: #b8333d; border-color: #b8333d; }
+    .btn--danger:hover { background: color-mix(in srgb, var(--risk-inacc) 80%, #fff); border-color: color-mix(in srgb, var(--risk-inacc) 80%, #fff); }
 </style>
 @endonce

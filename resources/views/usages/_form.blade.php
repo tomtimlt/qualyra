@@ -1,6 +1,7 @@
 {{-- Champs partagés entre la création et l'édition d'un usage IA --}}
 @php
     $aiUsage ??= null;
+    $vendors ??= collect();
     $types = [
         'LLM_GEN' => 'LLM générique (ChatGPT, Claude...)',
         'IA_GEN' => 'IA générative (image, audio, vidéo)',
@@ -58,4 +59,23 @@
         </select>
         <x-input-error :messages="$errors->get('domain')" />
     </div>
+</div>
+
+<div>
+    <x-input-label for="ai_vendor_id" value="Fournisseur IA (facultatif)" />
+    <select id="ai_vendor_id" name="ai_vendor_id" class="input" style="margin-top: 6px">
+        <option value="">— Aucun ou interne —</option>
+        @foreach ($vendors as $vendor)
+            <option value="{{ $vendor->id }}" @selected((int) old('ai_vendor_id', $aiUsage?->ai_vendor_id) === $vendor->id)>{{ $vendor->name }} ({{ $vendor->type_contractuel }})</option>
+        @endforeach
+    </select>
+    <p class="help">
+        Rattachez cet usage à un fournisseur déclaré pour activer l'analyse de chaîne d'approvisionnement (transferts hors UE, DPA, Art. 47).
+        @if ($vendors->isEmpty())
+            <a href="{{ route('vendors.create') }}">Déclarer un fournisseur →</a>
+        @else
+            <a href="{{ route('vendors.index') }}">Gérer mes fournisseurs →</a>
+        @endif
+    </p>
+    <x-input-error :messages="$errors->get('ai_vendor_id')" />
 </div>

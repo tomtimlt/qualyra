@@ -11,6 +11,8 @@ use RuntimeException;
 
 class AiActClassifier
 {
+    public function __construct(private TemporalRuleEvaluator $temporal) {}
+
     /**
      * Classifie un AiUsage selon la matrice config/ai_act_rules.php (v1.1).
      *
@@ -30,12 +32,21 @@ class AiActClassifier
      *   5. Les alertes RGPD transversales (Art. 9, Art. 22, etc.) sont
      *      toujours collectées en plus.
      *
+     * Le paramètre `$at` permet d'évaluer la matrice à une date donnée :
+     * les règles dont `applicable_from` est postérieur à `$at` sont ignorées.
+     * **Sans `$at`, le filtre temporel est désactivé** — toutes les règles
+     * sont applicables (comportement "matrice complète prospective"). Ce
+     * défaut est intentionnel : le rapport principal montre la classification
+     * cible en régime établi, et `ComplianceTimelineBuilder` consomme
+     * `classify($usage, $date)` pour produire les projections à T+1y / T+2y.
+     * Garantit 100 % de rétrocompat avec les appelants existants.
+     *
      * Renvoie un array compatible avec Assessment::fillable (sauf NON_EVALUE
      * qui n'est pas un niveau persistable — l'enum BDD ne le contient pas).
      *
      * @return array<string, mixed>
      */
-    public function classify(AiUsage $aiUsage): array
+    public function classify(AiUsage $aiUsage, ?Carbon $at = null): array
     {
         // Garde explicite : un usage sans aucune réponse n'est pas évaluable.
         // Sans cette garde, toutes les conditions échoueraient et on retomberait
@@ -71,6 +82,12 @@ class AiActClassifier
                 continue;
             }
 
+            // Filtre temporel optionnel : si une date est fournie, on ignore
+            // les règles pas encore en vigueur à cette date d'audit.
+            if ($at !== null && ! $this->temporal->isApplicable($rule, $at)) {
+                continue;
+            }
+
             if ($this->ruleMatches($rule, $aiUsage, $responses)) {
                 $matched = $rule;
                 if (isset($rule['alerte'])) {
@@ -101,6 +118,10 @@ class AiActClassifier
                 continue;
             }
 
+            if ($at !== null && ! $this->temporal->isApplicable($rule, $at)) {
+                continue;
+            }
+
             if ($this->ruleMatches($rule, $aiUsage, $responses)) {
                 $ruleAlerts[] = $this->normalizeAlert($rule['alerte'], $rule['id'] ?? null);
             }
@@ -122,7 +143,7 @@ class AiActClassifier
 
     /**
      * Calcule + persiste l'évaluation. Remplace toute évaluation antérieure :
-     * un seul Assessment "courant" par AiUsage suffit pour la version PME.
+     * un seul Assessment "courant" par AiUsage suffit pour la version actuelle.
      *
      * Lève une RuntimeException si l'usage n'a pas de réponses : le niveau
      * NON_EVALUE n'est pas persistable (enum BDD strict). Le controller a une
@@ -212,10 +233,16 @@ class AiActClassifier
     }
 
     /**
-     * Lit une clé dot-notation depuis l'AiUsage ou ses réponses.
+     * Lit une clé dot-notation depuis l'AiUsage, ses réponses ou son vendor.
      * Format supporté :
      *   - ai_usage.<champ>     ex: ai_usage.type, ai_usage.domain
      *   - response.<key>       ex: response.bio_realtime
+     *   - vendor.<champ>       ex: vendor.hors_ue, vendor.declaration_conformite_art47
+     *
+     * Pour `vendor.*` : retourne null si l'usage n'a aucun vendor rattaché —
+     * les règles vendor doivent prévoir ce cas (typiquement : `'vendor.hors_ue'
+     * => 'true'` ne matche pas si pas de vendor, ce qui est le comportement
+     * voulu).
      *
      * @param  array<string, string>  $responses
      */
@@ -226,8 +253,36 @@ class AiActClassifier
         return match ($scope) {
             'ai_usage' => $aiUsage->{$key} ?? null,
             'response' => $responses[$key] ?? null,
+            'vendor' => $this->resolveVendorField($aiUsage, $key),
             default => null,
         };
+    }
+
+    /**
+     * Lit un champ du vendor rattaché. Cast bool → 'true'/'false' pour rester
+     * compatible avec le mini-DSL d'égalité ('vendor.hors_ue' => 'true').
+     */
+    private function resolveVendorField(AiUsage $aiUsage, ?string $key): ?string
+    {
+        if ($key === null) {
+            return null;
+        }
+
+        $vendor = $aiUsage->vendor;
+        if ($vendor === null) {
+            return null;
+        }
+
+        $value = $vendor->{$key} ?? null;
+        if ($value === null) {
+            return null;
+        }
+
+        if (is_bool($value)) {
+            return $value ? 'true' : 'false';
+        }
+
+        return (string) $value;
     }
 
     /**
@@ -260,7 +315,7 @@ class AiActClassifier
 
     /**
      * Alertes transversales (RGPD, biais, transparence) — affichées en plus
-     * du niveau pour aider la PME à prioriser ses actions. Elles ne dépendent
+     * du niveau pour aider l'organisation à prioriser ses actions. Elles ne dépendent
      * pas de la matrice de classification mais des réponses au questionnaire.
      *
      * @param  array<string, string>  $responses

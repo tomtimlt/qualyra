@@ -126,7 +126,7 @@ it('renvoie 403 si un user accède à un report d\'une autre organisation', func
     $autreUser = User::factory()->create();
     $autreOrg = Organization::factory()->for($autreUser)->create();
     $autreReport = $autreOrg->reports()->create([
-        'snapshot' => ['organization' => ['name' => 'Autre PME'], 'usages' => [], 'summary' => [], 'generated_at' => now()->toIso8601String()],
+        'snapshot' => ['organization' => ['name' => 'Autre Organisation'], 'usages' => [], 'summary' => [], 'generated_at' => now()->toIso8601String()],
         'paid_at' => now(),
     ]);
 
@@ -321,7 +321,7 @@ it('liste uniquement les reports de l\'organisation du user', function () {
     $autreUser = User::factory()->create();
     $autreOrg = Organization::factory()->for($autreUser)->create();
     $autreOrg->reports()->create([
-        'snapshot' => ['organization' => ['name' => 'Autre PME'], 'usages' => [], 'summary' => [], 'generated_at' => now()->toIso8601String()],
+        'snapshot' => ['organization' => ['name' => 'Autre Organisation'], 'usages' => [], 'summary' => [], 'generated_at' => now()->toIso8601String()],
         'paid_at' => now(),
     ]);
 

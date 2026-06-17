@@ -4,7 +4,7 @@
 
 5 tables principales :
 - users (Laravel Breeze)
-- organizations (la PME cliente)
+- organizations (l'organisation cliente)
 - ai_usages (chaque outil IA déclaré par le client)
 - responses (les réponses au questionnaire pour chaque usage)
 - assessments (le résultat de la classification + données du rapport)
@@ -15,7 +15,7 @@
 ## organizations
 - id (pk)
 - user_id (fk users.id) — propriétaire du compte
-- name (string) — nom de la PME
+- name (string) — nom de l'organisation
 - siret (string, nullable)
 - size (enum: '1-19', '20-49', '50-149', '150+')
 - sector (string, nullable) — secteur d'activité libre

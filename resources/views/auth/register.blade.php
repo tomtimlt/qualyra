@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="eyebrow eyebrow--accent" style="margin-bottom: 12px">Inscription</div>
     <h1>Créer un compte.</h1>
-    <p class="lead">Vous renseignerez votre PME et vos usages d'IA après l'inscription.</p>
+    <p class="lead">Vous renseignerez votre organisation et vos usages d'IA après l'inscription.</p>
 
     <form method="POST" action="{{ route('register') }}" class="form-stack" style="margin-top: 24px">
         @csrf

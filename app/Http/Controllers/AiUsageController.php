@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAiUsageRequest;
 use App\Http\Requests\UpdateAiUsageRequest;
 use App\Models\AiUsage;
+use App\Models\AiVendor;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -73,7 +74,7 @@ class AiUsageController extends Controller implements HasMiddleware
         }
         arsort($domainCounts);
 
-        $usageFilterData = $aiUsages->map(fn($u) => [
+        $usageFilterData = $aiUsages->map(fn ($u) => [
             'id' => $u->id,
             'name' => $u->name,
             'type' => $u->type,
@@ -100,11 +101,15 @@ class AiUsageController extends Controller implements HasMiddleware
 
     public function create(Request $request): View|RedirectResponse
     {
-        if ($request->user()->organization === null) {
+        $organization = $request->user()->organization;
+
+        if ($organization === null) {
             return redirect()->route('organization.create');
         }
 
-        return view('usages.create');
+        $vendors = $organization->aiVendors()->orderBy('name')->get();
+
+        return view('usages.create', compact('vendors'));
     }
 
     /**
@@ -120,7 +125,18 @@ class AiUsageController extends Controller implements HasMiddleware
         // (ex : test, console, refacto FormRequest) qui causerait un null deref.
         abort_if($organization === null, 403);
 
-        $organization->aiUsages()->create($request->validated());
+        $data = $request->validated();
+        // ai_vendor_id n'est pas fillable : on l'extrait pour l'attacher
+        // via la relation après création (sécurité tenant déjà validée par
+        // la règle Rule::exists scopée organization_id du Form Request).
+        $vendorId = $data['ai_vendor_id'] ?? null;
+        unset($data['ai_vendor_id']);
+
+        $usage = $organization->aiUsages()->create($data);
+
+        if ($vendorId !== null) {
+            $usage->vendor()->associate(AiVendor::find($vendorId))->save();
+        }
 
         return redirect()
             ->route('usages.index')
@@ -134,12 +150,21 @@ class AiUsageController extends Controller implements HasMiddleware
 
     public function edit(AiUsage $aiUsage): View
     {
-        return view('usages.edit', ['aiUsage' => $aiUsage]);
+        $vendors = $aiUsage->organization->aiVendors()->orderBy('name')->get();
+
+        return view('usages.edit', ['aiUsage' => $aiUsage, 'vendors' => $vendors]);
     }
 
     public function update(UpdateAiUsageRequest $request, AiUsage $aiUsage): RedirectResponse
     {
-        $aiUsage->update($request->validated());
+        $data = $request->validated();
+        $vendorId = array_key_exists('ai_vendor_id', $data) ? $data['ai_vendor_id'] : null;
+        unset($data['ai_vendor_id']);
+
+        $aiUsage->update($data);
+
+        // Détache (null) ou attache selon la valeur soumise.
+        $aiUsage->vendor()->associate($vendorId ? AiVendor::find($vendorId) : null)->save();
 
         return redirect()
             ->route('usages.index')
