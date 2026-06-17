@@ -1,7 +1,0 @@
-# Aider configuration — Qualyra
-# See /AGENTS.md for the complete project context
-
-auto-commits: false
-lint: true
-lint-cmd: ./vendor/bin/pint --test
-test-cmd: php artisan test

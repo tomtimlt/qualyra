@@ -40,3 +40,9 @@ CLAUDE.md
 AGENTS.md
 START_HERE.md
 docs/MAP.md
+docs/AI_GUIDE.md
+.cursorrules
+.windsurfrules
+.aider.conf.yml
+.github/copilot-instructions.md
+scripts/ai-context.sh
