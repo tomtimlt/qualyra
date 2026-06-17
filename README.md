@@ -15,7 +15,6 @@
   <a href="https://laravel.com"><img alt="Laravel" src="https://img.shields.io/badge/Laravel-13-FF2D20?style=flat-square&logo=laravel&logoColor=white"></a>
   <a href="https://tailwindcss.com"><img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind-3-38B2AC?style=flat-square&logo=tailwindcss&logoColor=white"></a>
   <a href="https://pestphp.com"><img alt="Pest" src="https://img.shields.io/badge/tests-Pest_4-8b5cf6?style=flat-square"></a>
-  <a href="https://github.com/tomtimlt/qualyra/actions/workflows/tests.yml"><img alt="CI" src="https://github.com/tomtimlt/qualyra/actions/workflows/tests.yml/badge.svg?branch=dev"></a>
   <a href="#licence"><img alt="License" src="https://img.shields.io/badge/license-Propri%C3%A9taire-red?style=flat-square"></a>
 </p>
 
@@ -39,8 +38,12 @@
 - [Parcours utilisateur](#parcours-utilisateur)
 - [Moteur de classification AI Act](#moteur-de-classification-ai-act)
 - [Architecture](#architecture)
+- [Génération PDF](#génération-pdf)
+- [Docker](#docker)
+- [Configuration Stripe](#configuration-stripe)
 - [Tests](#tests)
 - [Sécurité](#sécurité)
+- [Conventions](#conventions)
 - [Documentation](#documentation)
 - [Contribution](#contribution)
 - [Licence](#licence)
@@ -211,6 +214,56 @@ Plus de détails : [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · [`docs/DB_S
 
 ---
 
+## Génération PDF
+
+Le projet utilise **spatie/browsershot** (headless Chrome/Chromium via Puppeteer) pour générer des PDF identiques au rendu web, contrairement à DomPDF qui ne supporte ni flexbox ni les variables CSS.
+
+- Template standalone dans `resources/views/reports/pdf.blade.php`
+- Logo embarqué en base64
+- Détection automatique du navigateur (Chrome sur macOS, Chromium sur Linux/Docker)
+- Sections : couverture, synthèse exécutive, détail par usage, plan d'action 1 mois / 6 mois / 1 an, checklist, zones grises, disclaimer
+
+---
+
+## Docker
+
+### Image autonome
+
+Le `Dockerfile` build une image self-contained avec tout le nécessaire :
+
+- PHP 8.4 + extensions (pdo_sqlite, gd, intl, bcmath, zip, exif)
+- Node.js 20 + Chromium (pour le rendu PDF)
+- Dépendances Composer installées au build (`--no-dev`)
+- Assets frontend compilés (Vite build)
+
+### docker-compose.yml
+
+Pour le développement avec bind mount et volumes persistants (`vendor`, `node_modules`).
+
+### entrypoint.sh
+
+Au démarrage du conteneur :
+1. Crée `.env` depuis `.env.example` si absent
+2. Génère `APP_KEY`
+3. Installe les dépendances si les volumes sont vides (fallback dev)
+4. Crée la base SQLite, migrations, seed (uniquement si base vierge)
+5. Démarre `php artisan serve`
+
+---
+
+## Configuration Stripe
+
+Le paiement Stripe est optionnel. En l'absence de `STRIPE_SECRET`, les rapports sont générés gratuitement en mode dev.
+
+```env
+# Activation du paiement
+STRIPE_SECRET=sk_test_...
+STRIPE_CURRENCY=eur
+STRIPE_REPORT_PRICE=4900     # 49 € en centimes
+```
+
+---
+
 ## Tests
 
 Le projet est couvert par une suite [Pest 4](https://pestphp.com) (~100 tests, 288+ assertions).
@@ -230,8 +283,6 @@ php artisan test --parallel         # parallélisé
 | Report | Checkout, snapshot, PDF, contenus conditionnels |
 | Auth | Breeze (par défaut) |
 
-CI : workflow [`tests.yml`](.github/workflows/tests.yml) sur push et pull request vers `main` / `dev`.
-
 ---
 
 ## Sécurité
@@ -244,6 +295,15 @@ CI : workflow [`tests.yml`](.github/workflows/tests.yml) sur push et pull reques
 - **Audit dépendances** — Dependabot configuré sur Composer, npm, GitHub Actions
 
 Signalement de vulnérabilité : voir [`SECURITY.md`](SECURITY.md).
+
+---
+
+## Conventions
+
+- Langue : français (commentaires, textes UI, documentation)
+- Modèles : singulier (`AiUsage`) — Tables : pluriel (`ai_usages`)
+- PHP : `declare(strict_types=1)` partout
+- Tests : Pest 4 avec helper functions (`userWithOrgAndUsage()`, `usageWithAnswers()`)
 
 ---
 
