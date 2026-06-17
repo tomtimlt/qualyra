@@ -28,4 +28,20 @@ class OrganizationFactory extends Factory
             'sector' => fake()->optional()->word(),
         ];
     }
+
+    /**
+     * Rétrocompatibilité : le créateur (user_id) devient membre "owner" via
+     * le pivot, pour que Organization::factory()->for($user) produise le même
+     * monde qu'avant la refonte membership (tests existants inchangés).
+     */
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Organization $organization) {
+            if ($organization->user_id !== null) {
+                $organization->members()->syncWithoutDetaching([
+                    $organization->user_id => ['role' => 'owner'],
+                ]);
+            }
+        });
+    }
 }

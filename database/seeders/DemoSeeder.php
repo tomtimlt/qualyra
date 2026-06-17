@@ -14,7 +14,7 @@ use Illuminate\Database\Seeder;
 /*
  * Seeder dédié au compte de démo (demo@example.com).
  *
- * Construit un cas concret riche : "Nova Conseil & Services", PME française
+ * Construit un cas concret riche : "Nova Conseil & Services", entreprise française
  * multi-services (220 salariés, conseil + RH externalisé + développement IT).
  * Les 30 usages IA déclarés couvrent les 9 domaines et les 4 niveaux AI Act
  * pour une démo visuellement parlante (heatmap remplie sur toutes les lignes)
@@ -279,7 +279,7 @@ class DemoSeeder extends Seeder
             [
                 'usage' => [
                     'name' => 'Pré-tri CV pour clients RH externalisé',
-                    'description' => 'Filtrage automatique des CV reçus dans le cadre des missions de recrutement délégué (clients PME). Score d\'adéquation au poste avant entretien consultant.',
+                    'description' => 'Filtrage automatique des CV reçus dans le cadre des missions de recrutement délégué (clients entreprises). Score d\'adéquation au poste avant entretien consultant.',
                     'type' => 'IA_SCORING',
                     'domain' => 'RH',
                 ],
@@ -335,7 +335,7 @@ class DemoSeeder extends Seeder
             [
                 'usage' => [
                     'name' => 'Scoring solvabilité prospects entreprises',
-                    'description' => 'Évaluation automatisée du risque de défaut de paiement des prospects PME pour décider de l\'acceptation et des conditions de paiement (acompte, échéancier).',
+                    'description' => 'Évaluation automatisée du risque de défaut de paiement des prospects entreprises pour décider de l\'acceptation et des conditions de paiement (acompte, échéancier).',
                     'type' => 'IA_SCORING',
                     'domain' => 'CREDIT',
                 ],
@@ -445,8 +445,8 @@ class DemoSeeder extends Seeder
             // R-H-06 : Assurance santé
             [
                 'usage' => [
-                    'name' => 'Scoring risque santé pour assurance clients PME',
-                    'description' => 'Estimation du risque santé des dirigeants des PME clientes pour calibrer les contrats d\'assurance homme-clé proposés.',
+                    'name' => 'Scoring risque santé pour assurance clients entreprises',
+                    'description' => 'Estimation du risque santé des dirigeants des entreprises clientes pour calibrer les contrats d\'assurance homme-clé proposés.',
                     'type' => 'IA_SCORING',
                     'domain' => 'SANTE',
                 ],

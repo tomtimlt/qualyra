@@ -1,8 +1,8 @@
-# Projet : Outil de Conformité AI Act + RGPD pour PME
+# Projet : Outil de Conformité AI Act + RGPD
 
 ## Objectif produit
 
-Application web qui audite les usages IA d'une PME française au regard 
+Application web qui audite les usages IA d'une entreprise française au regard 
 de l'AI Act (règlement UE 2024/1689) et du RGPD. Le client final remplit 
 un questionnaire en ligne, l'outil classifie chaque usage selon 4 niveaux 
 de risque (INACCEPTABLE, HAUT_RISQUE, RISQUE_LIMITE, RISQUE_MINIMAL), 
@@ -27,7 +27,7 @@ Modèle : vente one-shot ~1500€. Premier client visé début juillet 2026.
 - Solo développeur, 10-15h/semaine
 - Premier MVP fin juin 2026
 - PAS de microservices, PAS de Docker en prod, PAS d'API publique
-- PAS de multi-utilisateurs par compte client (1 compte = 1 PME)
+- PAS de multi-utilisateurs par compte client (1 compte = 1 organisation)
 - PAS de mode collaboratif
 - PAS de versioning des analyses
 - PAS de multi-langue (français only)

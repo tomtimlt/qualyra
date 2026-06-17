@@ -16,7 +16,7 @@ class OrganizationController extends Controller
      * Formulaire de création de l'organisation.
      *
      * Si l'utilisateur a déjà une organisation, on le redirige vers
-     * son tableau de bord (1 user = 1 PME, pas de duplication possible).
+     * son tableau de bord (1 user = 1 organisation, pas de duplication possible).
      */
     public function create(Request $request): View|RedirectResponse
     {

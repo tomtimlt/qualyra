@@ -1,4 +1,4 @@
-## Outil de conformité PME — Version 1.1
+## Outil de conformité AI Act — Version 1.1
 
 **Règlement (UE) 2024/1689 | Cohérent avec le Guide de Conformité AI Act pour PME Françaises**
 

@@ -122,8 +122,10 @@
         chart.update();
     }
 
-    (function initMatrix() {
-        if (typeof Chart === 'undefined' || typeof Chart.registry === 'undefined' || !Chart.registry.getController('matrix')) {
+    let _matrixChart = null;
+
+    function initMatrix() {
+        if (typeof Chart === 'undefined' || typeof Chart.registry === 'undefined' || !Chart.registry.controllers.get('matrix')) {
             setTimeout(initMatrix, 100);
             return;
         }
@@ -155,7 +157,7 @@
 
         const levelOrder = ['INACCEPTABLE', 'HAUT_RISQUE', 'RISQUE_LIMITE', 'RISQUE_MINIMAL', 'NON_EVAL'];
 
-        const chart = new Chart(ctx, {
+        _matrixChart = new Chart(ctx, {
             type: 'matrix',
             data: {
                 datasets: [{
@@ -287,7 +289,22 @@
             }],
         });
 
-        new MutationObserver(() => updateMatrixColors(chart))
+        new MutationObserver(() => updateMatrixColors(_matrixChart))
             .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-    })();
+    }
+
+    initMatrix();
+
+    // Re-initialiser / resizer quand la vue matrice devient active
+    document.addEventListener('vision:view-change', (e) => {
+        if (e.detail.view !== 'matrix') return;
+        if (_matrixChart) {
+            _matrixChart.resize();
+        } else {
+            // Tentative différée si le chart n'a pas pu se créer à chaud
+            setTimeout(() => {
+                if (!_matrixChart) initMatrix();
+            }, 300);
+        }
+    });
 </script>

@@ -143,7 +143,7 @@ class AiActClassifier
 
     /**
      * Calcule + persiste l'évaluation. Remplace toute évaluation antérieure :
-     * un seul Assessment "courant" par AiUsage suffit pour la version PME.
+     * un seul Assessment "courant" par AiUsage suffit pour la version actuelle.
      *
      * Lève une RuntimeException si l'usage n'a pas de réponses : le niveau
      * NON_EVALUE n'est pas persistable (enum BDD strict). Le controller a une
@@ -315,7 +315,7 @@ class AiActClassifier
 
     /**
      * Alertes transversales (RGPD, biais, transparence) — affichées en plus
-     * du niveau pour aider la PME à prioriser ses actions. Elles ne dépendent
+     * du niveau pour aider l'organisation à prioriser ses actions. Elles ne dépendent
      * pas de la matrice de classification mais des réponses au questionnaire.
      *
      * @param  array<string, string>  $responses

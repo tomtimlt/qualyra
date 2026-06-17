@@ -15,7 +15,9 @@ use App\Http\Controllers\VisionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('home');
+    $diffDays = (int) now()->diffInDays(\Carbon\Carbon::parse('2026-08-02'));
+
+    return view('home', compact('diffDays'));
 })->name('home');
 
 // Routes protégées : utilisateur authentifié
@@ -32,7 +34,7 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile/theme', [ProfileController::class, 'updateTheme'])->name('profile.theme');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Organisation rattachée au compte (1 user = 1 PME)
+    // Organisation rattachée au compte (1 user = 1 organisation)
     Route::get('/organization/create', [OrganizationController::class, 'create'])->name('organization.create');
     Route::post('/organization', [OrganizationController::class, 'store'])->name('organization.store');
     Route::get('/organization', [OrganizationController::class, 'show'])->name('organization.show');

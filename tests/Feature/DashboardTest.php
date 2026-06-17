@@ -23,14 +23,14 @@ it('affiche le CTA de création d\'organisation si l\'utilisateur n\'a pas d\'or
 it('affiche le nom de l\'organisation et la liste des usages quand elle existe', function () {
     $user = User::factory()->create();
     $organization = Organization::factory()->for($user)->create([
-        'name' => 'Acme PME',
+        'name' => 'Acme SAS',
     ]);
     AiUsage::factory()->for($organization)->create(['name' => 'ChatGPT RH']);
 
     $response = $this->actingAs($user)->get('/dashboard');
 
     $response->assertOk();
-    $response->assertSee('Acme PME');
+    $response->assertSee('Acme SAS');
     $response->assertSee('ChatGPT RH');
 });
 
@@ -40,12 +40,12 @@ it('n\'affiche jamais les usages d\'une autre organisation sur le dashboard', fu
 
     $autreUser = User::factory()->create();
     $autreOrg = Organization::factory()->for($autreUser)->create();
-    AiUsage::factory()->for($autreOrg)->create(['name' => 'Usage secret de l\'autre PME']);
+    AiUsage::factory()->for($autreOrg)->create(['name' => 'Usage secret de l\'autre organisation']);
 
     $response = $this->actingAs($user)->get('/dashboard');
 
     $response->assertOk();
-    $response->assertDontSee('Usage secret de l\'autre PME');
+    $response->assertDontSee('Usage secret de l\'autre organisation');
 });
 
 it('passe la timeline 6 mois avec les 3 séries à la vue', function () {

@@ -111,7 +111,7 @@
         .vision-tabs button.is-active { background: var(--accent); color: #fff; }
         .vision-tabs button svg { opacity: 0.95; }
 
-        /* Vue switcher : toutes rendues, seule l'active en flux (généralisé N vues) */
+        /* Vue switcher : toutes rendues, seule l'active en flux */
         .vision-views { position: relative; }
         .vision-view {
             position: absolute; top: 0; left: 0; right: 0;
@@ -125,9 +125,4 @@
             visibility: visible; opacity: 1; pointer-events: auto;
         }
     </style>
-
-    @if ($organization && $aiUsages->isNotEmpty())
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js" defer></script>
-    @endif
 </x-app-layout>

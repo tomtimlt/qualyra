@@ -55,8 +55,6 @@
     .sankey-legend .risk-dot--none  { background: var(--risk-none); }
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js" defer></script>
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('sankeyDiagram', (sankey) => ({

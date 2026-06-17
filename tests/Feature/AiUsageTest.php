@@ -69,13 +69,13 @@ it('liste uniquement les usages de l\'organisation du user', function () {
 
     $autreUser = User::factory()->create();
     $autreOrg = Organization::factory()->for($autreUser)->create();
-    AiUsage::factory()->for($autreOrg)->create(['name' => 'Usage de l\'autre PME']);
+    AiUsage::factory()->for($autreOrg)->create(['name' => 'Usage de l\'autre organisation']);
 
     $response = $this->actingAs($user)->get('/usages');
 
     $response->assertOk();
     $response->assertSee('Mon usage');
-    $response->assertDontSee('Usage de l\'autre PME');
+    $response->assertDontSee('Usage de l\'autre organisation');
 });
 
 it('crée un usage rattaché à l\'organisation du user (jamais à une autre)', function () {
@@ -156,7 +156,7 @@ it('supprime un usage de l\'organisation du user', function () {
 // ---------------------------------------------------------------------------
 // SÉCURITÉ CRITIQUE : isolation entre organisations
 // Un user ne doit JAMAIS pouvoir voir/modifier/supprimer un usage
-// d'une autre PME. Test de non-régression RGPD/AI Act.
+// d'une autre organisation. Test de non-régression RGPD/AI Act.
 // ---------------------------------------------------------------------------
 
 it('renvoie 403 quand un user tente de voir un usage d\'une autre organisation', function () {

@@ -4,11 +4,11 @@
   <img src="public/qualyra/brand/qualyra-mark-original.png" alt="Qualyra logo" width="120">
 </p>
 
-Application web d'audit de conformité des usages d'intelligence artificielle pour les PME françaises, conforme au **Règlement (UE) 2024/1689 (AI Act)** et au **RGPD**.
+Application web d'audit de conformité des usages d'intelligence artificielle, conforme au **Règlement (UE) 2024/1689 (AI Act)** et au **RGPD**.
 
 ## ✦ Objectif
 
-Permettre aux PME de déclarer leurs outils d'IA, d'évaluer automatiquement leur niveau de risque selon la matrice AI Act, et de générer un rapport de conformité détaillé avec plan d'action 1 mois / 6 mois / 1 an.
+Permettre aux entreprises de déclarer leurs outils d'IA, d'évaluer automatiquement leur niveau de risque selon la matrice AI Act, et de générer un rapport de conformité détaillé avec plan d'action 1 mois / 6 mois / 1 an.
 
 ## ✦ Stack Technique
 
@@ -91,7 +91,7 @@ app/
 │   ├── AssessmentController.php     # Calcul et persistance du niveau AI Act
 │   ├── CheckoutController.php       # Paiement Stripe (ou mode dev)
 │   ├── ReportController.php         # Génération PDF via Browsershot
-│   └── OrganizationController.php   # Onboarding PME
+│   └── OrganizationController.php   # Onboarding organisation
 ├── Services/
 │   ├── AiActClassifier.php          # Moteur de classification (4 niveaux)
 │   ├── ReportContentBuilder.php     # Contenu rédactionnel du rapport

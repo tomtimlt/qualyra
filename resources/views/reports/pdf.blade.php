@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Rapport AI Act + RGPD — {{ $report->snapshot['organization']['name'] ?? 'Rapport' }}</title>
+@include('reports.pdf-fonts')
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
-
 @page { size: A4; margin: 0; }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -480,7 +479,7 @@ h1.cover em { color: #1B3A6F; font-style: italic; }
     <h1 class="cover">Audit de conformité,<br><em>au {{ \Illuminate\Support\Str::lower($meta['date_audit']) }}.</em></h1>
     <p class="cover-sub">{{ $content['synthese_executive']['header'] ?? '' }}</p>
     <div class="cover-meta">
-        <div><span>PME</span><b>{{ $meta['nom_pme'] }}</b></div>
+        <div><span>ORGANISATION</span><b>{{ $meta['nom_pme'] }}</b></div>
         @if (! empty($meta['size']))
             <div><span>EFFECTIF</span><b>{{ $meta['size'] }} salariés</b></div>
         @endif

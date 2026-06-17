@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="eyebrow eyebrow--accent" style="margin-bottom: 12px">Connexion</div>
     <h1>Bonjour.</h1>
-    <p class="lead">Accédez à votre tableau de bord d'audit AI Act + RGPD.</p>
+    <p class="lead">Accédez à votre tableau de bord d'audit.</p>
 
     <x-auth-session-status :status="session('status')" />
 

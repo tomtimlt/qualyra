@@ -129,7 +129,7 @@
                 <div class="eyebrow eyebrow--accent">Étape 1 · Audit AI Act + RGPD</div>
                 <h1>Bienvenue, <em>{{ $firstName }}</em>.</h1>
                 <p class="lead">
-                    Avant de déclarer vos usages d'IA, créez la fiche de votre PME. Ces informations sont utilisées
+                    Avant de déclarer vos usages d'IA, créez la fiche de votre organisation. Ces informations sont utilisées
                     uniquement pour qualifier le contexte de l'audit (taille, secteur, SIRET).
                 </p>
                 <div style="margin-top: 32px; display: flex; gap: 12px;">
@@ -617,7 +617,6 @@
     </style>
 
     @if ($aiUsages->count() > 0)
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
         <script>
             function cssVar(name) {
                 return getComputedStyle(document.documentElement).getPropertyValue(name).trim();

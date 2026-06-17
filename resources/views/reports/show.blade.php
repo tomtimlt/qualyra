@@ -69,7 +69,7 @@
             <h1 class="cover">Audit de conformité,<br><em>au {{ \Illuminate\Support\Str::lower($meta['date_audit']) }}.</em></h1>
             <p class="cover-sub">{{ $content['synthese_executive']['header'] ?? '' }}</p>
             <div class="cover-meta">
-                <div><span>PME</span><b>{{ $meta['nom_pme'] }}</b></div>
+                <div><span>ORGANISATION</span><b>{{ $meta['nom_pme'] }}</b></div>
                 @if (! empty($meta['size']))
                     <div><span>EFFECTIF</span><b>{{ $meta['size'] }} salariés</b></div>
                 @endif

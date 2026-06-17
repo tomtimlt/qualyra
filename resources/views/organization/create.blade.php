@@ -8,7 +8,7 @@
             <div class="eyebrow eyebrow--accent">Étape 1 · Contexte de l'audit</div>
             <h1>Votre <em>organisation.</em></h1>
             <p class="lead">
-                Renseignez les informations de votre PME. Elles servent uniquement à qualifier le contexte
+                Renseignez les informations de votre organisation. Elles servent uniquement à qualifier le contexte
                 de l'audit (taille, secteur) et à apparaître en couverture du rapport PDF.
             </p>
         </div>

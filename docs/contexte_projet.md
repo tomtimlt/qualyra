@@ -1,4 +1,4 @@
-# Contexte Projet — Outil de conformité AI Act + RGPD pour PME
+# Contexte Projet — Outil de conformité AI Act + RGPD pour les entreprises
 
 **Document de référence à charger dans le workspace AnythingLLM**
 **Dernière mise à jour : 5 mai 2026**
@@ -7,7 +7,7 @@
 
 ## Pitch en une phrase
 
-Un outil web qui audite les usages d'IA d'une PME française, classifie chaque usage selon les 4 niveaux de risque AI Act (règlement UE 2024/1689) et produit un rapport PDF avec plan d'action de mise en conformité, livré pour environ 1 500 € en one-shot.
+Un outil web qui audite les usages d'IA d'une entreprise française, classifie chaque usage selon les 4 niveaux de risque AI Act (règlement UE 2024/1689) et produit un rapport PDF avec plan d'action de mise en conformité, livré pour environ 1 500 € en one-shot.
 
 ---
 
@@ -32,7 +32,7 @@ Un outil web qui audite les usages d'IA d'une PME française, classifie chaque u
 
 Lors d'un stage, j'ai découvert et déployé CISO Assistant (outil GRC open source). J'ai trouvé l'approche structurante intéressante : centraliser, modéliser, suivre. Mais CISO Assistant cible la cyber/ISO 27001 et demande un expert pour le déployer.
 
-J'ai voulu transposer cette logique à un sujet plus chaud et moins outillé : **la gouvernance des usages IA en PME**, qui devient critique avec :
+J'ai voulu transposer cette logique à un sujet plus chaud et moins outillé : **la gouvernance des usages IA en entreprise**, qui devient critique avec :
 - l'**AI Act** (échéance majeure : 2 août 2026)
 - l'usage massif de ChatGPT/Claude/Copilot dans les entreprises sans cadre
 
@@ -48,15 +48,15 @@ Gagner suffisamment d'argent cet été (objectif ~4 500 € net, soit 3 ventes �
 
 **Validation marché**
 - 1 retour CTO (**Vincent**) : a validé le besoin et le vocabulaire (Shadow AI, sécurisation de la donnée). A donné des questions pertinentes pour affiner le scope.
-- 1 retour RSSI externalisé (**Nicolas Dolisy**) : a confirmé qu'il est sollicité par ses clients PME sur tout type d'usage IA. A explicité son outil idéal (DLP prompts, traçabilité, tests d'injection, conformité RGPD/NIS2). A proposé de rester en contact.
+- 1 retour RSSI externalisé (**Nicolas Dolisy**) : a confirmé qu'il est sollicité par ses clients sur tout type d'usage IA. A explicité son outil idéal (DLP prompts, traçabilité, tests d'injection, conformité RGPD/NIS2). A proposé de rester en contact.
 
 **Spécification réglementaire (semaine 1 du projet)**
 
 Documents produits et présents dans le workspace :
 
-1. **Guide de Conformité AI Act PME** : synthèse des 4 niveaux de risque, distinction fournisseur/déployeur, calendrier d'application, sanctions, cas pratiques PME.
+1. **Guide de Conformité AI Act** : synthèse des 4 niveaux de risque, distinction fournisseur/déployeur, calendrier d'application, sanctions, cas pratiques.
 2. **Matrice de Décision AI Act v1.1** : spec technique avec règles formelles (R-I-01 à R-I-08 pour inacceptable, R-H-01 à R-H-08 pour haut risque, R-L-01 à R-L-06 pour risque limité), 7 variables de base + variables conditionnelles, zones grises documentées, 5 tests de cohérence à valider.
-3. **Mini-référentiel RGPD pour usages IA en PME** : AIPD (critères, matrice par usage), bases légales (alerte sur consentement salarié, intérêt légitime), droits renforcés (article 22), recommandations CNIL/EDPB, position sur les transferts hors UE (DPF, fournisseurs LLM US), checklist opérationnelle 10 points.
+3. **Mini-référentiel RGPD pour usages IA en entreprise** : AIPD (critères, matrice par usage), bases légales (alerte sur consentement salarié, intérêt légitime), droits renforcés (article 22), recommandations CNIL/EDPB, position sur les transferts hors UE (DPF, fournisseurs LLM US), checklist opérationnelle 10 points.
 
 ### Ce qui reste à faire (cadrage)
 
@@ -80,16 +80,16 @@ Calendrier prévisionnel à 10-15h/semaine :
 
 ### Profil idéal
 
-- **Taille** : PME 20 à 150 personnes
-- **Types** : agences (web/marketing/communication), cabinets (conseil/comptable/juridique), écoles privées, organismes de formation, startups tech en croissance, PME industrielles digitalisées
+- **Taille** : entreprises de 20 à 150 personnes
+- **Types** : agences (web/marketing/communication), cabinets (conseil/comptable/juridique), écoles privées, organismes de formation, startups tech en croissance, entreprises industrielles digitalisées
 - **Caractéristiques** : utilise déjà ChatGPT/Claude/Copilot mais sans cadre formel, pas de DPO ni RSSI dédiés en interne
 - **Géographie** : France, départ à Nancy et Grand Est puis extension
 
 ### Personas validés
 
-- **CTO de PME tech** (type Vincent) : sensible au sujet Shadow AI, cherche à structurer
-- **RSSI externalisé / vCISO** (type Nicolas) : a un portefeuille de clients PME, peut être un canal de revente ou de recommandation
-- **Dirigeant de PME en croissance** : prend conscience de la pression réglementaire (AI Act août 2026)
+- **CTO d'entreprise tech** (type Vincent) : sensible au sujet Shadow AI, cherche à structurer
+- **RSSI externalisé / vCISO** (type Nicolas) : a un portefeuille de clients, peut être un canal de revente ou de recommandation
+- **Dirigeant d'entreprise en croissance** : prend conscience de la pression réglementaire (AI Act août 2026)
 
 ### Personas à ne PAS cibler en v1
 
@@ -158,7 +158,7 @@ L'outil de Thomas :
 
 ### Vis-à-vis des outils AI governance américains (Credo AI, Holistic AI, Harmonic)
 
-- Ils ciblent l'enterprise, pas la PME
+- Ils ciblent les grands comptes, pas les entreprises de taille plus modeste
 - Leur pricing commence à plusieurs milliers d'euros par mois
 - Ils ne sont pas conçus pour le contexte français/européen
 
@@ -180,9 +180,9 @@ L'outil de Thomas :
 
 ### Risques business
 
-- Cycle de vente B2B PME en France : long et incertain
-- "Trop tôt" : certaines PME ne sentent pas encore la pression AI Act
-- Mitigation : commencer par PME tech (Vincent, Nicolas comme entrée) et écoles privées (sensibles à l'enjeu) ; positionner comme préparation à l'échéance août 2026
+- Cycle de vente B2B en France : long et incertain
+- "Trop tôt" : certaines entreprises ne sentent pas encore la pression AI Act
+- Mitigation : commencer par les entreprises tech (Vincent, Nicolas comme entrée) et écoles privées (sensibles à l'enjeu) ; positionner comme préparation à l'échéance août 2026
 
 ### Risques techniques
 

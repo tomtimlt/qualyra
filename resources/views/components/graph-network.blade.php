@@ -306,7 +306,6 @@
     }
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('usageGraph', (graph) => ({

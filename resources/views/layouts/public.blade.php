@@ -73,7 +73,7 @@
 
   <footer class="public__foot">
     <div class="public__foot-inner">
-      <span>QUALYRA · <b>v0.1</b> · CONFIDENTIEL</span>
+      <span>QUALYRA</span>
       <span>© {{ date('Y') }} · {{ config('app.name', 'Qualyra') }}</span>
     </div>
   </footer>

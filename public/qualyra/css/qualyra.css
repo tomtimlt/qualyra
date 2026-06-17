@@ -4,7 +4,78 @@
    (Filename kept for stable cascade across existing pages.)
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap');
+/* Polices locales — générées par scripts/download-fonts.js */
+@font-face {
+  font-family: 'Geist';
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/Geist-300.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Geist';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/Geist-400.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Geist';
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/Geist-500.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Geist';
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/Geist-600.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Geist';
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/Geist-700.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/GeistMono-400.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/GeistMono-500.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Instrument Serif';
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/InstrumentSerif-400Italic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Instrument Serif';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/InstrumentSerif-400.ttf') format('truetype');
+}
 
 :root {
   /* ───── COLOR ───────────────────────────────────────────── */
