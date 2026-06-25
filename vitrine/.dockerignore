@@ -1,0 +1,10 @@
+.env
+.env.backup
+.env.production
+/vendor
+/node_modules
+/.git
+/database/*.sqlite
+/storage/logs/*.log
+.phpunit.result.cache
+.DS_Store
