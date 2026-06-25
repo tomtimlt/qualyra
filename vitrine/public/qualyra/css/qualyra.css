@@ -1,0 +1,438 @@
+/* ============================================================
+   Qualyra AI — Design System Tokens
+   Pro · Institutional · Restrained · Audit-grade
+   (Filename kept for stable cascade across existing pages.)
+   ============================================================ */
+
+/* Polices locales — générées par scripts/download-fonts.js */
+@font-face {
+  font-family: 'Geist';
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/Geist-300.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Geist';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/Geist-400.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Geist';
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/Geist-500.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Geist';
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/Geist-600.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Geist';
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/Geist-700.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/GeistMono-400.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/GeistMono-500.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Instrument Serif';
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/InstrumentSerif-400Italic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Instrument Serif';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/InstrumentSerif-400.ttf') format('truetype');
+}
+
+:root {
+  /* ───── COLOR ───────────────────────────────────────────── */
+
+  /* Ink scale — neutral slate, professional, no purple cast (DS canonical) */
+  --ink-1000: #050810;   /* page floor */
+  --ink-950:  #0A0E1A;   /* primary dark surface */
+  --ink-900:  #11162A;   /* elevated surface */
+  --ink-800:  #1B2138;   /* hover, raised border */
+  --ink-700:  #2A3148;   /* divider strong */
+  --ink-600:  #3F4863;
+  --ink-500:  #5B6383;   /* muted text on dark */
+  --ink-400:  #828AA8;
+  --ink-300:  #A9AFC4;   /* primary text on dark */
+  --ink-200:  #CDD0DD;
+  --ink-100:  #E6E7EE;
+  --ink-50:   #F1F3F6;   /* extension Qualyra */
+
+  /* Parchment / paper — warm but restrained, for reports & light surfaces (DS canonical) */
+  --bone-50:  #FAF8F2;
+  --bone-100: #F4F0E5;
+  --bone-200: #E8E1CD;
+  --bone-300: #C7BFA4;
+  --bone-400: #8E876E;
+  --bone-500: #5A553F;
+  --bone-700: #2B281B;
+
+   /* Qualyra accent — deep institutional navy, the eye's blue */
+  --qualyra-50:  #E7EEF8;
+  --qualyra-100: #C2D1EA;
+  --qualyra-300: #6E92C7;
+  --qualyra-500: #2E5FA0;   /* primary accent */
+  --qualyra-700: #1B3A6F;   /* hover / pressed */
+  --qualyra-900: #0E2244;
+
+  /* Backwards-compat (existing pages reference --stag-*) */
+  --stag-50:   var(--qualyra-50);
+  --stag-100:  var(--qualyra-100);
+  --stag-300:  var(--qualyra-300);
+  --stag-500:  var(--qualyra-500);
+  --stag-700:  var(--qualyra-700);
+  --stag-900:  var(--qualyra-900);
+
+  /* Risk scale — institutional, no neon */
+  --risk-min:    #3D6E54;   /* sage — minimal */
+  --risk-min-bg: #1B2E25;
+  --risk-lim:    #A07626;   /* ochre — limité */
+  --risk-lim-bg: #3E2E10;
+  --risk-haut:   #B5532A;   /* terracotta — haut */
+  --risk-haut-bg:#3F1E0F;
+  --risk-inacc:  #9B2933;   /* burgundy — inacceptable */
+  --risk-inacc-bg:#3A0F13;
+  --risk-none:   #475061;   /* unevaluated */
+
+  /* Semantic */
+  --bg:           var(--ink-1000);
+  --surface:      var(--ink-950);
+  --surface-2:    var(--ink-900);
+  --hairline:     #232A35;
+  --hairline-strong: #303845;
+  --text:         #E8EBF0;
+  --text-muted:   #8A93A6;
+  --text-dim:     #5B6478;
+  --accent:       var(--qualyra-500);
+  --accent-soft:  var(--qualyra-300);
+
+  /* ───── TYPE ─────────────────────────────────────────────
+     Cervus : Instrument Serif pour les moments éditoriaux (display/H1/H2),
+     Geist pour l'UI et le body, Geist Mono pour data/articles de loi. */
+  --font-display: "Instrument Serif", Cambria, Georgia, serif;
+  --font-sans:    "Geist", system-ui, -apple-system, sans-serif;
+  --font-mono:    "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Type scale — tailles spécimen modérées */
+  --t-display: 96px;
+  --t-h1:      64px;
+  --t-h2:      44px;
+  --t-h3:      28px;
+  --t-h4:      22px;
+  --t-h5:      17px;
+  --t-lead:    17px;
+  --t-base:    15px;
+  --t-small:   13px;
+  --t-mono:    11px;
+
+  /* ───── SPACE / RADIUS / SHADOW ───────────────────────── */
+  --r-xs: 2px;
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 10px;
+  --r-pill: 999px;
+
+  --shadow-1: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-2: 0 4px 16px -4px rgba(0,0,0,0.5);
+  --shadow-3: 0 24px 60px -20px rgba(0,0,0,0.6);
+
+  /* Motion */
+  --d-fast:  140ms;
+  --d-base:  220ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ─── Light mode (DS pair: Bone × Ink) ─────────────────── */
+:root[data-theme="light"] {
+  --bg:              var(--bone-50);
+  --surface:         var(--bone-100);
+  --surface-2:       #ffffff;
+  --hairline:        var(--bone-200);
+  --hairline-strong: var(--bone-300);
+  --text:            var(--ink-950);
+  --text-muted:      var(--ink-600);
+  --text-dim:        var(--ink-500);
+  --accent:          var(--qualyra-700);
+  --accent-soft:     var(--qualyra-500);
+
+  /* Risk surfaces : teintes claires plutôt que ground sombre */
+  --risk-min-bg:     #E1ECDF;
+  --risk-lim-bg:     #F4E7CC;
+  --risk-haut-bg:    #F2DDC6;
+  --risk-inacc-bg:   #F1D6D9;
+
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] { color-scheme: dark; }
+
+/* Light-mode overrides for components that hardcode ink-* */
+:root[data-theme="light"] .btn--primary { background: var(--ink-950); color: var(--bone-50); }
+:root[data-theme="light"] .btn--primary:hover { background: var(--ink-1000); }
+:root[data-theme="light"] .btn--secondary:hover { background: color-mix(in oklab, var(--ink-950) 8%, transparent); }
+:root[data-theme="light"] .btn--ghost:hover { background: color-mix(in oklab, var(--ink-950) 6%, transparent); }
+:root[data-theme="light"] .input { background: var(--surface-2); }
+:root[data-theme="light"] .lead { color: var(--ink-700); }
+
+/* ============================================================
+   BASE
+   ============================================================ */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  font-size: var(--t-base);
+  line-height: 1.55;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss01", "cv11";
+}
+
+/* TYPE — Cervus : Instrument Serif pour display/h1/h2, Geist pour h3/h4/h5 */
+.display, .h1, .h2 { margin: 0; font-family: var(--font-display); font-weight: 400; }
+.h3, .h4, .h5     { margin: 0; font-family: var(--font-sans); }
+
+.display { font-size: var(--t-display); line-height: 1.02; letter-spacing: -0.025em; }
+.h1      { font-size: var(--t-h1);      line-height: 1.02; letter-spacing: -0.02em; }
+.h2      { font-size: var(--t-h2);      line-height: 1.02; letter-spacing: -0.018em; }
+.h3      { font-size: var(--t-h3); font-weight: 500; line-height: 1.15; letter-spacing: -0.015em; }
+.h4      { font-size: var(--t-h4); font-weight: 500; line-height: 1.15; letter-spacing: -0.008em; }
+.h5      { font-size: var(--t-h5); font-weight: 500; line-height: 1.25; }
+
+.lead    { font-size: var(--t-lead); line-height: 1.55; color: var(--ink-200); font-weight: 400; }
+.muted   { color: var(--text-muted); }
+.dim     { color: var(--text-dim); }
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--t-mono);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.eyebrow--accent { color: var(--accent-soft); }
+
+/* Italique éditorial sur l'accent — signature Cervus */
+em { font-style: italic; color: var(--accent-soft); font-weight: 400; }
+
+/* ============================================================
+   COMPONENTS
+   ============================================================ */
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 18px; height: 40px;
+  font-family: var(--font-sans);
+  font-size: 13px; font-weight: 500;
+  letter-spacing: -0.005em;
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--d-fast) var(--ease-out);
+  white-space: nowrap;
+}
+.btn--primary { background: var(--ink-50); color: var(--ink-1000); }
+.btn--primary:hover { background: #FFFFFF; }
+.btn--secondary { background: transparent; color: var(--text); border-color: var(--hairline-strong); }
+.btn--secondary:hover { border-color: var(--ink-500); background: var(--ink-900); }
+.btn--ghost { background: transparent; color: var(--text-muted); }
+.btn--ghost:hover { color: var(--text); background: var(--ink-900); }
+.btn--accent { background: var(--accent); color: white; }
+.btn--accent:hover { background: var(--qualyra-700); }
+.btn--sm { height: 32px; padding: 6px 14px; font-size: 12px; }
+.btn--lg { height: 48px; padding: 12px 22px; font-size: 14px; }
+.btn--icon { width: 32px; padding: 0; }
+
+/* Theme toggle — sun/moon icon button */
+.theme-toggle {
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: all var(--d-fast) var(--ease-out);
+  flex-shrink: 0;
+}
+.theme-toggle:hover { color: var(--text); border-color: var(--hairline-strong); background: var(--surface); }
+.theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Form */
+.label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.005em; }
+.input {
+  width: 100%; height: 40px;
+  padding: 10px 14px;
+  background: var(--ink-1000);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-family: var(--font-sans); font-size: 13px;
+  transition: border-color var(--d-fast) var(--ease-out);
+}
+.input:focus { outline: none; border-color: var(--accent); }
+.input.textarea { height: auto; min-height: 96px; padding: 12px 14px; line-height: 1.55; resize: vertical; }
+.help { font-size: 11px; color: var(--text-dim); margin-top: 6px; }
+
+/* Risk badge — the signature semantic component */
+.risk {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  border-radius: var(--r-xs);
+  border: 1px solid;
+  white-space: nowrap;
+}
+.risk__dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.risk--inacc { color: var(--risk-inacc); border-color: var(--risk-inacc); background: var(--risk-inacc-bg); }
+.risk--haut  { color: var(--risk-haut);  border-color: var(--risk-haut);  background: var(--risk-haut-bg); }
+.risk--lim   { color: var(--risk-lim);   border-color: var(--risk-lim);   background: var(--risk-lim-bg); }
+.risk--min   { color: var(--risk-min);   border-color: var(--risk-min);   background: var(--risk-min-bg); }
+.risk--none  { color: var(--risk-none);  border-color: var(--risk-none);  background: transparent; }
+
+/* ───── UIVERSE ANIMATED BUTTON ─────────────────────────── */
+/* From Uiverse.io by Ashon-G — adapted to Qualyra */
+.btn--uiverse {
+  --duration: 7s;
+  --easing: linear;
+  --c-color-1: rgba(46, 95, 160, 0.7);
+  --c-color-2: #1B3A6F;
+  --c-color-3: #2E5FA0;
+  --c-color-4: rgba(110, 146, 199, 0.7);
+  --c-shadow: rgba(46, 95, 160, 0.5);
+  --c-shadow-inset-top: rgba(110, 146, 199, 0.9);
+  --c-shadow-inset-bottom: rgba(200, 220, 240, 0.8);
+  --c-radial-inner: #1B3A6F;
+  --c-radial-outer: #2E5FA0;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  border: none;
+  overflow: hidden;
+  padding: 0;
+  min-width: 180px;
+  background: radial-gradient(circle, var(--c-radial-inner), var(--c-radial-outer) 80%);
+  box-shadow: 0 0 14px var(--c-shadow);
+  color: #fff;
+}
+.btn--uiverse:before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  border-radius: var(--r-sm);
+  box-shadow: inset 0 3px 12px var(--c-shadow-inset-top), inset 0 -3px 4px var(--c-shadow-inset-bottom);
+}
+.btn--uiverse:hover {
+  --duration: 1400ms;
+  background: radial-gradient(circle, var(--c-radial-inner), var(--c-radial-outer) 80%);
+}
+.btn--uiverse .wrapper {
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  overflow: hidden;
+  border-radius: var(--r-sm);
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn--uiverse .wrapper span {
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+}
+.btn--uiverse .wrapper .circle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  filter: blur(var(--blur, 8px));
+  background: var(--background, transparent);
+  transform: translate(var(--x, 0), var(--y, 0)) translateZ(0);
+  animation: var(--animation, none) var(--duration) var(--easing) infinite;
+}
+.btn--uiverse .wrapper .circle.circle-1,
+.btn--uiverse .wrapper .circle.circle-9,
+.btn--uiverse .wrapper .circle.circle-10 { --background: var(--c-color-4); }
+.btn--uiverse .wrapper .circle.circle-3,
+.btn--uiverse .wrapper .circle.circle-4 { --background: var(--c-color-2); --blur: 14px; }
+.btn--uiverse .wrapper .circle.circle-5,
+.btn--uiverse .wrapper .circle.circle-6 { --background: var(--c-color-3); --blur: 16px; }
+.btn--uiverse .wrapper .circle.circle-2,
+.btn--uiverse .wrapper .circle.circle-7,
+.btn--uiverse .wrapper .circle.circle-8,
+.btn--uiverse .wrapper .circle.circle-11,
+.btn--uiverse .wrapper .circle.circle-12 { --background: var(--c-color-1); --blur: 12px; }
+
+.btn--uiverse .wrapper .circle.circle-1 { --x: 0; --y: -40px; --animation: circle-1; }
+.btn--uiverse .wrapper .circle.circle-2 { --x: 92px; --y: 8px; --animation: circle-2; }
+.btn--uiverse .wrapper .circle.circle-3 { --x: -12px; --y: -12px; --animation: circle-3; }
+.btn--uiverse .wrapper .circle.circle-4 { --x: 80px; --y: -12px; --animation: circle-4; }
+.btn--uiverse .wrapper .circle.circle-5 { --x: 12px; --y: -4px; --animation: circle-5; }
+.btn--uiverse .wrapper .circle.circle-6 { --x: 56px; --y: 16px; --animation: circle-6; }
+.btn--uiverse .wrapper .circle.circle-7 { --x: 8px; --y: 28px; --animation: circle-7; }
+.btn--uiverse .wrapper .circle.circle-8 { --x: 28px; --y: -4px; --animation: circle-8; }
+.btn--uiverse .wrapper .circle.circle-9 { --x: 20px; --y: -12px; --animation: circle-9; }
+.btn--uiverse .wrapper .circle.circle-10 { --x: 64px; --y: 16px; --animation: circle-10; }
+.btn--uiverse .wrapper .circle.circle-11 { --x: 4px; --y: 4px; --animation: circle-11; }
+.btn--uiverse .wrapper .circle.circle-12 { --blur: 14px; --x: 52px; --y: 4px; --animation: circle-12; }
+
+@keyframes circle-1 { 33% { transform: translate(0px, 16px) translateZ(0); } 66% { transform: translate(12px, 64px) translateZ(0); } }
+@keyframes circle-2 { 33% { transform: translate(80px, -10px) translateZ(0); } 66% { transform: translate(72px, -48px) translateZ(0); } }
+@keyframes circle-3 { 33% { transform: translate(20px, 12px) translateZ(0); } 66% { transform: translate(12px, 4px) translateZ(0); } }
+@keyframes circle-4 { 33% { transform: translate(76px, -12px) translateZ(0); } 66% { transform: translate(112px, -8px) translateZ(0); } }
+@keyframes circle-5 { 33% { transform: translate(84px, 28px) translateZ(0); } 66% { transform: translate(40px, -32px) translateZ(0); } }
+@keyframes circle-6 { 33% { transform: translate(28px, -16px) translateZ(0); } 66% { transform: translate(76px, -56px) translateZ(0); } }
+@keyframes circle-7 { 33% { transform: translate(8px, 28px) translateZ(0); } 66% { transform: translate(20px, -60px) translateZ(0); } }
+@keyframes circle-8 { 33% { transform: translate(32px, -4px) translateZ(0); } 66% { transform: translate(56px, -20px) translateZ(0); } }
+@keyframes circle-9 { 33% { transform: translate(20px, -12px) translateZ(0); } 66% { transform: translate(80px, -8px) translateZ(0); } }
+@keyframes circle-10 { 33% { transform: translate(68px, 20px) translateZ(0); } 66% { transform: translate(100px, 28px) translateZ(0); } }
+@keyframes circle-11 { 33% { transform: translate(4px, 4px) translateZ(0); } 66% { transform: translate(68px, 20px) translateZ(0); } }
+@keyframes circle-12 { 33% { transform: translate(56px, 0px) translateZ(0); } 66% { transform: translate(60px, -32px) translateZ(0); } }
