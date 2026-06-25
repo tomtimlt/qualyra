@@ -15,9 +15,9 @@ use App\Http\Controllers\VisionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    $diffDays = (int) now()->diffInDays(\Carbon\Carbon::parse('2026-08-02'));
-
-    return view('home', compact('diffDays'));
+    return auth()->check()
+        ? redirect()->route('dashboard')
+        : redirect()->route('login');
 })->name('home');
 
 // Routes protégées : utilisateur authentifié
