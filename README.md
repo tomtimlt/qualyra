@@ -35,6 +35,7 @@
 - [Stack technique](#stack-technique)
 - [Démarrage rapide](#démarrage-rapide)
 - [Installation locale](#installation-locale)
+- [Site vitrine](#site-vitrine)
 - [Parcours utilisateur](#parcours-utilisateur)
 - [Moteur de classification AI Act](#moteur-de-classification-ai-act)
 - [Architecture](#architecture)
@@ -54,6 +55,16 @@
 
 **Qualyra** est une application web qui audite les usages d'IA d'une PME, les classe selon les 4 niveaux du **Règlement (UE) 2024/1689 (AI Act)**, croise avec les obligations **RGPD**, et génère un rapport PDF de conformité avec plan d'action chiffré.
 
+### Deux déploiements indépendants
+
+Le projet se compose de **deux conteneurs distincts**, déployables séparément :
+
+| Déploiement | Dossier | Rôle |
+|-------------|---------|------|
+| **Application** | racine du dépôt | L'app authentifiée (audit, classification, rapports PDF, Stripe). Voir [Installation locale](#installation-locale) / [Docker](#docker). |
+| **Site vitrine** | [`vitrine/`](vitrine/) | Landing marketing publique FR/EN + formulaire de contact + panel admin + analytics Umami. Autonome, déployable seul sur un VPS. Voir [Site vitrine](#site-vitrine). |
+
+> Depuis la séparation, l'application **ne sert plus de page d'accueil** : la route `/` redirige vers `/login` (invité) ou `/dashboard` (connecté).
 
 ### Cible
 
@@ -91,11 +102,13 @@ L'AI Act entre en application progressive depuis le **2 février 2025** (pratiqu
 | Tests | Pest | 4 |
 | PDF | spatie/browsershot (Chrome headless) | 5 |
 | Paiement | stripe/stripe-php | 20 |
-| Conteneur | Docker (mono-conteneur self-contained) | — |
+| Conteneur | Docker — app (mono-conteneur) + site vitrine (déploiement séparé) | — |
 
 ---
 
 ## Démarrage rapide
+
+> Cette section concerne **l'application**. Pour la landing publique, voir [Site vitrine](#site-vitrine).
 
 Avec Docker, sans aucune config :
 
@@ -148,6 +161,36 @@ Pour le développement avec hot-reload via Docker :
 ```bash
 docker compose up -d
 ```
+
+---
+
+## Site vitrine
+
+La landing marketing publique est un **déploiement séparé et autonome**, dans le dossier [`vitrine/`](vitrine/) : mini-app Laravel (sans Vite/Tailwind) qui ne dépend pas de l'application principale. On peut la cloner et la lancer seule sur un VPS.
+
+**Contenu :**
+
+- Pages marketing **FR / EN** (switch de langue, localisation Laravel) — sans bouton Connexion/Commencer
+- `/contact` — formulaire (honeypot + captcha + consentement), demandes **stockées en base**
+- `/admin` — panel protégé par mot de passe pour consulter les demandes
+- **Umami** — analytics auto-hébergé (conteneur dédié)
+
+### Setup (Docker)
+
+```bash
+cd vitrine
+cp .env.example .env
+nano .env       # remplir VITRINE_ADMIN_PASSWORD + UMAMI_APP_SECRET (openssl rand -base64 40)
+                #  + APP_URL=https://ton-domaine.fr en prod
+docker compose up -d --build
+```
+
+- **Vitrine** : http://localhost:8080
+- **Umami** (analytics) : http://localhost:3000
+
+> Le `docker compose up` **échoue volontairement** tant que `VITRINE_ADMIN_PASSWORD` et `UMAMI_APP_SECRET` ne sont pas définis dans `vitrine/.env` — pour ne jamais démarrer avec des secrets vides.
+
+Procédure complète (1ʳᵉ configuration Umami, durcissement prod, reverse proxy/TLS, maintenance des aperçus) : [`vitrine/README.md`](vitrine/README.md).
 
 ---
 
