@@ -14,7 +14,7 @@
             <p class="lead">
                 Qualyra classe chacun de vos usages d'IA selon une grille construite à partir du règlement européen, et vous remet un rapport avec un plan d'action à 1 mois, 6 mois et 1 an. Rédigé pour un dirigeant, pas pour un avocat.
             </p>
-            <p class="home__hero-date">Les obligations pour les systèmes à haut risque s'appliquent à partir du <b>2&nbsp;août&nbsp;2026</b>.</p>
+            <p class="home__hero-date">Les obligations pour les systèmes à haut risque s'appliquent à partir du <b>2&nbsp;décembre&nbsp;2027</b>.</p>
             <div class="home__hero-cta">
                 <a class="btn btn--accent btn--lg btn--uiverse" href="{{ route('register') }}">
                     <div class="wrapper">
@@ -162,7 +162,7 @@
                 <div class="posture-card__d">Aucune mention « sous réserve d'interprétation jurisprudentielle ». Si une phrase du rapport ne vous sert pas à décider, elle n'y est pas.</div>
             </div>
             <div class="posture-card posture-card--ember">
-                <div class="posture-card__num">2 août 2027</div>
+                <div class="posture-card__num">2 déc. 2027</div>
                 <div class="posture-card__t">Pleine application</div>
                 <div class="posture-card__d">Avant cette date, votre cartographie des usages et vos analyses d'impact doivent être faites. Commencer maintenant, c'est les faire au calme.</div>
             </div>

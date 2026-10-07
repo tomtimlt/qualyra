@@ -12,10 +12,11 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuestionnaireController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\VisionController;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    $diffDays = (int) now()->diffInDays(\Carbon\Carbon::parse('2026-08-02'));
+    $diffDays = (int) now()->diffInDays(Carbon::parse('2026-08-02'));
 
     return view('home', compact('diffDays'));
 })->name('home');

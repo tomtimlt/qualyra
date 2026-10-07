@@ -10,7 +10,7 @@ use Illuminate\Support\Carbon;
 
 /**
  * Helper : usage RH "scoring CV" — déclenche R-H-02 (HAUT_RISQUE,
- * applicable à partir du 2 août 2026).
+ * applicable à partir du 2 décembre 2027).
  */
 function timelineUsageScoringCV(Organization $org): AiUsage
 {
@@ -50,17 +50,17 @@ it('construit une timeline à 3 horizons (now, +1y, +2y)', function () {
     expect($timeline[2]['label'])->toBe('plus_2y');
 });
 
-it('détecte la bascule RISQUE_MINIMAL → HAUT_RISQUE au 2 août 2026', function () {
+it('détecte la bascule RISQUE_MINIMAL → HAUT_RISQUE au 2 décembre 2027', function () {
     $user = User::factory()->create();
     $org = Organization::factory()->for($user)->create();
     timelineUsageScoringCV($org);
 
-    // Audit au 26 mai 2026 : R-H-02 (2026-08-02) pas encore applicable
-    // → usage = RISQUE_MINIMAL (DEFAULT). À T+1y (2027-05-26), R-H-02 est
+    // Audit au 15 janvier 2027 : R-H-02 (2027-12-02) pas encore applicable
+    // → usage = RISQUE_MINIMAL (DEFAULT). À T+1y (2028-01-15), R-H-02 est
     // applicable → usage devient HAUT_RISQUE.
     $timeline = app(ComplianceTimelineBuilder::class)->build(
         $org->fresh('aiUsages.responses'),
-        Carbon::parse('2026-05-26'),
+        Carbon::parse('2027-01-15'),
     );
 
     expect($timeline[0]['counts']['RISQUE_MINIMAL'])->toBe(1);

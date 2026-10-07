@@ -45,11 +45,13 @@ declare(strict_types=1);
  *                   AGGRAVATION ne se déclenche que si niveau = HAUT_RISQUE)
  *   - 'applicable_from' : date YYYY-MM-DD à partir de laquelle la règle entre
  *                   en vigueur. Le moteur ignore les règles non encore
- *                   applicables à la date d'audit. Calendrier officiel du
- *                   Règlement UE 2024/1689 :
+ *                   applicables à la date d'audit. Calendrier du Règlement
+ *                   UE 2024/1689, tel que modifié par le Digital Omnibus IA
+ *                   (en vigueur depuis le 27 juillet 2026) :
  *                     - 2025-02-02 : pratiques interdites (Art. 5)
- *                     - 2026-08-02 : haut risque Annexe III + transparence Art. 50
- *                     - 2027-08-02 : haut risque Annexe I (MDR/IVDR)
+ *                     - 2026-08-02 : transparence Art. 50
+ *                     - 2027-12-02 : haut risque Annexe III (initialement 2026-08-02)
+ *                     - 2028-08-02 : haut risque Annexe I, ex. MDR/IVDR (initialement 2027-08-02)
  *                   Absence = règle toujours applicable (cas du DEFAULT).
  */
 
@@ -172,7 +174,8 @@ return [
 
     // =========================================================================
     // BLOC 2 — HAUT RISQUE (Art. 6 §2 + Annexe III)
-    // Applicable au 2 août 2026 pour les déployeurs PME.
+    // Applicable au 2 décembre 2027 (report Digital Omnibus, initialement
+    // 2 août 2026).
     // =========================================================================
 
     [
@@ -180,7 +183,7 @@ return [
         'niveau' => 'HAUT_RISQUE',
         'article' => 'Art. 6 §2 + Annexe III §1 a)',
         'type_regle' => 'TEXTE_EXPLICITE',
-        'applicable_from' => '2026-08-02',
+        'applicable_from' => '2027-12-02',
         'raison' => "Les systèmes biométriques d'identification des personnes ou de contrôle d'accès sont des systèmes d'IA à haut risque.",
         'when' => [
             'ai_usage.type' => 'IA_BIO',
@@ -194,7 +197,7 @@ return [
         'niveau' => 'HAUT_RISQUE',
         'article' => 'Art. 6 §2 + Annexe III §4 a)',
         'type_regle' => 'TEXTE_EXPLICITE',
-        'applicable_from' => '2026-08-02',
+        'applicable_from' => '2027-12-02',
         'raison' => "Tout système IA influençant la présélection, le classement ou la sélection des candidats à l'embauche est haut risque.",
         'when' => [
             'ai_usage.domain' => 'RH',
@@ -209,7 +212,7 @@ return [
         'niveau' => 'HAUT_RISQUE',
         'article' => 'Art. 6 §2 + Annexe III §4 b)',
         'type_regle' => 'TEXTE_EXPLICITE',
-        'applicable_from' => '2026-08-02',
+        'applicable_from' => '2027-12-02',
         'raison' => "Tout système IA influençant la gestion, la surveillance ou l'évaluation des salariés avec impact sur leurs conditions de travail est haut risque.",
         'when' => [
             'ai_usage.domain' => 'RH',
@@ -224,7 +227,7 @@ return [
         'niveau' => 'HAUT_RISQUE',
         'article' => 'Art. 6 §2 + Annexe III §3',
         'type_regle' => 'TEXTE_EXPLICITE',
-        'applicable_from' => '2026-08-02',
+        'applicable_from' => '2027-12-02',
         'raison' => "Les systèmes IA déterminant l'accès à la formation, les résultats d'évaluation académique ou l'orientation professionnelle sont haut risque.",
         'when' => [
             'ai_usage.domain' => 'EDUCATION',
@@ -238,7 +241,7 @@ return [
         'niveau' => 'HAUT_RISQUE',
         'article' => 'Art. 6 §2 + Annexe III §5 b)',
         'type_regle' => 'TEXTE_EXPLICITE',
-        'applicable_from' => '2026-08-02',
+        'applicable_from' => '2027-12-02',
         'raison' => "Les systèmes IA d'évaluation de la solvabilité, de scoring crédit ou d'établissement de profil de risque financier pour des personnes physiques sont haut risque.",
         'when' => [
             'ai_usage.domain' => 'CREDIT',
@@ -252,7 +255,7 @@ return [
         'niveau' => 'HAUT_RISQUE',
         'article' => 'Art. 6 §2 + Annexe III §5 c)',
         'type_regle' => 'TEXTE_EXPLICITE',
-        'applicable_from' => '2026-08-02',
+        'applicable_from' => '2027-12-02',
         'raison' => "Les systèmes IA évaluant le risque de santé ou de vie pour la tarification ou l'éligibilité à une assurance sont haut risque.",
         'when' => [
             'ai_usage.domain' => 'SANTE',
@@ -267,7 +270,7 @@ return [
         'niveau' => 'HAUT_RISQUE',
         'article' => 'Art. 6 §2 + Annexe III §5 a)',
         'type_regle' => 'TEXTE_EXPLICITE',
-        'applicable_from' => '2026-08-02',
+        'applicable_from' => '2027-12-02',
         'raison' => "Les systèmes IA déterminant l'accès à des services ou prestations essentiels pour les personnes physiques sont haut risque.",
         'when' => [
             'response.dec' => '@in:AIDE_DEC,SEMI_AUTO,FULL_AUTO',
@@ -281,12 +284,12 @@ return [
         'niveau' => 'HAUT_RISQUE',
         'article' => 'Art. 6 §1 + Annexe I (interprétation, Art. 6 §2 par analogie)',
         'type_regle' => 'INTERPRETATION',
-        'applicable_from' => '2027-08-02',
+        'applicable_from' => '2028-08-02',
         'raison' => 'Les systèmes IA influençant des décisions médicales cliniques sont présumés haut risque. Vérifier le régime applicable (MDR 2017/745 ou IVDR 2017/746).',
         'alerte' => [
             'code' => 'flag_zone_grise_medical',
             'type' => 'FLAG_ZONE_GRISE',
-            'message' => 'Usage médical clinique détecté. Peut relever de Art. 6 §1 + Annexe I (dispositif médical) applicable au 2 août 2027. Consulter un juriste.',
+            'message' => 'Usage médical clinique détecté. Peut relever de Art. 6 §1 + Annexe I (dispositif médical) applicable au 2 août 2028. Consulter un juriste.',
             'article' => 'Art. 6 §1 + Annexe I (MDR/IVDR)',
         ],
         'when' => [
@@ -305,7 +308,7 @@ return [
     [
         'id' => 'R-H-BORDERLINE',
         'classify' => false,
-        'applicable_from' => '2026-08-02',
+        'applicable_from' => '2027-12-02',
         'alerte' => [
             'code' => 'flag_zone_grise_rh_informatif',
             'type' => 'FLAG_ZONE_GRISE',
@@ -329,7 +332,7 @@ return [
         'id' => 'AGGRAVATION-CTRL',
         'classify' => false,
         'requires_niveau' => 'HAUT_RISQUE',
-        'applicable_from' => '2026-08-02',
+        'applicable_from' => '2027-12-02',
         'alerte' => [
             'code' => 'aggravation_pas_de_controle_humain',
             'type' => 'AGGRAVATION',

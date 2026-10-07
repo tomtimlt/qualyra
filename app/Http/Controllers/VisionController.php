@@ -58,7 +58,7 @@ class VisionController extends Controller
             $domain = $usage->domain;
             $type = $usage->type;
 
-            if (!in_array($domain, $heatmapDomains, true) || !in_array($type, $heatmapTypes, true)) {
+            if (! in_array($domain, $heatmapDomains, true) || ! in_array($type, $heatmapTypes, true)) {
                 continue;
             }
 
@@ -115,21 +115,21 @@ class VisionController extends Controller
 
         // Domain nodes (layer 0)
         foreach ($heatmapDomains as $dom) {
-            $id = 'D:' . $dom;
+            $id = 'D:'.$dom;
             $sankeyNodes[] = ['id' => $id, 'name' => $domainLabels[$dom] ?? $dom, 'layer' => 0, 'code' => $dom, 'label' => 'domain'];
             $sankeyNodeIds[$id] = true;
         }
 
         // Type nodes (layer 1)
         foreach ($heatmapTypes as $type) {
-            $id = 'T:' . $type;
+            $id = 'T:'.$type;
             $sankeyNodes[] = ['id' => $id, 'name' => $typeLabels[$type] ?? $type, 'layer' => 1, 'code' => $type, 'label' => 'type'];
             $sankeyNodeIds[$id] = true;
         }
 
         // Risk nodes (layer 2)
         foreach ($heatmapLevels as $lvl) {
-            $id = 'R:' . $lvl;
+            $id = 'R:'.$lvl;
             $sankeyNodes[] = ['id' => $id, 'name' => $niveauLabels[$lvl] ?? $lvl, 'layer' => 2, 'code' => $lvl, 'label' => 'niveau'];
             $sankeyNodeIds[$id] = true;
             $sankeyLevelLabels[$lvl] = $niveauLabels[$lvl] ?? $lvl;
@@ -143,10 +143,12 @@ class VisionController extends Controller
             $latestAssessment = $usage->assessments()->latest('computed_at')->first();
             $niveau = $latestAssessment?->niveau ?? 'NON_EVAL';
 
-            if (!in_array($domain, $heatmapDomains, true) || !in_array($type, $heatmapTypes, true)) continue;
+            if (! in_array($domain, $heatmapDomains, true) || ! in_array($type, $heatmapTypes, true)) {
+                continue;
+            }
 
-            $key = 'D:' . $domain . '→T:' . $type;
-            if (!isset($dtLinks[$key])) {
+            $key = 'D:'.$domain.'→T:'.$type;
+            if (! isset($dtLinks[$key])) {
                 $dtLinks[$key] = ['count' => 0, 'worstNiveau' => 'NON_EVAL'];
             }
             $dtLinks[$key]['count']++;
@@ -167,10 +169,12 @@ class VisionController extends Controller
             $latestAssessment = $usage->assessments()->latest('computed_at')->first();
             $niveau = $latestAssessment?->niveau ?? 'NON_EVAL';
 
-            if (!in_array($type, $heatmapTypes, true) || !in_array($niveau, $heatmapLevels, true)) continue;
+            if (! in_array($type, $heatmapTypes, true) || ! in_array($niveau, $heatmapLevels, true)) {
+                continue;
+            }
 
-            $key = 'T:' . $type . '→R:' . $niveau;
-            if (!isset($tnLinks[$key])) {
+            $key = 'T:'.$type.'→R:'.$niveau;
+            if (! isset($tnLinks[$key])) {
                 $tnLinks[$key] = 0;
             }
             $tnLinks[$key]++;
@@ -192,6 +196,7 @@ class VisionController extends Controller
         $graphNodes = $aiUsages->map(function ($u) use ($niveauLabels, $domainLabels, $typeLabels) {
             $latest = $u->assessments()->latest('computed_at')->first();
             $niveau = $latest?->niveau ?? 'NON_EVAL';
+
             return [
                 'id' => $u->id,
                 'name' => $u->name,
