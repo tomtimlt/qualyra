@@ -2,9 +2,9 @@
     "$schema": "https://getcomposer.org/schema.json",
     "name": "laravel/laravel",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Audit de conformité AI Act + RGPD pour PME françaises.",
     "keywords": ["laravel", "framework"],
-    "license": "MIT",
+    "license": "AGPL-3.0-only",
     "require": {
         "php": "^8.3",
         "laravel/framework": "^13.0",

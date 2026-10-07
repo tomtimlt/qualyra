@@ -31,7 +31,7 @@ Exemples :
 ```
 feat: ajoute la règle R-I-09 pour les systèmes de crédit social
 fix: corrige le calcul du score dans AiActClassifier
-docs: ajoute AGENTS.md scoped pour config/
+docs: met à jour le calendrier AI Act dans le README
 ```
 
 ## Checklist PR
@@ -42,9 +42,7 @@ docs: ajoute AGENTS.md scoped pour config/
 - [ ] `npm run build` passe
 - [ ] Documentation mise à jour si nécessaire
 
-## Guide IA
+## Licence des contributions
 
-Pour les contributions assistées par IA, voir :
-- `/AGENTS.md` — guide universel
-- `docs/AI_GUIDE.md` — exemples concrets
-- `docs/MAP.md` — carte du projet
+Qualyra est distribué sous licence [AGPL-3.0](LICENSE). En proposant une
+contribution, vous acceptez qu'elle soit publiée sous cette même licence.

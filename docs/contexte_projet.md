@@ -47,8 +47,8 @@ Gagner suffisamment d'argent cet été (objectif ~4 500 € net, soit 3 ventes �
 ### Ce qui est fait
 
 **Validation marché**
-- 1 retour CTO (**Vincent**) : a validé le besoin et le vocabulaire (Shadow AI, sécurisation de la donnée). A donné des questions pertinentes pour affiner le scope.
-- 1 retour RSSI externalisé (**Nicolas Dolisy**) : a confirmé qu'il est sollicité par ses clients sur tout type d'usage IA. A explicité son outil idéal (DLP prompts, traçabilité, tests d'injection, conformité RGPD/NIS2). A proposé de rester en contact.
+- 1 retour CTO (anonymisé) : a validé le besoin et le vocabulaire (Shadow AI, sécurisation de la donnée). A donné des questions pertinentes pour affiner le scope.
+- 1 retour RSSI externalisé (anonymisé) : a confirmé qu'il est sollicité par ses clients sur tout type d'usage IA. A explicité son outil idéal (DLP prompts, traçabilité, tests d'injection, conformité RGPD/NIS2). A proposé de rester en contact.
 
 **Spécification réglementaire (semaine 1 du projet)**
 
@@ -71,7 +71,7 @@ Calendrier prévisionnel à 10-15h/semaine :
 - Semaine 4 (26 mai - 1 juin) : Moteur de classification + tableau de synthèse
 - Semaine 5 (2-8 juin) : Génération PDF + intégration Stripe
 - Semaine 6 (9-15 juin) : Polish + pages légales + tests end-to-end
-- Semaine 7 (16-22 juin) : Beta avec Vincent ou autre design partner
+- Semaine 7 (16-22 juin) : Beta avec un design partner
 - Fin juin / début juillet : premier client payant
 
 ---
@@ -87,8 +87,8 @@ Calendrier prévisionnel à 10-15h/semaine :
 
 ### Personas validés
 
-- **CTO d'entreprise tech** (type Vincent) : sensible au sujet Shadow AI, cherche à structurer
-- **RSSI externalisé / vCISO** (type Nicolas) : a un portefeuille de clients, peut être un canal de revente ou de recommandation
+- **CTO d'entreprise tech**  : sensible au sujet Shadow AI, cherche à structurer
+- **RSSI externalisé / vCISO**  : a un portefeuille de clients, peut être un canal de revente ou de recommandation
 - **Dirigeant d'entreprise en croissance** : prend conscience de la pression réglementaire (AI Act août 2026)
 
 ### Personas à ne PAS cibler en v1
@@ -182,7 +182,7 @@ L'outil de Thomas :
 
 - Cycle de vente B2B en France : long et incertain
 - "Trop tôt" : certaines entreprises ne sentent pas encore la pression AI Act
-- Mitigation : commencer par les entreprises tech (Vincent, Nicolas comme entrée) et écoles privées (sensibles à l'enjeu) ; positionner comme préparation à l'échéance août 2026
+- Mitigation : commencer par les entreprises tech (contacts CTO et RSSI comme entrée) et écoles privées (sensibles à l'enjeu) ; positionner comme préparation à l'échéance août 2026
 
 ### Risques techniques
 

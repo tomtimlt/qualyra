@@ -13,9 +13,9 @@
 <p align="center">
   <a href="https://www.php.net/releases/8.4/"><img alt="PHP" src="https://img.shields.io/badge/PHP-8.4-777BB4?style=flat-square&logo=php&logoColor=white"></a>
   <a href="https://laravel.com"><img alt="Laravel" src="https://img.shields.io/badge/Laravel-13-FF2D20?style=flat-square&logo=laravel&logoColor=white"></a>
-  <a href="https://tailwindcss.com"><img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind-3-38B2AC?style=flat-square&logo=tailwindcss&logoColor=white"></a>
-  <a href="https://pestphp.com"><img alt="Pest" src="https://img.shields.io/badge/tests-Pest_4-8b5cf6?style=flat-square"></a>
-  <a href="#licence"><img alt="License" src="https://img.shields.io/badge/license-Propri%C3%A9taire-red?style=flat-square"></a>
+  <a href="https://tailwindcss.com"><img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind-4-38B2AC?style=flat-square&logo=tailwindcss&logoColor=white"></a>
+  <a href="https://github.com/tomtimlt/qualyra/actions/workflows/tests.yml"><img alt="Tests" src="https://img.shields.io/github/actions/workflow/status/tomtimlt/qualyra/tests.yml?branch=main&style=flat-square&label=tests"></a>
+  <a href="LICENSE"><img alt="License: AGPL-3.0" src="https://img.shields.io/badge/license-AGPL--3.0-blue?style=flat-square"></a>
 </p>
 
 <p align="center">
@@ -26,11 +26,20 @@
   <a href="CHANGELOG.md">Changelog</a>
 </p>
 
+> [!WARNING]
+> **Qualyra est un outil d'aide au diagnostic, pas un conseil juridique.**
+> La classification repose uniquement sur les déclarations de l'utilisateur et sur une lecture du Règlement (UE) 2024/1689 et du RGPD à une date donnée. Elle peut être incomplète, erronée ou dépassée par l'évolution des textes et de leur interprétation. Faites valider toute décision de conformité par un avocat ou un DPO. Le logiciel est fourni « en l'état », sans aucune garantie (voir [LICENSE](LICENSE)).
+
+<p align="center">
+  <img src="docs/screenshots/dashboard.png" alt="Tableau de bord Qualyra" width="900">
+</p>
+
 ---
 
 ## Sommaire
 
 - [À propos](#à-propos)
+- [Captures d'écran](#captures-décran)
 - [Fonctionnalités](#fonctionnalités)
 - [Stack technique](#stack-technique)
 - [Démarrage rapide](#démarrage-rapide)
@@ -61,7 +70,21 @@ PME de **20 à 500 personnes** sans DPO ni RSSI dédié : cabinets, agences, éc
 
 ### Pourquoi maintenant
 
-L'AI Act entre en application progressive depuis le **2 février 2025** (pratiques interdites) et le **2 août 2026** (haut risque). Les sanctions atteignent **35 M€ ou 7 % du CA mondial** pour les pratiques inacceptables. La plupart des PME n'ont ni les ressources juridiques internes ni le budget consulting (10–50 k€) pour s'y conformer. Qualyra livre une réponse opérationnelle pour ~1 500 €.
+L'AI Act entre en application progressive : pratiques interdites depuis le **2 février 2025**, transparence (Art. 50) depuis le **2 août 2026**, et systèmes à haut risque de l'Annexe III à partir du **2 décembre 2027** (date reportée par le Digital Omnibus, en vigueur depuis le 27 juillet 2026). Les sanctions atteignent **35 M€ ou 7 % du CA mondial** pour les pratiques inacceptables. La plupart des PME n'ont ni les ressources juridiques internes ni le budget consulting (10–50 k€) pour s'y conformer.
+
+### Statut du projet
+
+Qualyra a été conçu comme un produit commercial (rapport vendu ~1 500 €). Le projet commercial n'a pas abouti : il est donc publié en open source sous licence AGPL-3.0 pour que le moteur de règles et l'approche puissent servir à d'autres. Il est maintenu sur mon temps libre, sans garantie de suivi.
+
+---
+
+## Captures d'écran
+
+| Landing | Cartographie des risques |
+|---|---|
+| ![Landing](docs/screenshots/landing.png) | ![Vision Sankey](docs/screenshots/vision.png) |
+| **Tableau de bord** | **Rapport** |
+| ![Tableau de bord](docs/screenshots/dashboard.png) | ![Rapport](docs/screenshots/report.png) |
 
 ---
 
@@ -84,7 +107,7 @@ L'AI Act entre en application progressive depuis le **2 février 2025** (pratiqu
 | Langage | PHP | 8.4 |
 | Framework | Laravel | 13 |
 | Vues | Blade | — |
-| CSS | Tailwind CSS | 3 |
+| CSS | Tailwind CSS | 4 |
 | JS | Alpine.js + Vite | 3 / 8 |
 | Base de données | SQLite (dev) · MySQL 8 (prod optionnelle) | — |
 | Auth | Laravel Breeze (Blade stack) | 2 |
@@ -174,9 +197,12 @@ Le service [`AiActClassifier`](app/Services/AiActClassifier.php) implémente la 
 | Niveau | Description | Délai d'application | Sanction max (PME) |
 |--------|-------------|---------------------|--------------------|
 | **Inacceptable** | Pratiques prohibées (Art. 5) | Depuis 02/02/2025 | 35 M€ ou 7 % CA |
-| **Haut risque** | Systèmes critiques (Annexe III) | 02/08/2026 | 15 M€ ou 3 % CA |
-| **Risque limité** | Chatbots, deepfakes (Art. 50) | 02/02/2027 | Obligation de transparence |
+| **Haut risque** | Systèmes critiques (Annexe III) | 02/12/2027 | 15 M€ ou 3 % CA |
+| **Haut risque** | Produits réglementés (Annexe I, ex. dispositifs médicaux) | 02/08/2028 | 15 M€ ou 3 % CA |
+| **Risque limité** | Chatbots, deepfakes (Art. 50) | Depuis 02/08/2026 | 15 M€ ou 3 % CA |
 | **Risque minimal** | Autres systèmes | Aucune obligation | — |
+
+Calendrier à jour du **Digital Omnibus sur l'IA** (adopté en juin 2026, en vigueur depuis le 27/07/2026), qui a reporté les échéances haut risque initialement fixées au 02/08/2026 (Annexe III) et au 02/08/2027 (Annexe I). Chaque règle porte une date `applicable_from` : le moteur ignore les règles pas encore en vigueur à la date d'audit, et la timeline projette la classification à +1 et +2 ans.
 
 ### 22 règles encodées
 
@@ -253,7 +279,7 @@ Au démarrage du conteneur :
 
 ## Configuration Stripe
 
-Le paiement Stripe est optionnel. En l'absence de `STRIPE_SECRET`, les rapports sont générés gratuitement en mode dev.
+Le paiement Stripe est optionnel. En l'absence de `STRIPE_SECRET`, les rapports sont générés gratuitement.
 
 ```env
 # Activation du paiement
@@ -266,13 +292,15 @@ STRIPE_REPORT_PRICE=4900     # 49 € en centimes
 
 ## Tests
 
-Le projet est couvert par une suite [Pest 4](https://pestphp.com) (~100 tests, 288+ assertions).
+Le projet est couvert par une suite [Pest 4](https://pestphp.com) (136 tests), exécutée par la CI GitHub Actions à chaque push et pull request, avec Pint pour le style.
 
 ```bash
 php artisan test                    # toute la suite
 php artisan test --filter Report    # par filtre
 php artisan test --parallel         # parallélisé
 ```
+
+Les tests de téléchargement PDF lancent un vrai Chrome headless. Si Chromium n'est pas dans `/usr/bin/chromium`, indiquez son chemin : `CHROME_PATH=/chemin/vers/chrome php artisan test`.
 
 | Module | Couverture |
 |--------|------------|
@@ -323,9 +351,9 @@ Signalement de vulnérabilité : voir [`SECURITY.md`](SECURITY.md).
 
 ## Contribution
 
-Projet en développement solo pour l'instant — les contributions externes ne sont pas ouvertes.
+Les contributions sont bienvenues, en particulier sur l'exactitude réglementaire : une règle mal encodée, une date dépassée ou une zone grise mal décrite sont des bugs à part entière.
 
-Pour signaler un bug ou proposer une amélioration, ouvrez une [Issue](https://github.com/tomtimlt/qualyra/issues) en utilisant les templates `bug_report` ou `feature_request`.
+Pour signaler un bug ou proposer une amélioration, ouvrez une [Issue](https://github.com/tomtimlt/qualyra/issues) en utilisant les templates `bug_report` ou `feature_request`. Pour une correction, ouvrez directement une pull request.
 
 Conventions de code, workflow Git et conventions de commit : [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
@@ -333,13 +361,13 @@ Conventions de code, workflow Git et conventions de commit : [`CONTRIBUTING.md`]
 
 ## Licence
 
-**Projet propriétaire** — Tous droits réservés © 2026 Thomas Lhostete.
+© 2026 Thomas Lhostete. Distribué sous licence **[GNU AGPL-3.0](LICENSE)**.
 
-Le code source est consultable à des fins **d'audit**, **d'évaluation** ou de **portfolio**. Il ne peut être ni utilisé en production, ni modifié, ni redistribué sans **autorisation écrite préalable**.
+Vous pouvez utiliser, modifier et redistribuer Qualyra librement. Si vous le proposez comme service en ligne (SaaS), vous devez publier le code source de votre version modifiée sous la même licence.
 
-Pour une demande de licence commerciale, un audit AI Act professionnel ou un partenariat :
+Le logiciel est fourni sans aucune garantie. Les rapports générés ne constituent pas un avis juridique.
 
-📧 **thomas.lhostete@viacesi.fr**
+Contact : **thomas.lhostete@viacesi.fr**
 
 ---
 
