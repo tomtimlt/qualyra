@@ -21,7 +21,7 @@ class ComplianceTimelineBuilder
      * (apparition d'un niveau plus sévère par rapport à l'horizon précédent).
      *
      * Le rapport peut ainsi avertir le déployeur : « Aujourd'hui votre IA est
-     * RISQUE_MINIMAL ; au 2 août 2026 elle deviendra HAUT_RISQUE. »
+     * RISQUE_MINIMAL ; au 2 décembre 2027 elle deviendra HAUT_RISQUE. »
      *
      * @return array<int, array<string, mixed>>
      */
@@ -77,7 +77,7 @@ class ComplianceTimelineBuilder
     /**
      * Compare deux passes pour identifier les usages dont le niveau de risque
      * s'aggrave (ex : RISQUE_MINIMAL → HAUT_RISQUE à l'entrée en vigueur du
-     * 2 août 2026). On ignore les transitions descendantes — elles ne peuvent
+     * 2 décembre 2027). On ignore les transitions descendantes — elles ne peuvent
      * de toute façon pas se produire puisque une règle ne devient jamais
      * inapplicable rétroactivement dans la matrice actuelle.
      *
