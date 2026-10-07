@@ -4,98 +4,103 @@
 
 <h1 align="center">Qualyra</h1>
 
+<p align="center"><strong>English</strong> · <a href="README.fr.md">Français</a></p>
+
 <p align="center">
-  <strong>Votre entreprise utilise déjà l'IA. Le règlement européen aussi.</strong><br>
-  L'audit AI Act + RGPD pensé pour les PME qui n'ont ni DPO, ni RSSI, ni 30 000 € pour un cabinet.
+  <strong>Your company already uses AI. So does EU regulation.</strong><br>
+  An open-source EU AI Act + GDPR compliance audit for small businesses that have no DPO, no CISO, and no €30k for a consulting firm.
 </p>
 
 <p align="center">
   <a href="https://github.com/tomtimlt/qualyra/actions/workflows/tests.yml"><img alt="Tests" src="https://img.shields.io/github/actions/workflow/status/tomtimlt/qualyra/tests.yml?branch=main&style=flat-square&label=tests"></a>
-  <a href="LICENSE"><img alt="License: AGPL-3.0" src="https://img.shields.io/badge/licence-AGPL--3.0-blue?style=flat-square"></a>
-  <img alt="Open source" src="https://img.shields.io/badge/open%20source-oui-2ea44f?style=flat-square">
+  <a href="LICENSE"><img alt="License: AGPL-3.0" src="https://img.shields.io/badge/license-AGPL--3.0-blue?style=flat-square"></a>
+  <img alt="Open source" src="https://img.shields.io/badge/open%20source-yes-2ea44f?style=flat-square">
   <a href="https://www.php.net/releases/8.4/"><img alt="PHP" src="https://img.shields.io/badge/PHP-8.4-777BB4?style=flat-square&logo=php&logoColor=white"></a>
   <a href="https://laravel.com"><img alt="Laravel" src="https://img.shields.io/badge/Laravel-13-FF2D20?style=flat-square&logo=laravel&logoColor=white"></a>
 </p>
 
 <p align="center">
-  <a href="#-le-problème">Le problème</a> ·
-  <a href="#-ce-que-fait-qualyra">Ce que fait Qualyra</a> ·
-  <a href="#-essayer-en-1-minute">Essayer</a> ·
-  <a href="#-lhistoire-du-projet">L'histoire</a> ·
-  <a href="#-contribuer">Contribuer</a>
+  <a href="#-the-problem">The problem</a> ·
+  <a href="#-what-qualyra-does">What it does</a> ·
+  <a href="#-try-it-in-1-minute">Try it</a> ·
+  <a href="#-the-story">The story</a> ·
+  <a href="#-contributing">Contribute</a>
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/dashboard.png" alt="Tableau de bord Qualyra : 30 usages d'IA classés par niveau de risque" width="900">
+  <img src="docs/screenshots/dashboard.png" alt="Qualyra dashboard: 30 AI use cases classified by risk level" width="900">
 </p>
 
 > [!WARNING]
-> **Qualyra est un outil d'aide au diagnostic, pas un conseil juridique.**
-> La classification repose sur les déclarations de l'utilisateur et sur une lecture du Règlement (UE) 2024/1689 et du RGPD à une date donnée. Elle peut être incomplète ou dépassée. Faites valider toute décision de conformité par un avocat ou un DPO. Logiciel fourni « en l'état », sans garantie ([LICENSE](LICENSE)).
+> **Qualyra is a diagnostic aid, not legal advice.**
+> Classification relies on what the user declares and on a reading of Regulation (EU) 2024/1689 and the GDPR at a given date. It may be incomplete or out of date. Have any compliance decision validated by a lawyer or a DPO. Provided "as is", without warranty ([LICENSE](LICENSE)).
+
+> [!NOTE]
+> The application UI and generated reports are in **French** (it was built for the French market). The rules engine, the code and this documentation are language-neutral and easy to adapt.
 
 ---
 
-## 🎯 Le problème
+## 🎯 The problem
 
-Une PME de 50 personnes utilise aujourd'hui ChatGPT pour rédiger, un outil qui trie les CV, un chatbot sur son site, peut-être un scoring client. **Personne ne sait lesquels de ces usages tombent sous le coup de l'AI Act**, ni ce qu'il faut faire.
+A 50-person company today uses ChatGPT for writing, a tool that screens CVs, a chatbot on its website, maybe customer scoring. **Nobody knows which of these fall under the EU AI Act**, or what to do about it.
 
 | | |
 |---|---|
-| ⚖️ **35 M€ ou 7 % du CA mondial** | Sanction maximale pour une pratique d'IA interdite |
-| 📅 **Déjà en vigueur** | Pratiques interdites depuis le 2 février 2025, transparence (Art. 50) depuis le 2 août 2026 |
-| ⏳ **2 décembre 2027** | Obligations des systèmes à haut risque (recrutement, crédit, éducation…) |
-| 💸 **10 à 50 k€** | Prix d'un accompagnement par un cabinet, hors de portée de la plupart des PME |
+| ⚖️ **€35M or 7% of global turnover** | Maximum fine for a prohibited AI practice |
+| 📅 **Already in force** | Prohibited practices since Feb 2, 2025; transparency duties (Art. 50) since Aug 2, 2026 |
+| ⏳ **December 2, 2027** | High-risk obligations kick in (hiring, credit, education…) |
+| 💸 **€10k–50k** | Typical cost of a consulting engagement, out of reach for most SMEs |
 
-## ✨ Ce que fait Qualyra
+## ✨ What Qualyra does
 
 ```
-  Déclarer ses usages d'IA  →  Répondre à un questionnaire  →  Classement automatique  →  Rapport PDF + plan d'action
-      (ChatGPT, tri de CV…)        (adapté à chaque usage)        (4 niveaux AI Act)          (1 mois · 6 mois · 1 an)
+  Declare AI use cases  →  Answer a questionnaire  →  Automatic classification  →  PDF report + action plan
+  (ChatGPT, CV screening…)   (adapts to each use)       (4 AI Act risk levels)       (1 month · 6 months · 1 year)
 ```
 
-- 🧠 **Un moteur de 22 règles** qui traduit le règlement en logique : 8 pratiques interdites, 8 cas à haut risque, 6 obligations de transparence.
-- 🗓️ **Un moteur qui connaît le calendrier** : chaque règle a sa date d'entrée en vigueur, et l'outil montre ce qui va basculer dans 1 et 2 ans. Calendrier à jour du **Digital Omnibus** (juillet 2026).
-- 🔐 **Le RGPD en parallèle** : base légale, transferts hors UE, sous-traitants, avec un suivi des fournisseurs d'IA (OpenAI, Anthropic, Mistral…).
-- 📄 **Un rapport lisible par un dirigeant** : synthèse, détail par usage, plan d'action, checklist, zones grises. Le contenu est figé à la génération pour garder une trace.
-- 🏢 **Multi-organisations** avec isolation stricte des données entre clients.
+- 🧠 **A 22-rule engine** that turns the regulation into logic: 8 prohibited practices, 8 high-risk cases, 6 transparency obligations.
+- 🗓️ **Time-aware rules**: each rule has its own entry-into-force date, and the tool shows what will flip in 1 and 2 years. Calendar updated for the **Digital Omnibus** (July 2026).
+- 🔐 **GDPR side by side**: legal basis, transfers outside the EU, processors, plus AI vendor tracking (OpenAI, Anthropic, Mistral…).
+- 📄 **A report written for executives**: summary, per-use-case detail, action plan, checklist, grey areas. Content is frozen at generation time for traceability.
+- 🏢 **Multi-tenant** with strict data isolation between organizations.
 
-### En images
+### Screenshots
 
-| Cartographie des risques | Rapport de conformité |
+| Risk map | Compliance report |
 |---|---|
-| ![Flux domaine → type d'IA → niveau de risque](docs/screenshots/vision.png) | ![Rapport d'audit](docs/screenshots/report.png) |
+| ![Domain → AI type → risk level flow](docs/screenshots/vision.png) | ![Audit report](docs/screenshots/report.png) |
 
 <p align="center">
-  <img src="docs/screenshots/landing.png" alt="Page d'accueil Qualyra" width="900">
+  <img src="docs/screenshots/landing.png" alt="Qualyra landing page" width="900">
 </p>
 
-### Les 4 niveaux de risque
+### The 4 risk levels
 
-| Niveau | Exemples | Depuis / à partir du | Sanction max |
+| Level | Examples | Applies from | Max fine |
 |---|---|---|---|
-| 🔴 **Inacceptable** | Notation sociale, reconnaissance d'émotions au travail, manipulation | 02/02/2025 | 35 M€ ou 7 % CA |
-| 🟠 **Haut risque** (Annexe III) | Tri de CV, scoring crédit, éducation, biométrie | 02/12/2027 | 15 M€ ou 3 % CA |
-| 🟠 **Haut risque** (Annexe I) | IA intégrée à un dispositif médical, une machine | 02/08/2028 | 15 M€ ou 3 % CA |
-| 🟡 **Risque limité** (Art. 50) | Chatbots, deepfakes, contenus générés | 02/08/2026 | 15 M€ ou 3 % CA |
-| 🟢 **Risque minimal** | Le reste | Aucune obligation | — |
+| 🔴 **Unacceptable** | Social scoring, emotion recognition at work, manipulation | 2025-02-02 | €35M or 7% |
+| 🟠 **High risk** (Annex III) | CV screening, credit scoring, education, biometrics | 2027-12-02 | €15M or 3% |
+| 🟠 **High risk** (Annex I) | AI embedded in a medical device or machinery | 2028-08-02 | €15M or 3% |
+| 🟡 **Limited risk** (Art. 50) | Chatbots, deepfakes, generated content | 2026-08-02 | €15M or 3% |
+| 🟢 **Minimal risk** | Everything else | No obligation | — |
 
-Les dates du haut risque tiennent compte du **Digital Omnibus sur l'IA** (en vigueur le 27/07/2026), qui a repoussé les échéances initiales du 02/08/2026 et du 02/08/2027.
+High-risk dates reflect the **Digital Omnibus on AI** (in force since 2026-07-27), which postponed the original deadlines of 2026-08-02 and 2027-08-02.
 
-## 🚀 Essayer en 1 minute
+## 🚀 Try it in 1 minute
 
-Il faut seulement Docker :
+All you need is Docker:
 
 ```bash
 git clone https://github.com/tomtimlt/qualyra.git && cd qualyra
 docker build -t qualyra . && docker run -d -p 8000:8000 qualyra
 ```
 
-Ouvrez **http://localhost:8000** et connectez-vous avec **`demo@example.com`** / **`password`**. Le compte démo contient une PME fictive (Nova Conseil & Services) avec 30 usages d'IA déjà déclarés et des rapports générés.
+Open **http://localhost:8000** and log in with **`demo@example.com`** / **`password`**. The demo account contains a fictional company (Nova Conseil & Services) with 30 AI use cases already declared and reports generated.
 
 <details>
-<summary><strong>Installation sans Docker</strong></summary>
+<summary><strong>Install without Docker</strong></summary>
 
-Prérequis : PHP 8.4, Composer 2, Node 20+.
+Requirements: PHP 8.4, Composer 2, Node 20+.
 
 ```bash
 composer install
@@ -103,185 +108,99 @@ npm install && npm run build
 cp .env.example .env && php artisan key:generate
 touch database/database.sqlite
 php artisan migrate --seed
-composer dev   # serveur + queue + logs + Vite
+composer dev   # server + queue + logs + Vite
 ```
 
-Le rendu PDF utilise Chrome headless. Si Chromium n'est pas dans `/usr/bin/chromium`, renseignez `CHROME_PATH` dans `.env`.
+PDF rendering uses headless Chrome. If Chromium is not at `/usr/bin/chromium`, set `CHROME_PATH` in `.env`.
+
+Stripe payment is optional: without `STRIPE_SECRET`, reports are generated for free.
 
 </details>
 
-## 📖 L'histoire du projet
+## 📖 The story
 
-Qualyra est né d'un constat simple : l'AI Act arrive et les PME françaises n'ont ni les compétences juridiques en interne, ni le budget pour un cabinet. J'ai voulu leur donner une réponse concrète, sous forme d'un rapport à environ 1 500 € au lieu de plusieurs dizaines de milliers.
+Qualyra started from a simple observation: the AI Act is coming, and French SMEs have neither in-house legal expertise nor the budget for a consulting firm. I wanted to give them a concrete answer: a report for around €1,500 instead of tens of thousands.
 
-J'ai conçu et développé le produit seul : lecture du règlement, traduction en règles testables, application web, rapport PDF, paiement. Le projet commercial n'a pas abouti. **Plutôt que de le laisser dormir, je le publie en open source** pour que le moteur de règles et la démarche servent à d'autres : développeurs, DPO, consultants GRC, étudiants.
+I designed and built the product on my own: reading the regulation, turning it into testable rules, the web app, the PDF report, payments. The commercial project didn't take off. **Rather than let it sit in a drawer, I'm releasing it as open source** so the rules engine and the approach can be useful to others: developers, DPOs, GRC consultants, students.
 
-Si vous travaillez sur la conformité IA, vos retours m'intéressent, en particulier pour me dire où une règle est fausse.
+If you work on AI compliance, I'd love your feedback, especially where a rule is wrong.
 
-## 🛠️ Sous le capot
+## 🛠️ Under the hood
 
 | | |
 |---|---|
-| **Back** | PHP 8.4 · Laravel 13 · SQLite / MySQL |
-| **Front** | Blade · Alpine.js · Tailwind CSS 4 · Vite |
-| **PDF** | Browsershot (Chrome headless) |
-| **Paiement** | Stripe Checkout (optionnel) |
-| **Qualité** | 136 tests Pest · Pint · CI GitHub Actions · Dependabot |
-| **Déploiement** | Docker, image autonome |
+| **Backend** | PHP 8.4 · Laravel 13 · SQLite / MySQL |
+| **Frontend** | Blade · Alpine.js · Tailwind CSS 4 · Vite |
+| **PDF** | Browsershot (headless Chrome) |
+| **Payments** | Stripe Checkout (optional) |
+| **Quality** | 136 Pest tests · Pint · GitHub Actions CI · Dependabot |
+| **Deployment** | Docker, self-contained image |
 
-Le cœur du projet tient en quelques fichiers :
+The core of the project fits in a few files:
 
-- [`config/ai_act_rules.php`](config/ai_act_rules.php) : les 22 règles, chacune avec sa condition, son article de référence et sa date d'application.
-- [`app/Services/AiActClassifier.php`](app/Services/AiActClassifier.php) : le moteur : les règles sont évaluées par ordre de sévérité et la première qui correspond l'emporte (`INACCEPTABLE > HAUT_RISQUE > RISQUE_LIMITE > DEFAULT`).
-- [`app/Services/ComplianceTimelineBuilder.php`](app/Services/ComplianceTimelineBuilder.php) : la projection à 1 et 2 ans.
+- [`config/ai_act_rules.php`](config/ai_act_rules.php): the 22 rules, each with its condition, legal reference and date of application.
+- [`app/Services/AiActClassifier.php`](app/Services/AiActClassifier.php): the engine. Rules are evaluated in order of severity (`UNACCEPTABLE > HIGH_RISK > LIMITED_RISK > DEFAULT`) and the first match wins, with GDPR alerts layered on top.
+- [`app/Services/ComplianceTimelineBuilder.php`](app/Services/ComplianceTimelineBuilder.php): the 1- and 2-year projection.
 
 <details>
-<summary><strong>Documentation technique détaillée</strong></summary>
+<summary><strong>Technical details</strong></summary>
 
 ### Architecture
 
 ```
 app/
-├── Http/Controllers/   # CRUD usages, questionnaire, assessment, report, checkout
-├── Services/           # AiActClassifier, ReportContentBuilder, ReportSnapshotBuilder
+├── Http/Controllers/   # AI use cases, questionnaire, assessment, report, checkout
+├── Services/           # AiActClassifier, ReportContentBuilder, ReportSnapshotBuilder, timeline
 ├── Models/             # User, Organization, AiUsage, Response, Assessment, Report
-└── Policies/           # AiUsagePolicy (isolation tenant)
+└── Policies/           # AiUsagePolicy (tenant isolation)
 
 config/
-├── ai_act_rules.php       # 22 règles AI Act (matrice officielle)
-├── questionnaire.php      # Questions dynamiques par type/domaine
-└── report_templates.php   # Templates rédactionnels du rapport
-
-resources/views/
-├── reports/pdf.blade.php  # Template PDF standalone (Chrome headless)
-└── questionnaire/         # Formulaire dynamique
+├── ai_act_rules.php       # the 22 AI Act rules
+├── questionnaire.php      # dynamic questions by AI type / domain
+└── report_templates.php   # report copy (French)
 ```
 
-Plus de détails : [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · [`docs/DB_SCHEMA.md`](docs/DB_SCHEMA.md).
+More in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) and [`docs/DB_SCHEMA.md`](docs/DB_SCHEMA.md) (French).
 
+### Security
 
-### Génération PDF
+- **Strict tenant isolation**: every resource is scoped to the user's organization, with cross-tenant access (IDOR) tests.
+- **Frozen snapshot**: each report stores an immutable JSON of the assessment at generation time.
+- **No mass assignment**: foreign keys are set through Eloquent relations.
+- **Centralized validation** with typed Form Requests; native Laravel CSRF.
 
-Le projet utilise **spatie/browsershot** (headless Chrome/Chromium via Puppeteer) pour générer des PDF identiques au rendu web, contrairement à DomPDF qui ne supporte ni flexbox ni les variables CSS.
-
-- Template standalone dans `resources/views/reports/pdf.blade.php`
-- Logo embarqué en base64
-- Détection automatique du navigateur (Chrome sur macOS, Chromium sur Linux/Docker)
-- Sections : couverture, synthèse exécutive, détail par usage, plan d'action 1 mois / 6 mois / 1 an, checklist, zones grises, disclaimer
-
-
-### Docker
-
-### Image autonome
-
-Le `Dockerfile` build une image self-contained avec tout le nécessaire :
-
-- PHP 8.4 + extensions (pdo_sqlite, gd, intl, bcmath, zip, exif)
-- Node.js 20 + Chromium (pour le rendu PDF)
-- Dépendances Composer installées au build (`--no-dev`)
-- Assets frontend compilés (Vite build)
-
-### docker-compose.yml
-
-Pour le développement avec bind mount et volumes persistants (`vendor`, `node_modules`).
-
-### entrypoint.sh
-
-Au démarrage du conteneur :
-1. Crée `.env` depuis `.env.example` si absent
-2. Génère `APP_KEY`
-3. Installe les dépendances si les volumes sont vides (fallback dev)
-4. Crée la base SQLite, migrations, seed (uniquement si base vierge)
-5. Démarre `php artisan serve`
-
-
-### Configuration Stripe
-
-Le paiement Stripe est optionnel. En l'absence de `STRIPE_SECRET`, les rapports sont générés gratuitement.
-
-```env
-# Activation du paiement
-STRIPE_SECRET=sk_test_...
-STRIPE_CURRENCY=eur
-STRIPE_REPORT_PRICE=4900     # 49 € en centimes
-```
-
+Report vulnerabilities privately: see [`SECURITY.md`](SECURITY.md).
 
 ### Tests
 
-Le projet est couvert par une suite [Pest 4](https://pestphp.com) (136 tests), exécutée par la CI GitHub Actions à chaque push et pull request, avec Pint pour le style.
-
 ```bash
-php artisan test                    # toute la suite
-php artisan test --filter Report    # par filtre
-php artisan test --parallel         # parallélisé
+php artisan test                   # full suite
+php artisan test --filter Report   # filtered
 ```
 
-Les tests de téléchargement PDF lancent un vrai Chrome headless. Si Chromium n'est pas dans `/usr/bin/chromium`, indiquez son chemin : `CHROME_PATH=/chemin/vers/chrome php artisan test`.
-
-| Module | Couverture |
-|--------|------------|
-| AiUsage | CRUD + 4 vecteurs IDOR (isolation tenant) |
-| Questionnaire | Questions dynamiques, persistence, upsert, validation |
-| Assessment | Classification 4 niveaux, alertes, isolation |
-| Matrice AI Act | 5 scénarios Annexe III (tests de cohérence) |
-| Report | Checkout, snapshot, PDF, contenus conditionnels |
-| Auth | Breeze (par défaut) |
-
-
-### Sécurité
-
-- **Isolation tenant stricte** — `AiUsagePolicy` + contrainte `user_id` UNIQUE sur `organizations`
-- **Snapshot figé** — le rapport stocke un JSON immuable au moment de la génération (valeur juridique opposable)
-- **Pas de mass assignment** — les FK sont injectées via les relations Eloquent
-- **Validation centralisée** — Form Requests typés, aucune validation inline dans les controllers
-- **CSRF** — natif Laravel sur tous les formulaires
-- **Audit dépendances** — Dependabot configuré sur Composer, npm, GitHub Actions
-
-Signalement de vulnérabilité : voir [`SECURITY.md`](SECURITY.md).
-
-
-### Conventions
-
-- Langue : français (commentaires, textes UI, documentation)
-- Modèles : singulier (`AiUsage`) — Tables : pluriel (`ai_usages`)
-- PHP : `declare(strict_types=1)` partout
-- Tests : Pest 4 avec helper functions (`userWithOrgAndUsage()`, `usageWithAnswers()`)
-
-
-### Documentation
-
-| Fichier | Public | Description |
-|---------|--------|-------------|
-| [`CONTRIBUTING.md`](CONTRIBUTING.md) | Devs | Workflow Git, conventions de commit, checklist PR |
-| [`SECURITY.md`](SECURITY.md) | Tous | Politique de signalement de vulnérabilités |
-| [`CHANGELOG.md`](CHANGELOG.md) | Tous | Historique des versions (format Keep a Changelog) |
-| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Devs | Architecture détaillée et décisions techniques |
-| [`docs/DB_SCHEMA.md`](docs/DB_SCHEMA.md) | Devs | Schéma de base de données |
-| [`docs/Guide de Conformité AI Act.md`](docs/Guide%20de%20Conformité%20AI%20Act.md) | Métier | Référentiel AI Act exhaustif |
-| [`docs/Matrices et Référentiels d'Audit.md`](docs/Matrices%20et%20Référentiels%20d'Audit.md) | Métier | Matrices opérationnelles d'audit |
+PDF download tests launch a real headless Chrome: `CHROME_PATH=/path/to/chrome php artisan test`.
 
 </details>
 
-## 🤝 Contribuer
+## 🤝 Contributing
 
-Les contributions sont bienvenues, surtout sur l'exactitude réglementaire : une règle mal encodée, une date dépassée ou une zone grise mal décrite sont des bugs à part entière.
+Contributions are welcome, especially on regulatory accuracy: a mis-encoded rule, an outdated date or a poorly described grey area is a bug in its own right.
 
-- Un bug ou une idée : ouvrez une [issue](https://github.com/tomtimlt/qualyra/issues).
-- Une correction : ouvrez directement une pull request (voir [CONTRIBUTING.md](CONTRIBUTING.md)).
-- Une faille de sécurité : suivez [SECURITY.md](SECURITY.md).
+- Bug or idea: open an [issue](https://github.com/tomtimlt/qualyra/issues).
+- Fix: open a pull request directly (see [CONTRIBUTING.md](CONTRIBUTING.md)). English or French, both are fine.
+- Security issue: follow [SECURITY.md](SECURITY.md).
 
-Si le projet vous est utile, une ⭐ aide à le faire connaître.
+If the project is useful to you, a ⭐ helps spread the word.
 
-## 📜 Licence
+## 📜 License
 
-© 2026 Thomas Lhostete, distribué sous licence **[GNU AGPL-3.0](LICENSE)**.
+© 2026 Thomas Lhostete, released under the **[GNU AGPL-3.0](LICENSE)**.
 
-Vous pouvez utiliser, modifier et redistribuer Qualyra librement. Si vous le proposez comme service en ligne, vous devez publier le code source de votre version sous la même licence. Les rapports générés ne constituent pas un avis juridique.
+You are free to use, modify and redistribute Qualyra. If you offer it as an online service, you must publish the source code of your version under the same license. Generated reports are not legal advice.
 
 ---
 
 <p align="center">
-  Conçu pour les PME françaises par <a href="https://github.com/tomtimlt">@tomtimlt</a> · CESI Nancy<br>
-  <sub>Contact : thomas.lhostete@viacesi.fr</sub>
+  Built for European SMEs by <a href="https://github.com/tomtimlt">@tomtimlt</a> · CESI Nancy<br>
+  <sub>Contact: thomas.lhostete@viacesi.fr</sub>
 </p>
