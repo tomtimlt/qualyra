@@ -43,4 +43,10 @@ return [
         'report_price' => env('STRIPE_REPORT_PRICE', 4900), // en centimes (49 €)
     ],
 
+    'browsershot' => [
+        // Chemin du binaire Chrome/Chromium pour le rendu PDF. Vide = détection
+        // automatique (Chrome sur macOS, /usr/bin/chromium ailleurs).
+        'chrome_path' => env('CHROME_PATH'),
+    ],
+
 ];

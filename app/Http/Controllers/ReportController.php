@@ -43,9 +43,10 @@ class ReportController extends Controller
             ->showBackground();
 
         if (PHP_OS_FAMILY === 'Darwin') {
-            $browsershot->setChromePath('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome');
+            $browsershot->setChromePath(config('services.browsershot.chrome_path')
+                ?: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome');
         } else {
-            $browsershot->setChromePath('/usr/bin/chromium')
+            $browsershot->setChromePath(config('services.browsershot.chrome_path') ?: '/usr/bin/chromium')
                 ->noSandbox();
         }
 

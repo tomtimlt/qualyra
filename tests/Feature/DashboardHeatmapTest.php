@@ -14,12 +14,16 @@ it('affiche la cartographie des risques avec le canvas heatmap', function () {
     $usage = AiUsage::factory()->for($organization)->create(['domain' => 'RH', 'name' => 'ChatGPT RH']);
     Assessment::factory()->for($usage)->create(['niveau' => 'HAUT_RISQUE']);
 
-    $response = $this->actingAs($user)->get('/dashboard');
+    // Le dashboard renvoie vers la page Vision, qui porte la heatmap.
+    $this->actingAs($user)->get('/dashboard')
+        ->assertOk()
+        ->assertSee('Cartographie des risques')
+        ->assertSee(route('vision'), false)
+        ->assertSee('ChatGPT RH'); // visible dans la liste
 
-    $response->assertOk();
-    $response->assertSee('Cartographie des risques');
-    $response->assertSee('id="chartHeatmap"', false);
-    $response->assertSee('ChatGPT RH'); // visible dans la liste
+    $this->actingAs($user)->get('/vision')
+        ->assertOk()
+        ->assertSee('id="chartHeatmapDensity"', false);
 });
 
 it('isole les usages par tenant dans la heatmap', function () {
